@@ -1,0 +1,8 @@
+﻿
+li .text-white {
+    transition: opacity 0.5s ease-out;
+}
+
+li .text-white:hover {
+    opacity: 0.5;
+}

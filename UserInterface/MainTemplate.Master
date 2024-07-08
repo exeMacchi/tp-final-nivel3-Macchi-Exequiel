@@ -3,7 +3,7 @@
 <!DOCTYPE html>
 
 <html>
-<head runat="server" lang="es">
+<head runat="server" lang="es" data-bs-theme="dark">
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <asp:ContentPlaceHolder ID="headContent" runat="server">
@@ -16,19 +16,59 @@
           crossorigin="anonymous">
     <link rel="stylesheet"
           href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <!-- Styles -->
+    <link href="~/Assets/Styles/Global.css" rel="stylesheet" />
+    <link href="~/Assets/Styles/HeaderFooter.css" rel="stylesheet" />
 </head>
 <body>
     <!-- Header -->
-    <header class="container-fluid">
-        <nav>
+    <header class="container-fluid text-bg-dark sticky-top">
+        <nav class="navbar navbar-expand container d-flex flex-wrap align-items-center justify-content-between">
+            <!-- Icon -->
+            <a href="Default.aspx" 
+               class="navbar-brand text-white text-decoration-none">
+                <i class="bi bi-box" style="font-size: 50px"></i>
+            </a>
+
+            <!-- Navbar -->
+            <ul class="navbar-nav flex-fill justify-content-center gap-3">
+                <li class="nav-item">
+                    <a href="/Default.aspx"
+                       class="nav-link d-flex flex-column align-items-center ms-5 <%= Page is UserInterface.Default ? "text-secondary" : "text-white"%>">
+                        <i class="bi bi-house"></i>
+                        <span>INICIO</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/Pages/Global/Products.aspx"
+                       class="nav-link d-flex flex-column align-items-center <%= Page is UserInterface.Pages.Global.Products ? "text-secondary" : "text-white"%>">
+                        <i class="bi bi-boxes"></i>
+                        <span>PRODUCTOS</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/Pages/User/Favorites.aspx" 
+                       class="nav-link d-flex flex-column align-items-center <%= Page is UserInterface.Pages.User.Favorites ? "text-secondary" : "text-white"%>">
+                        <i class="bi bi-star-half"></i>
+                        <span>FAVORITOS</span>
+                    </a>
+                </li>
+            </ul>
+
+            <!-- User session -->
+            <div class="d-flex flex-row gap-2">
+                <a href="Login.aspx" class="btn btn-outline-light">Ingresar</a>
+                <a href="Register.aspx" class="btn btn-warning">Registrarse</a>
+            </div> 
         </nav>
     </header>
 
 
     <!-- Main -->
-    <main class="container flex-grow-1">
-        <form id="form1" runat="server">
-            <div>
+    <main class="container-fluid flex-grow-1">
+        <form id="form1" runat="server" class="d-flex flex-column h-100">
+            <div class="container">
                 <asp:ContentPlaceHolder ID="mainContent" runat="server">
                 </asp:ContentPlaceHolder>
             </div>
@@ -36,8 +76,34 @@
     </main>
 
     <!-- Footer -->
-    <footer class="container-fluid">
-        <nav>
+    <footer class="container-fluid px-3 py-2 text-bg-dark border-bottom">
+        <nav class="navbar navbar-expand container d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top">
+            <p class="col-md-4 mb-0 text-white">&copy; <%: DateTime.Now.Year %> El Almacenero</p>
+
+            <a href="/Default.aspx" class="col-md-4 d-flex align-items-center justify-content-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
+                <i class="bi bi-box"></i>
+            </a>
+
+            <ul class="navbar-nav col-md-4 justify-content-end">
+              <li class="nav-item">
+                  <a href="/Default.aspx"
+                     class="nav-link <%= Page is UserInterface.Default ? "text-secondary" : "text-white"%>">
+                      INICIO
+                  </a>
+              </li>
+              <li class="nav-item">
+                  <a href="/Pages/Admin/Products.aspx"
+                     class="nav-link px-2 <%= Page is UserInterface.Pages.Global.Products ? "text-secondary" : "text-white"%>">
+                      PRODUCTOS
+                  </a>
+              </li>
+              <li class="nav-item">
+                  <a href="/Pages/Admin/Products.aspx"
+                     class="nav-link px-2 <%= Page is UserInterface.Pages.User.Favorites ? "text-secondary" : "text-white"%>">
+                      FAVORITOS
+                  </a>
+              </li>
+            </ul>
         </nav>
     </footer>
 
