@@ -11,5 +11,11 @@ namespace Domain
         // Propiedades
         public int ID { get; set; }
         public string Description { get; set; }
+
+        public Category(int id, string description)
+        {
+            ID = id;
+            Description = description;
+        }
     }
 }

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace DataAccess
 {
-    public class DataAccess
+    public class DataBase
     {
         // Atributos
         private SqlConnection connection;
@@ -19,7 +19,7 @@ namespace DataAccess
         public SqlDataReader Reader { get { return reader; } }
 
         // Constructor
-        public DataAccess()
+        public DataBase()
         {
             string server = "DESKTOP-FUV4AD1";
             string database = "CATALOGO_WEB_DB";
