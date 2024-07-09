@@ -6,3 +6,14 @@
 main {
     background-color: rgba(0, 0, 0, 0.1);
 }
+
+figure {
+    overflow: hidden;
+    height: 250px;
+}
+
+figure > img {
+    object-fit: cover;
+    height: 100%;
+    width: 100%;
+}

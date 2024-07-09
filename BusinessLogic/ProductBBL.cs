@@ -21,19 +21,19 @@ namespace BusinessLogic
         {
             List<Product> products = new List<Product>();
             DataBase db = new DataBase();
-            string query = "SELECT A.Id AS ProductID," +
-                           "       A.Codigo AS ProductCode," +
+            string query = "SELECT A.Id AS ProductID, " +
+                           "       A.Codigo AS ProductCode, " +
                            "       A.Nombre AS ProductName," +
-                           "       A.Descripcion AS ProductDescription," +
-                           "       A.ImagenUrl AS ProductImage," +
-                           "       A.Precio AS ProductPrice," +
-                           "       C.Id AS CategoryID," +
-                           "       C.Descripcion AS CategoryDescription," +
-                           "       M.Id AS BrandID," +
-                           "       M.Descripcion AS BrandDescription" +
-                           "FROM ARTICULOS AS A" +
-                           "INNER JOIN CATEGORIAS AS C ON A.IdCategoria = C.Id" +
-                           "INNER JOIN MARCAS AS M ON A.IdMarca = M.Id;";
+                           "       A.Descripcion AS ProductDescription, " +
+                           "       A.ImagenUrl AS ProductImage, " +
+                           "       A.Precio AS ProductPrice, " +
+                           "       C.Id AS CategoryID, " +
+                           "       C.Descripcion AS CategoryDescription, " +
+                           "       M.Id AS BrandID, " +
+                           "       M.Descripcion AS BrandDescription " +
+                           "FROM ARTICULOS AS A " +
+                           "INNER JOIN CATEGORIAS AS C ON A.IdCategoria = C.Id " +
+                           "INNER JOIN MARCAS AS M ON A.IdMarca = M.Id; ";
 
             try
             {
@@ -55,7 +55,10 @@ namespace BusinessLogic
                         product.Description = db.Reader["ProductDescription"].ToString();
 
                     if (!(db.Reader["ProductImage"] is DBNull))
-                        product.Image = db.Reader["ProductImage"].ToString();
+                        product.Image = Auxiliary.VerifyImage(db.Reader["ProductImage"].ToString());
+
+                    if (!(db.Reader["ProductPrice"] is DBNull))
+                        product.Price = (decimal)db.Reader["ProductPrice"];
 
                     if (!(db.Reader["CategoryID"] is DBNull || db.Reader["CategoryDescription"] is DBNull))
                         product.Category = new Category((int)db.Reader["CategoryID"],
@@ -89,20 +92,20 @@ namespace BusinessLogic
         public static Product GetProduct(int id)
         {
             DataBase db = new DataBase();
-            string query = "SELECT A.Id AS ProductID," +
-                           "       A.Codigo AS ProductCode," +
-                           "       A.Nombre AS ProductName," +
-                           "       A.Descripcion AS ProductDescription," +
-                           "       A.ImagenUrl AS ProductImage," +
-                           "       A.Precio AS ProductPrice," +
-                           "       C.Id AS CategoryID," +
-                           "       C.Descripcion AS CategoryDescription," +
-                           "       M.Id AS BrandID," +
-                           "       M.Descripcion AS BrandDescription" +
-                           "FROM ARTICULOS AS A" +
-                           "INNER JOIN CATEGORIAS AS C ON A.IdCategoria = C.Id" +
-                           "INNER JOIN MARCAS AS M ON A.IdMarca = M.Id" +
-                           "WHERE A.Id = @ProductID;";
+            string query = "SELECT A.Id AS ProductID, " +
+                           "       A.Codigo AS ProductCode, " +
+                           "       A.Nombre AS ProductName, " +
+                           "       A.Descripcion AS ProductDescription, " +
+                           "       A.ImagenUrl AS ProductImage, " +
+                           "       A.Precio AS ProductPrice, " +
+                           "       C.Id AS CategoryID, " +
+                           "       C.Descripcion AS CategoryDescription, " +
+                           "       M.Id AS BrandID, " +
+                           "       M.Descripcion AS BrandDescription " +
+                           "FROM ARTICULOS AS A " +
+                           "INNER JOIN CATEGORIAS AS C ON A.IdCategoria = C.Id " +
+                           "INNER JOIN MARCAS AS M ON A.IdMarca = M.Id " +
+                           "WHERE A.Id = @ProductID; ";
 
             try
             {
@@ -125,7 +128,10 @@ namespace BusinessLogic
                         product.Description = db.Reader["ProductDescription"].ToString();
 
                     if (!(db.Reader["ProductImage"] is DBNull))
-                        product.Image = db.Reader["ProductImage"].ToString();
+                        product.Image = Auxiliary.VerifyImage(db.Reader["ProductImage"].ToString());
+
+                    if (!(db.Reader["ProductPrice"] is DBNull))
+                        product.Price = (decimal)db.Reader["ProductPrice"];
 
                     if (!(db.Reader["CategoryID"] is DBNull || db.Reader["CategoryDescription"] is DBNull))
                         product.Category = new Category((int)db.Reader["CategoryID"],
@@ -189,13 +195,13 @@ namespace BusinessLogic
         public static void UpdateProduct(Product product)
         {
             DataBase db = new DataBase();
-            string query = "UPDATE ARTICULOS SET Codigo = @ProductCode," +
-                           "                     Nombre = @ProductName," +
-                           "                     Descripcion = @ProductDescription," +
-                           "                     IdMarca = @BrandID," +
-                           "                     IdCategoria = @CategoryID," +
-                           "                     ImagenUrl = @ProductImage," +
-                           "                     Precio = @ProductPrice" +
+            string query = "UPDATE ARTICULOS SET Codigo = @ProductCode, " +
+                           "                     Nombre = @ProductName, " +
+                           "                     Descripcion = @ProductDescription, " +
+                           "                     IdMarca = @BrandID, " +
+                           "                     IdCategoria = @CategoryID, " +
+                           "                     ImagenUrl = @ProductImage, " +
+                           "                     Precio = @ProductPrice " +
                            "WHERE Id = @ProductID;";
 
             try

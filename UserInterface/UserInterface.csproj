@@ -67,6 +67,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Assets\Images\Placeholder.jpg" />
     <Content Include="Assets\Styles\Global.css" />
     <Content Include="Assets\Styles\HeaderFooter.css" />
     <Content Include="Default.aspx" />
@@ -121,7 +122,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Assets\Images\" />
     <Folder Include="Assets\Scripts\" />
     <Folder Include="Pages\Admin\" />
     <Folder Include="Pages\Auth\" />

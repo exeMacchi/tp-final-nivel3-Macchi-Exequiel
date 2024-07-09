@@ -43,7 +43,8 @@
                 descripción, el precio y un botón de "Ver más" para obtener detalles 
                 adicionales.
             </p>
-            <a href="/Pages/Global/Products.aspx" class="btn btn-outline-light">
+            <a href="/Pages/Global/Products.aspx" 
+               class="btn btn-outline-light mt-auto">
                 Ver catálogo de productos
             </a>
         </div>
@@ -51,36 +52,75 @@
         <div class="col-6">
             <div id="productCarousel" class="carousel slide h-100">
                 <div class="carousel-inner h-100">
-                    <div class="carousel-item h-100 active">
-                        <article class="card w-50 h-100 mx-auto">
-                            <img src="..." class="card-img-top" alt="...">
-                            <div class="card-body">
-                                <h5 class="card-title">B</h5>
-                                <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                                <a href="#" class="btn btn-outline-light">Go somewhere</a>
-                            </div>
-                        </article>
-                    </div>
+                    <% if (((List<Domain.Product>)Session["PRODUCTS"]).Count > 0) { %>
+                        <asp:Repeater ID="ProductCards" runat="server">
+                            <ItemTemplate>
+                                <% if (ProductIndex < 5) { // Mostrar 5 cartas de demostración %>
+                                    <div class="carousel-item h-100 <%= ProductIndex == 0 ? "active" : "" %>">
+                                        <article class="card w-75 h-100 mx-auto bg-dark overflow-hidden border rounded-5">
+                                            <figure class="card-img-top bg-gradient text-white">
+                                                <img src="<%# Eval("Image") %>"
+                                                     alt="Imagen del producto <%# Eval("Name") %>">
+                                            </figure>
+                                            <div class="card-body d-flex flex-column gap-1">
+                                                <h5 class="card-title text-center text-white fw-bold">
+                                                    <%# Eval("Name") %>
+                                                </h5>
+                                                <div class="d-flex justify-content-center gap-2">
+                                                    <span class="badge rounded-pill text-white border bg-gradient"><%# Eval("Brand.Description") %></span>
+                                                    <span class="badge rounded-pill text-white border bg-gradient"><%# Eval("Category.Description") %></span>
+                                                </div>
+                                                <p class="card-text text-white lead">
+                                                    <%# Eval("Description") %>
+                                                </p>
+                                                <p class="card-text text-warning text-center fs-2">
+                                                    $<%# ((decimal)Eval("Price")).ToString("N2") %>
+                                                </p>
+                                                <a href="/Pages/Global/ProductDetail.aspx?id=<%# Eval("ID") %>" 
+                                                   class="btn btn-outline-light">Ver detalle →</a>
+                                            </div>
+                                        </article>
+                                    </div>
 
-                    <div class="carousel-item h-100">
-                        <article class="card w-50 h-100 mx-auto">
-                            <img src="..." class="card-img-top" alt="...">
-                            <div class="card-body">
-                                <h5 class="card-title">A</h5>
-                                <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                                <a href="#" class="btn btn-outline-light">Go somewhere</a>
-                            </div>
-                        </article>
-                    </div>
+                                <% } %>
+                                <% ProductIndex++; // Esto es necesario para saber el índice del producto y aplicar la clase 'active' necesaria en el carousel. %>
+                            </ItemTemplate>
+                        </asp:Repeater>
+                        <button class="carousel-control-prev" type="button" data-bs-target="#productCarousel" data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Previous</span>
+                        </button>
+                        <button class="carousel-control-next" type="button" data-bs-target="#productCarousel" data-bs-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Next</span>
+                        </button>
+                    <% } else { %>
+                        <div class="carousel-item h-100 active">
+                            <article class="card w-75 h-100 mx-auto bg-dark overflow-hidden border rounded-5">
+                                <figure class="card-img-top bg-gradient text-white">
+                                    <img src="/Assets/Images/Placeholder.jpg"
+                                         alt="Marcador de posición par imágenes">
+                                </figure>
+                                <div class="card-body d-flex flex-column gap-1">
+                                    <h5 class="card-title text-center text-white fw-bold">
+                                        Nombre del producto
+                                    </h5>
+                                    <div class="d-flex justify-content-center gap-2">
+                                        <span class="badge rounded-pill text-white border bg-gradient">Marca</span>
+                                        <span class="badge rounded-pill text-white border bg-gradient">Categoría</span>
+                                    </div>
+                                    <p class="card-text text-white lead">
+                                        Descripción del producto.
+                                    </p>
+                                    <p class="card-text text-warning text-center fs-2">
+                                        $0,00
+                                    </p>
+                                    <a href="#" class="btn btn-outline-light">Ver detalle →</a>
+                                </div>
+                            </article>
+                        </div>
+                    <% } %>
                 </div>
-                <button class="carousel-control-prev" type="button" data-bs-target="#productCarousel" data-bs-slide="prev">
-                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                    <span class="visually-hidden">Previous</span>
-                </button>
-                <button class="carousel-control-next" type="button" data-bs-target="#productCarousel" data-bs-slide="next">
-                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                    <span class="visually-hidden">Next</span>
-                </button>
             </div>
         </div>
     </section>

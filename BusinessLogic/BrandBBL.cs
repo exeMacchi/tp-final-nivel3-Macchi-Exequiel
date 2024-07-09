@@ -18,8 +18,8 @@ namespace BusinessLogic
         {
             DataBase db = new DataBase();
             List<Brand> brands = new List<Brand>();
-            string query = "SELECT Id AS BrandID," +
-                           "       Descripcion AS BrandDescription" +
+            string query = "SELECT Id AS BrandID, " +
+                           "       Descripcion AS BrandDescription " +
                            "FROM MARCAS;";
 
             try

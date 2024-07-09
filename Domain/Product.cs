@@ -17,12 +17,5 @@ namespace Domain
         public Category Category { get; set; }
         public string Image { get; set; }
         public decimal Price { get; set; }
-
-        // Constructor
-        public Product()
-        {
-            Brand = new Brand();
-            Category = new Category();
-        }
     }
 }

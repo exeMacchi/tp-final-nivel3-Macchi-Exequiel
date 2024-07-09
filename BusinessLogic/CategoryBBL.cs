@@ -18,8 +18,8 @@ namespace BusinessLogic
         {
             DataBase db = new DataBase();
             List<Category> categories = new List<Category>();
-            string query = "SELECT Id AS CategoryID," +
-                           "       Descripcion AS CategoryDescription" +
+            string query = "SELECT Id AS CategoryID, " +
+                           "       Descripcion AS CategoryDescription " +
                            "FROM CATEGORIAS;";
 
             try

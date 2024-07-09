@@ -23,7 +23,7 @@
 </head>
 <body>
     <!-- Header -->
-    <header class="container-fluid text-bg-dark sticky-top">
+    <header class="container-fluid text-bg-dark sticky-top border-bottom">
         <nav class="navbar navbar-expand container d-flex flex-wrap align-items-center justify-content-between">
             <!-- Icon -->
             <a href="Default.aspx" 
@@ -76,8 +76,8 @@
     </main>
 
     <!-- Footer -->
-    <footer class="container-fluid px-3 py-2 text-bg-dark border-bottom">
-        <nav class="navbar navbar-expand container d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top">
+    <footer class="container-fluid px-3 py-2 text-bg-dark border-top">
+        <nav class="navbar navbar-expand container d-flex flex-wrap justify-content-between align-items-center py-3 my-4">
             <p class="col-md-4 mb-0 text-white">&copy; <%: DateTime.Now.Year %> El Almacenero</p>
 
             <a href="/Default.aspx" class="col-md-4 d-flex align-items-center justify-content-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
