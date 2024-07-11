@@ -10,7 +10,7 @@
 
         <div class="col-6">
             <div class="input-group my-3">
-                <span class="input-group-text text-white bg-dark col-3 justify-content-center fs-5">
+                <span class="input-group-text text-white bg-black col-3 justify-content-center fs-5">
                     Código
                 </span>
                 <asp:TextBox ID="productCode"
@@ -20,7 +20,7 @@
             </div>
 
             <div class="input-group my-3">
-                <span class="input-group-text text-white bg-dark col-3 justify-content-center fs-5">
+                <span class="input-group-text text-white bg-black col-3 justify-content-center fs-5">
                     Nombre
                 </span>
                 <asp:TextBox ID="productName" 
@@ -30,18 +30,20 @@
             </div>
 
             <div class="input-group my-3">
-                <span class="input-group-text text-white bg-dark col-3 justify-content-center fs-5">
+                <span class="input-group-text text-white bg-black col-3 justify-content-center fs-5">
                     Descripción
                 </span>
                 <asp:TextBox ID="productDescription" 
                              runat="server" 
                              TextMode="MultiLine" 
-                             CssClass="form-control bg-dark text-white"
-                             ReadOnly="true"></asp:TextBox>
+                             CssClass="form-control bg-dark text-white" 
+                             style="resize: none;"
+                             ReadOnly="true"
+                             Rows="8"></asp:TextBox>
             </div>
 
             <div class="input-group my-3">
-                <span class="input-group-text text-white bg-dark col-3 justify-content-center fs-5">
+                <span class="input-group-text text-white bg-black col-3 justify-content-center fs-5">
                     Marca
                 </span>
                 <asp:TextBox ID="productBrand" 
@@ -51,7 +53,7 @@
             </div>
 
             <div class="input-group my-3">
-                <span class="input-group-text text-white bg-dark col-3 justify-content-center fs-5">
+                <span class="input-group-text text-white bg-black col-3 justify-content-center fs-5">
                     Categoría
                 </span>
                 <asp:TextBox ID="productCategory" 
@@ -60,7 +62,7 @@
                              ReadOnly="true" ></asp:TextBox>
             </div>
             <div class="input-group my-3">
-                <span class="input-group-text text-white bg-dark col-3 justify-content-center fs-5">
+                <span class="input-group-text text-white bg-black col-3 justify-content-center fs-5">
                     $
                 </span>
                 <asp:TextBox ID="productPrice" 

@@ -31,8 +31,12 @@
 
     <!-- Products -->
     <section class="row bg-dark my-5 border rounded-5 p-4">
-        <div class="col-6 text-white d-flex flex-column">
-            <h2 class="fw-bold border-bottom fs-3 pb-2">¿Cómo se presentan los productos?</h2>
+        <div class="col-6 text-white d-flex flex-column gap-4">
+            <div class="border-bottom py-3">
+                <h2 class="fw-bold text-center">
+                    ¿Cómo se presentan los productos?
+                </h2>
+            </div>
             <p class="lead mb-4">
                 En nuestra plataforma, los productos se presentan en un formato de tarjeta 
                 visualmente atractivo y fácil de navegar. 
@@ -44,7 +48,7 @@
                 adicionales.
             </p>
             <a href="/Pages/Global/Products.aspx" 
-               class="btn btn-outline-light mt-auto">
+               class="btn btn-outline-light mt-auto py-3 fs-4">
                 Ver catálogo de productos
             </a>
         </div>

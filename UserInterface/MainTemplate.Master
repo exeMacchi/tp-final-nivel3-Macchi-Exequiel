@@ -26,7 +26,7 @@
     <header class="container-fluid text-bg-dark sticky-top border-bottom">
         <nav class="navbar navbar-expand container d-flex flex-wrap align-items-center justify-content-between">
             <!-- Icon -->
-            <a href="Default.aspx" 
+            <a href="/Default.aspx" 
                class="navbar-brand text-white text-decoration-none">
                 <i class="bi bi-box" style="font-size: 50px"></i>
             </a>
@@ -52,6 +52,13 @@
                        class="nav-link d-flex flex-column align-items-center <%= Page is UserInterface.Pages.User.Favorites ? "text-secondary" : "text-white"%>">
                         <i class="bi bi-star-half"></i>
                         <span>FAVORITOS</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/Pages/Admin/Admin.aspx" 
+                       class="nav-link d-flex flex-column align-items-center <%= Page is UserInterface.Pages.Admin.Admin ? "text-secondary" : "text-white"%>">
+                        <i class="bi bi-grid-3x3"></i>
+                        <span>ADMINISTRADOR</span>
                     </a>
                 </li>
             </ul>
@@ -92,15 +99,21 @@
                   </a>
               </li>
               <li class="nav-item">
-                  <a href="/Pages/Admin/Products.aspx"
+                  <a href="/Pages/Global/Products.aspx"
                      class="nav-link px-2 <%= Page is UserInterface.Pages.Global.Products ? "text-secondary" : "text-white"%>">
                       PRODUCTOS
                   </a>
               </li>
               <li class="nav-item">
-                  <a href="/Pages/Admin/Products.aspx"
+                  <a href="/Pages/User/Favorites.aspx"
                      class="nav-link px-2 <%= Page is UserInterface.Pages.User.Favorites ? "text-secondary" : "text-white"%>">
                       FAVORITOS
+                  </a>
+              </li>
+              <li class="nav-item">
+                  <a href="/Pages/Admin/Admin.aspx"
+                     class="nav-link px-2 <%= Page is UserInterface.Pages.Admin.Admin ? "text-secondary" : "text-white"%>">
+                      ADMINISTRADOR
                   </a>
               </li>
             </ul>

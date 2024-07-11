@@ -70,8 +70,10 @@
     <Content Include="Assets\Images\Placeholder.jpg" />
     <Content Include="Assets\Styles\Global.css" />
     <Content Include="Assets\Styles\HeaderFooter.css" />
+    <Content Include="Assets\Styles\Pagination.css" />
     <Content Include="Default.aspx" />
     <Content Include="Global.asax" />
+    <Content Include="Pages\Admin\Admin.aspx" />
     <Content Include="Pages\Global\ProductDetail.aspx" />
     <Content Include="Pages\Global\Products.aspx" />
     <Content Include="Pages\User\Favorites.aspx" />
@@ -94,6 +96,13 @@
     </Compile>
     <Compile Include="MainTemplate.Master.designer.cs">
       <DependentUpon>MainTemplate.Master</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Admin\Admin.aspx.cs">
+      <DependentUpon>Admin.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Pages\Admin\Admin.aspx.designer.cs">
+      <DependentUpon>Admin.aspx</DependentUpon>
     </Compile>
     <Compile Include="Pages\Global\ProductDetail.aspx.cs">
       <DependentUpon>ProductDetail.aspx</DependentUpon>
@@ -131,7 +140,6 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Assets\Scripts\" />
-    <Folder Include="Pages\Admin\" />
     <Folder Include="Pages\Auth\" />
   </ItemGroup>
   <ItemGroup>

@@ -33,11 +33,9 @@ namespace UserInterface.Pages.Global
                 }
                 else
                 {
-                    // ALERTA
-                    productName.Text = "ALERTA";
+                    Response.Redirect("/Default.aspx");
                 }
             }
-
         }
     }
 }
