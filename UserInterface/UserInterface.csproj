@@ -72,6 +72,7 @@
     <Content Include="Assets\Styles\HeaderFooter.css" />
     <Content Include="Default.aspx" />
     <Content Include="Global.asax" />
+    <Content Include="Pages\Global\ProductDetail.aspx" />
     <Content Include="Pages\Global\Products.aspx" />
     <Content Include="Pages\User\Favorites.aspx" />
     <Content Include="Web.config" />
@@ -93,6 +94,13 @@
     </Compile>
     <Compile Include="MainTemplate.Master.designer.cs">
       <DependentUpon>MainTemplate.Master</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Global\ProductDetail.aspx.cs">
+      <DependentUpon>ProductDetail.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Pages\Global\ProductDetail.aspx.designer.cs">
+      <DependentUpon>ProductDetail.aspx</DependentUpon>
     </Compile>
     <Compile Include="Pages\Global\Products.aspx.cs">
       <DependentUpon>Products.aspx</DependentUpon>
