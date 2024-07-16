@@ -92,3 +92,7 @@ _[Ss]cripts
 
 # Visual Studio specific files
 .vs/
+
+# Upload Images Folder
+UserInterface/Assets/Images/Uploads/*
+!UserInterface/Assets/Images/Uploads/.gitkeep
