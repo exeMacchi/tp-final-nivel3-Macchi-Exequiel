@@ -28,12 +28,12 @@ namespace UserInterface.Pages.Global
                         productDescription.Text = product.Description;
                         productBrand.Text = product.Brand.Description;
                         productCategory.Text = product.Category.Description;
-                        productPrice.Text = product.Price.ToString("N3");
+                        productPrice.Text = $"$ {product.Price.ToString("N2")}" ;
                     }
                 }
                 else
                 {
-                    Response.Redirect("/Default.aspx");
+                    Response.Redirect("/Pages/Global/Products.aspx");
                 }
             }
         }

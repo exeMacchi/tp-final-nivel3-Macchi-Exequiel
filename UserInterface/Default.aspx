@@ -48,7 +48,7 @@
                 adicionales.
             </p>
             <a href="/Pages/Global/Products.aspx" 
-               class="btn btn-outline-light mt-auto py-3 fs-4">
+               class="btn btn-outline-light mt-auto py-2 fs-4">
                 Ver catálogo de productos
             </a>
         </div>
@@ -102,7 +102,7 @@
                         <div class="carousel-item h-100 active">
                             <article class="card w-75 h-100 mx-auto bg-dark overflow-hidden border rounded-5">
                                 <figure class="card-img-top bg-gradient text-white">
-                                    <img src="/Assets/Images/Placeholder.jpg"
+                                    <img src=<%: Domain.Constants.PlaceholderImagePath %>
                                          alt="Marcador de posición par imágenes">
                                 </figure>
                                 <div class="card-body d-flex flex-column gap-1">

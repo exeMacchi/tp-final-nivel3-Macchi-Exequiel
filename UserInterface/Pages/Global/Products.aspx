@@ -15,12 +15,12 @@
             <asp:Repeater ID="ProductCards" runat="server">
                 <ItemTemplate>
                     <div class="col-4 p-4">
-                        <article class="card bg-dark overflow-hidden border rounded-5">
+                        <article class="card bg-dark overflow-hidden border rounded-5 h-100">
                             <figure class="card-img-top bg-gradient text-white">
                                 <img src="<%# Eval("Image") %>"
                                      alt="Imagen del producto <%# Eval("Name") %>">
                             </figure>
-                            <div class="card-body d-flex flex-column gap-1">
+                            <div class="card-body d-flex flex-column gap-1 justify-content-between">
                                 <h5 class="card-title text-center text-white fw-bold">
                                     <%# Eval("Name") %>
                                 </h5>
@@ -41,6 +41,8 @@
                     </div>
                 </ItemTemplate>
             </asp:Repeater>
+        <% } else { %>
+        <% // TODO: alerta de que no hay productos en la base de datos. %>
         <% } %>
     </section>
 </asp:Content>

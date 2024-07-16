@@ -94,5 +94,20 @@ namespace UserInterface.Pages.Admin
 
             // TODO: Lógica de eliminación
         }
+
+        protected void btnFind_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        protected void btnAdvanced_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        protected void ddlFirstCriteria_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
     }
 }

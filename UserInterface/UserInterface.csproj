@@ -68,12 +68,16 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Assets\Images\Placeholder.jpg" />
+    <Content Include="Assets\Scripts\CreateEdit.js" />
+    <Content Include="Assets\Scripts\FileInput.js" />
+    <Content Include="Assets\Scripts\NumberInput.js" />
     <Content Include="Assets\Styles\Global.css" />
     <Content Include="Assets\Styles\HeaderFooter.css" />
     <Content Include="Assets\Styles\Pagination.css" />
     <Content Include="Default.aspx" />
     <Content Include="Global.asax" />
     <Content Include="Pages\Admin\Admin.aspx" />
+    <Content Include="Pages\Admin\CreateEdit.aspx" />
     <Content Include="Pages\Global\ProductDetail.aspx" />
     <Content Include="Pages\Global\Products.aspx" />
     <Content Include="Pages\User\Favorites.aspx" />
@@ -103,6 +107,13 @@
     </Compile>
     <Compile Include="Pages\Admin\Admin.aspx.designer.cs">
       <DependentUpon>Admin.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Admin\CreateEdit.aspx.cs">
+      <DependentUpon>CreateEdit.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Pages\Admin\CreateEdit.aspx.designer.cs">
+      <DependentUpon>CreateEdit.aspx</DependentUpon>
     </Compile>
     <Compile Include="Pages\Global\ProductDetail.aspx.cs">
       <DependentUpon>ProductDetail.aspx</DependentUpon>
@@ -139,7 +150,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Assets\Scripts\" />
+    <Folder Include="Assets\Images\Uploads\" />
     <Folder Include="Pages\Auth\" />
   </ItemGroup>
   <ItemGroup>

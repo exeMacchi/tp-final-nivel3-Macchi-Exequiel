@@ -12,19 +12,50 @@
         </div>
     </div>
 
-    <!-- Filtro básico -->
-    <div></div>
+    <div class="row">
+        <!-- Filtro básico -->
+        <div class="col-6 d-flex gap-3">
+            <asp:TextBox ID="txtFilter" runat="server" CssClass="form-control"
+                         PlaceHolder="Buscar por nombre..."></asp:TextBox>
+
+            <!-- Buscar -->
+            <asp:Button ID="btnFind" runat="server" CssClass="d-none" OnClick="btnFind_Click"/>
+            <asp:Label ID="lbFind" runat="server"  AssociatedControlID="btnFind" 
+                       CssClass="btn btn-warning">
+                <i class="bi bi-search fs-5"></i>
+            </asp:Label>
+
+            <!-- Avanzado -->
+            <asp:Button ID="btnAdvanced" runat="server"  CssClass="d-none" OnClick="btnAdvanced_Click"/>
+            <asp:Label ID="lbAdvanced" runat="server" AssociatedControlID="btnAdvanced"
+                       CssClass="btn btn-warning">
+                <i class="bi bi-filter fs-5"></i>
+            </asp:Label>
+        </div>
+
+        <!-- Crear nuevo producto -->
+        <div class="col-6 d-flex justify-content-end gap-3">
+            <a href="/Pages/Admin/CreateEdit.aspx" class="btn btn-outline-warning fs-5 w-50">
+                Agregar un nuevo producto
+            </a>
+        </div>
+    </div>
 
     <!-- Filtro avanzado -->
-    <asp:Panel></asp:Panel>
+    <asp:Panel ID="advancedPanel" runat="server" CssClass="row my-3" Visible="false">
+        <div class="col-6 d-flex justify-content-between gap-3">
+            <asp:DropDownList ID="ddlFirstCriteria" runat="server" CssClass="form-select"
+                              AutoPostBack="true" OnSelectedIndexChanged="ddlFirstCriteria_SelectedIndexChanged"></asp:DropDownList>
+            <asp:DropDownList ID="ddlSecondCriteria" runat="server" CssClass="form-select"></asp:DropDownList>
+        </div>
+    </asp:Panel>
 
     <!-- Alertas -->
     <div class="row"></div>
 
     <!-- Grilla -->
     <div class="row">
-        <asp:GridView ID="gvProducts"
-                      runat="server"
+        <asp:GridView ID="gvProducts" runat="server"
                       CssClass="col table table-striped my-4" 
                       AllowPaging="true" PageSize="5" OnPageIndexChanging="gvProducts_PageIndexChanging"
                       HeaderStyle-CssClass="table-dark text-center border-bottom lead fs-5" 
@@ -109,11 +140,8 @@
                     </div>
                     <div class="modal-footer" style="border-top: none;">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                        <asp:Button ID="btnDeleteConfirm" 
-                                    runat="server"
-                                    Text="Confirmar eliminanación"
-                                    CssClass="btn btn-danger"
-                                    OnClick="btnDeleteConfirm_Click"/>
+                        <asp:Button ID="btnDeleteConfirm" runat="server" Text="Confirmar eliminanación"
+                                    CssClass="btn btn-danger" OnClick="btnDeleteConfirm_Click"/>
                     </div>
                 </div>
             </div>

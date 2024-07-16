@@ -98,6 +98,16 @@ namespace DataAccess
             }
         }
 
+        /// <summary>
+        /// Ejecutar una consulta SQL que espera como resultado un valor booleano.
+        /// </summary>
+        /// <returns>Resultado booleano de la operación</returns>
+        public bool ExecuteScalar()
+        {
+            connection.Open();
+            return (bool)command.ExecuteScalar();
+        }
+
 
         /// <summary>
         /// Cerrar la conexión a la base de datos y posible DataReader.

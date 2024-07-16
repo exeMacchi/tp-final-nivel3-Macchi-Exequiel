@@ -253,5 +253,34 @@ namespace BusinessLogic
                 db.CloseConnection(); 
             }
         }
+
+        public static bool CodeExistsInDB(string code)
+        {
+            DataBase db = new DataBase();
+            string query = "DECLARE @Code VARCHAR(50) = @ProductCode; " +
+                           "DECLARE @Exists BIT; " +
+                           "SET @Exists = 0; " +
+                           "IF EXISTS (SELECT 1 FROM ARTICULOS WHERE Codigo = @Code) " +
+                           "BEGIN " +
+                           "    SET @Exists = 1; " + 
+                           "END " +
+                           "SELECT @Exists AS ExisteElCodigo;";
+
+            try
+            {
+                db.SetQuery(query);
+                db.SetParam("@ProductCode", code);
+                return db.ExecuteScalar();
+            }
+            catch (Exception ex)
+            {
+                // TODO: Manejar error
+                throw ex;
+            }
+            finally
+            {
+                db.CloseConnection();
+            }
+        }
     }
 }
