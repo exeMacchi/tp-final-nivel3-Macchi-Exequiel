@@ -34,7 +34,7 @@
                                 <p class="card-text text-warning text-center fs-2">
                                     $<%# ((decimal)Eval("Price")).ToString("N2") %>
                                 </p>
-                                <a href="/Pages/Global/ProductDetail.aspx?id=<%# Eval("ID") %>" 
+                                <a href="<%: Domain.Constants.ProductDetailPagePath %>?id=<%# Eval("ID") %>"
                                    class="btn btn-outline-light">Ver detalle →</a>
                             </div>
                         </article>

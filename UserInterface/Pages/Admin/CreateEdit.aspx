@@ -160,7 +160,7 @@
                         <asp:Button ID="btnSubmit" runat="server"
                                     CssClass="btn btn-outline-warning w-50"
                                     OnClick="btnSubmit_Click" />
-                        <a href="/Pages/Admin/Admin.aspx" class="btn btn-outline-danger w-50">
+                        <a href="<%: Domain.Constants.AdminPagePath %>" class="btn btn-outline-danger w-50">
                             CANCELAR
                         </a>
                     </div>

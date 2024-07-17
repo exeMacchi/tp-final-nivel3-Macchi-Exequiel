@@ -6,8 +6,6 @@
 
 <asp:Content ID="Content2" ContentPlaceHolderID="mainContent" runat="server">
     <section class="row mx-auto align-items-center">
-
-
         <div class="col-6">
             <div class="input-group my-3">
                 <span class="input-group-text text-white bg-black col-3 justify-content-center fs-5">

@@ -26,7 +26,7 @@
     <header class="container-fluid text-bg-dark sticky-top border-bottom">
         <nav class="navbar navbar-expand container d-flex flex-wrap align-items-center justify-content-between">
             <!-- Icon -->
-            <a href="/Default.aspx" 
+            <a href="<%: Domain.Constants.DefaultPagePath %>" 
                class="navbar-brand text-white text-decoration-none">
                 <i class="bi bi-box" style="font-size: 50px"></i>
             </a>
@@ -34,28 +34,28 @@
             <!-- Navbar -->
             <ul class="navbar-nav flex-fill justify-content-center gap-3">
                 <li class="nav-item">
-                    <a href="/Default.aspx"
+                    <a href="<%: Domain.Constants.DefaultPagePath %>"
                        class="nav-link d-flex flex-column align-items-center ms-5 <%= Page is UserInterface.Default ? "text-secondary" : "text-white"%>">
                         <i class="bi bi-house"></i>
                         <span>INICIO</span>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="/Pages/Global/Products.aspx"
+                    <a href="<%: Domain.Constants.ProductsPagePath %>"
                        class="nav-link d-flex flex-column align-items-center <%= Page is UserInterface.Pages.Global.Products ? "text-secondary" : "text-white"%>">
                         <i class="bi bi-boxes"></i>
                         <span>PRODUCTOS</span>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="/Pages/User/Favorites.aspx" 
+                    <a href="<%: Domain.Constants.FavoritesPagePath %>" 
                        class="nav-link d-flex flex-column align-items-center <%= Page is UserInterface.Pages.User.Favorites ? "text-secondary" : "text-white"%>">
                         <i class="bi bi-star-half"></i>
                         <span>FAVORITOS</span>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="/Pages/Admin/Admin.aspx" 
+                    <a href="<%: Domain.Constants.AdminPagePath %>" 
                        class="nav-link d-flex flex-column align-items-center <%= Page is UserInterface.Pages.Admin.Admin ? "text-secondary" : "text-white"%>">
                         <i class="bi bi-grid-3x3"></i>
                         <span>ADMINISTRADOR</span>
@@ -65,8 +65,14 @@
 
             <!-- User session -->
             <div class="d-flex flex-row gap-2">
-                <a href="Login.aspx" class="btn btn-outline-light">Ingresar</a>
-                <a href="Register.aspx" class="btn btn-warning">Registrarse</a>
+                <a href="<%: Domain.Constants.LoginPagePath %>"
+                   class="btn btn-outline-light">
+                    Ingresar
+                </a>
+                <a href="<%: Domain.Constants.RegisterPagePath %>" 
+                   class="btn btn-warning">
+                    Registrarse
+                </a>
             </div> 
         </nav>
     </header>
@@ -87,31 +93,32 @@
         <nav class="navbar navbar-expand container d-flex flex-wrap justify-content-between align-items-center py-3 my-4">
             <p class="col-md-4 mb-0 text-white">&copy; <%: DateTime.Now.Year %> El Almacenero</p>
 
-            <a href="/Default.aspx" class="col-md-4 d-flex align-items-center justify-content-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
+            <a href="<%: Domain.Constants.DefaultPagePath %>" 
+               class="col-md-4 d-flex align-items-center justify-content-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
                 <i class="bi bi-box"></i>
             </a>
 
             <ul class="navbar-nav col-md-4 justify-content-end">
               <li class="nav-item">
-                  <a href="/Default.aspx"
+                  <a href="<%: Domain.Constants.DefaultPagePath %>"
                      class="nav-link <%= Page is UserInterface.Default ? "text-secondary" : "text-white"%>">
                       INICIO
                   </a>
               </li>
               <li class="nav-item">
-                  <a href="/Pages/Global/Products.aspx"
+                  <a href="<%: Domain.Constants.ProductsPagePath %>"
                      class="nav-link px-2 <%= Page is UserInterface.Pages.Global.Products ? "text-secondary" : "text-white"%>">
                       PRODUCTOS
                   </a>
               </li>
               <li class="nav-item">
-                  <a href="/Pages/User/Favorites.aspx"
+                  <a href="<%: Domain.Constants.FavoritesPagePath %>"
                      class="nav-link px-2 <%= Page is UserInterface.Pages.User.Favorites ? "text-secondary" : "text-white"%>">
                       FAVORITOS
                   </a>
               </li>
               <li class="nav-item">
-                  <a href="/Pages/Admin/Admin.aspx"
+                  <a href="<%: Domain.Constants.AdminPagePath %>"
                      class="nav-link px-2 <%= Page is UserInterface.Pages.Admin.Admin ? "text-secondary" : "text-white"%>">
                       ADMINISTRADOR
                   </a>

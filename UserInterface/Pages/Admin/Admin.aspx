@@ -15,7 +15,7 @@
     <div class="row">
         <!-- Filtro básico -->
         <div class="col-6 d-flex gap-3">
-            <asp:TextBox ID="txtFilter" runat="server" CssClass="form-control"
+            <asp:TextBox ID="txtFilter" runat="server" CssClass="form-control bg-dark text-white"
                          PlaceHolder="Buscar por nombre..."></asp:TextBox>
 
             <!-- Buscar -->
@@ -35,7 +35,7 @@
 
         <!-- Crear nuevo producto -->
         <div class="col-6 d-flex justify-content-end gap-3">
-            <a href="/Pages/Admin/CreateEdit.aspx" class="btn btn-outline-warning fs-5 w-50">
+            <a href="<%: Domain.Constants.CreateEditPagePath %>" class="btn btn-outline-warning fs-5 w-50">
                 Agregar un nuevo producto
             </a>
         </div>

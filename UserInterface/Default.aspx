@@ -24,7 +24,10 @@
                 realizar un seguimiento de sus productos favoritos.
             </p>
             <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
-                <button type="button" class="btn btn-outline-light w-100 btn-lg px-4 gap-3">¡Regístrate!</button>
+                <a href="<%: Domain.Constants.RegisterPagePath %>" 
+                   class="btn btn-outline-light w-100 btn-lg px-4 gap-3">
+                    ¡Regístrate!
+                </a>
             </div>
         </div>
     </section>
@@ -47,7 +50,7 @@
                 descripción, el precio y un botón de "Ver más" para obtener detalles 
                 adicionales.
             </p>
-            <a href="/Pages/Global/Products.aspx" 
+            <a href="<%: Domain.Constants.ProductsPagePath %>" 
                class="btn btn-outline-light mt-auto py-2 fs-4">
                 Ver catálogo de productos
             </a>
@@ -66,7 +69,7 @@
                                                 <img src="<%# Eval("Image") %>"
                                                      alt="Imagen del producto <%# Eval("Name") %>">
                                             </figure>
-                                            <div class="card-body d-flex flex-column gap-1">
+                                            <div class="card-body d-flex flex-column gap-1 justify-content-between">
                                                 <h5 class="card-title text-center text-white fw-bold">
                                                     <%# Eval("Name") %>
                                                 </h5>
@@ -80,7 +83,7 @@
                                                 <p class="card-text text-warning text-center fs-2">
                                                     $<%# ((decimal)Eval("Price")).ToString("N2") %>
                                                 </p>
-                                                <a href="/Pages/Global/ProductDetail.aspx?id=<%# Eval("ID") %>" 
+                                                <a href="<%: Domain.Constants.ProductDetailPagePath %>?id=<%# Eval("ID") %>"
                                                    class="btn btn-outline-light">Ver detalle →</a>
                                             </div>
                                         </article>

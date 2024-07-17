@@ -13,10 +13,10 @@ namespace UserInterface.Pages.Admin
     {
         protected void Page_Init(object sender, EventArgs e)
         {
-            if (!(Session["PRODUCTS"] != null))
-            {
-                Session["PRODUCTS"] = ProductBBL.GetProducts();
-            }
+            // En la página de administrador, siempre que se cargue, se recargan
+            // los productos por el caso de que esta página provenga de una operación
+            // de creación, modificación o eliminación.
+            Session["PRODUCTS"] = ProductBBL.GetProducts();
         }
 
         protected void Page_Load(object sender, EventArgs e)
@@ -63,7 +63,7 @@ namespace UserInterface.Pages.Admin
         protected void gvProducts_SelectedIndexChanged(object sender, EventArgs e)
         {
             string id = gvProducts.SelectedDataKey.Value.ToString();
-            Response.Redirect($"/Pages/Admin/CreateEdit.aspx?id={id}");
+            Response.Redirect($"{Constants.CreateEditPagePath}?id={id}");
         }
 
         /// <summary>

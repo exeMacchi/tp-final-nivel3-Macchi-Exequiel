@@ -38,14 +38,22 @@ namespace UserInterface.Pages.Admin
                         // Carga de datos
                         Product productMOD = ProductBBL.GetProduct(int.Parse(Request.QueryString["id"]));
                         txbxCode.Text = productMOD.Code;
-                        Session["PRODUCTCODE"] = productMOD.Code; // Objeto en sesión que sirve para la verificación de cambio de código (deben ser únicos).
+                        // Objeto en sesión que sirve para la verificación de cambio de código (deben ser únicos).
+                        Session["PRODUCTCODE"] = productMOD.Code; 
                         txbxName.Text = productMOD.Name;
                         txbxDescription.Text = productMOD.Description;
-                        txbxPrice.Text = productMOD.Price.ToString("0.##", CultureInfo.InvariantCulture);
+                        txbxPrice.Text = productMOD.Price.ToString("0.##", CultureInfo.CurrentCulture);
                         ddlBrand.SelectedValue = productMOD.Brand.ID.ToString();
                         ddlCategory.SelectedValue = productMOD.Category.ID.ToString();
                         if (productMOD.Image.StartsWith("https"))
+                        {
                             txbxImage.Text = productMOD.Image;
+                        }
+                        else if (productMOD.Image.StartsWith(Constants.LocalImagePath))
+                        {
+                            // Objeto en sesión que sirve por un posible reemplazo de imagen local.
+                            Session["PRODUCTIMAGE"] = productMOD.Image; 
+                        }
                         imgProduct.ImageUrl = productMOD.Image;
 
                         // Estilos de los DropDownList
@@ -265,17 +273,36 @@ namespace UserInterface.Pages.Admin
                 if (fuImage.HasFile)
                 {
                     string fileName = $"{DateTime.Now.Ticks}-{fuImage.PostedFile.FileName}";
-                    string path = Path.Combine(Server.MapPath("~/Assets/Images/Uploads"), fileName);
+                    string path = Path.Combine(Server.MapPath($"~{Constants.LocalImagePath}"), fileName);
 
-                    // TODO: si se está modificando una imagen local, borrar la referencia y guardar la nueva.
+                    // Si se está modificando una imagen local, y existe una imagen local en sesión,
+                    // se borra la imagen anterior para guardar la nueva referencia.
+                    if (Request.QueryString["id"] != null && Session["PRODUCTIMAGE"] != null)
+                    {
+                        string localImagePath = Server.MapPath(Session["PRODUCTIMAGE"].ToString());
+                        if (File.Exists(localImagePath))
+                        {
+                            File.Delete(localImagePath);
+                        }
+                    }
 
                     fuImage.SaveAs(path);
-                    myProd.Image = $"/Assets/Images/Uploads/{fileName}";
+                    myProd.Image = $"{Constants.LocalImagePath}{fileName}";
                 }
                 // Si se cargó una imagen por URL
                 else if (!string.IsNullOrEmpty(txbxImage.Text))
                 {
-                    // TODO: Verificar si tiene una imagen local de referencia y cambiarla por la URL.
+                    // Si se está modificando una imagen local, y existe una imagen local en sesión,
+                    // se borra la imagen anterior para guardar la nueva referencia.
+                    if (Request.QueryString["id"] != null && Session["PRODUCTIMAGE"] != null)
+                    {
+                        string localImagePath = Server.MapPath(Session["PRODUCTIMAGE"].ToString());
+                        if (File.Exists(localImagePath))
+                        {
+                            File.Delete(localImagePath);
+                        }
+                    }
+
                     myProd.Image = txbxImage.Text;
                 }
                 // Si no se cargó una imagen al crear un producto. Si se modifica un producto,
@@ -289,11 +316,17 @@ namespace UserInterface.Pages.Admin
                 if (Request.QueryString["id"] == null)
                 {
                     ProductBBL.CreateProduct(myProd);
+                    Session["ALERTMESSAGE"] = "El producto fue creado en la base de datos de forma exitosa!";
                 }
                 else
                 {
+                    myProd.ID = int.Parse(Request.QueryString["id"]);
                     ProductBBL.UpdateProduct(myProd);
+                    Session["ALERTMESSAGE"] = "El producto fue modificado en la base de datos de forma exitosa!";
                 }
+
+                // TODO: ALERTAS POST OPERACIONES
+                Response.Redirect($"{Constants.AdminPagePath}?alert=success", false);
             }
             catch (Exception ex)
             {

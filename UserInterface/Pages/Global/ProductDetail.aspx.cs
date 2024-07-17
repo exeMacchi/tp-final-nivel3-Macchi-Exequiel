@@ -33,7 +33,7 @@ namespace UserInterface.Pages.Global
                 }
                 else
                 {
-                    Response.Redirect("/Pages/Global/Products.aspx");
+                    Response.Redirect(Constants.ProductsPagePath);
                 }
             }
         }
