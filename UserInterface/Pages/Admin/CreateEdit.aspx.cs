@@ -316,16 +316,15 @@ namespace UserInterface.Pages.Admin
                 if (Request.QueryString["id"] == null)
                 {
                     ProductBBL.CreateProduct(myProd);
-                    Session["ALERTMESSAGE"] = "El producto fue creado en la base de datos de forma exitosa!";
+                    Session["ALERTMESSAGE"] = "Nuevo producto agregado en la base de datos de forma exitosa.";
                 }
                 else
                 {
                     myProd.ID = int.Parse(Request.QueryString["id"]);
                     ProductBBL.UpdateProduct(myProd);
-                    Session["ALERTMESSAGE"] = "El producto fue modificado en la base de datos de forma exitosa!";
+                    Session["ALERTMESSAGE"] = "El producto fue modificado en la base de datos de forma exitosa.";
                 }
 
-                // TODO: ALERTAS POST OPERACIONES
                 Response.Redirect($"{Constants.AdminPagePath}?alert=success", false);
             }
             catch (Exception ex)

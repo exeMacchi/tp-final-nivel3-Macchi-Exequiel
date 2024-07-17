@@ -92,7 +92,17 @@ namespace UserInterface.Pages.Admin
         {
             int id = int.Parse(((Button)sender).CommandArgument);
 
-            // TODO: Lógica de eliminación
+            try
+            {
+                ProductBBL.DeleteProduct(id);
+                Session["ALERTMESSAGE"] = "El producto fue eliminado de la base de datos de forma exitosa.";
+                Response.Redirect($"{Constants.AdminPagePath}?alert=success", false);
+            }
+            catch (Exception ex)
+            {
+                // TODO: manejar error
+                throw ex;
+            }
         }
 
         protected void btnFind_Click(object sender, EventArgs e)
