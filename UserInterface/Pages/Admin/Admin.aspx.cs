@@ -107,6 +107,18 @@ namespace UserInterface.Pages.Admin
 
         protected void btnFind_Click(object sender, EventArgs e)
         {
+            // Filtro básico
+            string filterText = txbxFilter.Text;
+
+            List<Product> productFiltered = ((List<Product>)Session["PRODUCTS"]).FindAll(p => p.Name.ToUpper().Contains(filterText.ToUpper()));
+
+            gvProducts.DataSource = productFiltered;
+            gvProducts.DataBind();
+
+            if (productFiltered.Count == 0)
+            {
+                // TODO: activar alerta de no resultados encontrados.
+            }
 
         }
 

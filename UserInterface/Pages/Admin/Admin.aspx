@@ -30,8 +30,8 @@
     <div class="row">
         <!-- Filtro básico -->
         <div class="col-6 d-flex gap-3">
-            <asp:TextBox ID="txtFilter" runat="server" CssClass="form-control bg-dark text-white"
-                         PlaceHolder="Buscar por nombre..."></asp:TextBox>
+            <asp:TextBox ID="txbxFilter" runat="server" CssClass="form-control bg-dark text-white"
+                         PlaceHolder="Buscar producto por nombre..."></asp:TextBox>
 
             <!-- Buscar -->
             <asp:Button ID="btnFind" runat="server" CssClass="d-none" OnClick="btnFind_Click"/>
