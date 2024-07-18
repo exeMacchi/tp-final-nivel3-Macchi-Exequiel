@@ -59,14 +59,39 @@
     <!-- Filtro avanzado -->
     <asp:Panel ID="advancedPanel" runat="server" CssClass="row my-3" Visible="false">
         <div class="col-6 d-flex justify-content-between gap-3">
-            <asp:DropDownList ID="ddlFirstCriteria" runat="server" CssClass="form-select"
-                              AutoPostBack="true" OnSelectedIndexChanged="ddlFirstCriteria_SelectedIndexChanged"></asp:DropDownList>
-            <asp:DropDownList ID="ddlSecondCriteria" runat="server" CssClass="form-select"></asp:DropDownList>
+            <asp:DropDownList ID="ddlFirstCriteria" runat="server" 
+                              CssClass="form-select bg-dark" AutoPostBack="true"
+                              OnSelectedIndexChanged="ddlFirstCriteria_SelectedIndexChanged"></asp:DropDownList>
+            <asp:DropDownList ID="ddlSecondCriteria" runat="server" 
+                              CssClass="form-select bg-dark"></asp:DropDownList>
         </div>
     </asp:Panel>
 
     <!-- Alertas -->
-    <div class="row"></div>
+    <div class="row">
+        <div class="col">
+            <!-- GridView vacío -->
+            <asp:Panel ID="alertEmptyGV" runat="server" Visible="false"
+                       CssClass="alert border-warning my-4 text-warning">
+                <h2 class="alert-heading">
+                    ¡Ups! Parece que no hay ningún producto en la base de datos
+                </h2>
+                <p class="lead fs-5">
+                    Añada algún producto poder ver su información en un formato tabular.
+                <p>
+            </asp:Panel>
+
+            <!-- Producto no encontrado -->
+            <asp:Panel ID="alertProductNotFound" runat="server" Visible="false"
+                       CssClass="alert border-warning my-4 text-warning">
+                <h2 class="alert-heading">Producto no encontrado</h2>
+                <p class="lead fs-5">
+                    No se ha encontrado ningún producto con el criterio de 
+                    búsqueda seleccionado.
+                </p>
+            </asp:Panel>
+        </div>
+    </div>
 
     <!-- Grilla -->
     <div class="row">

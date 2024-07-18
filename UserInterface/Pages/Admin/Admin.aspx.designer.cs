@@ -105,6 +105,24 @@ namespace UserInterface.Pages.Admin
         protected global::System.Web.UI.WebControls.DropDownList ddlSecondCriteria;
 
         /// <summary>
+        /// alertEmptyGV control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Panel alertEmptyGV;
+
+        /// <summary>
+        /// alertProductNotFound control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Panel alertProductNotFound;
+
+        /// <summary>
         /// gvProducts control.
         /// </summary>
         /// <remarks>

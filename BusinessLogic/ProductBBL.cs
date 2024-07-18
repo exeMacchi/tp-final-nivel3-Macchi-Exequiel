@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Data.Common;
 using System.Diagnostics.Eventing.Reader;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using DataAccess;
@@ -254,6 +255,12 @@ namespace BusinessLogic
             }
         }
 
+        /// <summary>
+        /// Verificar si en la base de datos existe un código prexistente al que se quiere
+        /// agregar en la base de datos. 
+        /// </summary>
+        /// <param name="code">Cadena que representa el código a verificar</param>
+        /// <returns>Valor booleano que indica la existencia o no del código introducido.</returns>
         public static bool CodeExistsInDB(string code)
         {
             DataBase db = new DataBase();
@@ -275,6 +282,74 @@ namespace BusinessLogic
             catch (Exception ex)
             {
                 // TODO: Manejar error
+                throw ex;
+            }
+            finally
+            {
+                db.CloseConnection();
+            }
+        }
+
+        public static List<Product> SearchProducts(string condition)
+        {
+            DataBase db = new DataBase();
+            List<Product> filteredProducts = new List<Product>();
+            string query = "SELECT A.Id AS ProductID, " +
+                           "       A.Codigo AS ProductCode, " +
+                           "       A.Nombre AS ProductName, " +
+                           "       A.Descripcion AS ProductDescription, " +
+                           "       A.ImagenUrl AS ProductImage, " +
+                           "       A.Precio AS ProductPrice, " +
+                           "       C.Id AS CategoryID, " +
+                           "       C.Descripcion AS CategoryDescription, " +
+                           "       M.Id AS BrandID, " +
+                           "       M.Descripcion AS BrandDescription " +
+                           "FROM ARTICULOS AS A " +
+                           "INNER JOIN CATEGORIAS AS C ON A.IdCategoria = C.Id " +
+                           "INNER JOIN MARCAS AS M ON A.IdMarca = M.Id " +
+                           "WHERE " + condition;
+
+            try
+            {
+                db.SetQuery(query);
+                db.ExecuteRead();
+                while (db.Reader.Read())
+                {
+                    Product product = new Product();
+
+                    product.ID = (int)db.Reader["ProductID"];
+
+                    if (!(db.Reader["ProductCode"] is DBNull))
+                        product.Code = db.Reader["ProductCode"].ToString();
+
+                    if (!(db.Reader["ProductName"] is DBNull))
+                        product.Name = db.Reader["ProductName"].ToString();
+
+                    if (!(db.Reader["ProductDescription"] is DBNull))
+                        product.Description = db.Reader["ProductDescription"].ToString();
+
+                    if (!(db.Reader["ProductImage"] is DBNull))
+                        product.Image = Auxiliary.VerifyImage(db.Reader["ProductImage"].ToString());
+
+                    if (!(db.Reader["ProductPrice"] is DBNull))
+                        product.Price = (decimal)db.Reader["ProductPrice"];
+
+                    if (!(db.Reader["CategoryID"] is DBNull || db.Reader["CategoryDescription"] is DBNull))
+                        product.Category = new Category((int)db.Reader["CategoryID"],
+                                                         db.Reader["CategoryDescription"].ToString());
+
+                    if (!(db.Reader["BrandID"] is DBNull || db.Reader["BrandDescription"] is DBNull))
+                        product.Brand = new Brand((int)db.Reader["BrandID"],
+                                                   db.Reader["BrandDescription"].ToString());
+
+                    filteredProducts.Add(product);
+                }
+
+                return filteredProducts;
+            }
+            catch (Exception ex)
+            {
+                // TODO: manejar error
                 throw ex;
             }
             finally
