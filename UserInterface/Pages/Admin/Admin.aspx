@@ -78,7 +78,7 @@
                 </h2>
                 <p class="lead fs-5">
                     Añada algún producto poder ver su información en un formato tabular.
-                <p>
+                </p>
             </asp:Panel>
 
             <!-- Producto no encontrado -->

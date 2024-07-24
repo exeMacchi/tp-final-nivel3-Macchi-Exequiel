@@ -13,16 +13,22 @@ namespace Domain
         public const string LocalImagePath = "/Assets/Images/Uploads/";
 
         /* --- RUTAS --- */ 
+        // Raíz
         public const string DefaultPagePath = "/Default.aspx";
+
         // Global
         public const string ProductsPagePath = "/Pages/Global/Products.aspx";
         public const string ProductDetailPagePath = "/Pages/Global/ProductDetail.aspx";
+        public const string ContactPagePath = "/Pages/Global/Contact.aspx";
+
         // Admin
         public const string AdminPagePath = "/Pages/Admin/Admin.aspx";
         public const string CreateEditPagePath = "/Pages/Admin/CreateEdit.aspx";
+
         // Auth
         public const string LoginPagePath = "/Pages/Auth/Login.aspx";
         public const string RegisterPagePath = "/Pages/Auth/Register.aspx";
+
         // User
         public const string FavoritesPagePath = "/Pages/User/Favorites.aspx";
 

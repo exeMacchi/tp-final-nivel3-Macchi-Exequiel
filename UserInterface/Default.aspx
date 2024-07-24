@@ -103,7 +103,7 @@
                         </button>
                     <% } else { %>
                         <div class="carousel-item h-100 active">
-                            <article class="card w-75 h-100 mx-auto bg-dark overflow-hidden border rounded-5">
+                            <article class="card w-50 h-100 mx-auto bg-dark overflow-hidden border rounded-5">
                                 <figure class="card-img-top bg-gradient text-white">
                                     <img src=<%: Domain.Constants.PlaceholderImagePath %>
                                          alt="Marcador de posición par imágenes">
