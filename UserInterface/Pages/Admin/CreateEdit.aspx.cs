@@ -97,7 +97,7 @@ namespace UserInterface.Pages.Admin
             }
         }
 
-        protected void VerifyInformation(object sender, EventArgs e)
+        protected void VerifyInformation()
         {
             if (txbxCode.Text != "" && txbxName.Text != "" && 
                 txbxDescription.Text != "" && txbxPrice.Text != "" &&
@@ -165,7 +165,7 @@ namespace UserInterface.Pages.Admin
                 invalidCodeName.Visible = false;
                 txbxCode.Focus();
             }
-            VerifyInformation(sender, e);
+            VerifyInformation();
         }
 
         // Cuando se ingresa un nombre.
@@ -181,7 +181,7 @@ namespace UserInterface.Pages.Admin
                 txbxName.CssClass = Constants.FormControlInvalid;
                 txbxName.Focus();
             }
-            VerifyInformation(sender, e);
+            VerifyInformation();
         }
 
         // Cuando se ingresa una descripción
@@ -197,7 +197,7 @@ namespace UserInterface.Pages.Admin
                 txbxDescription.CssClass = Constants.FormControlInvalid;
                 txbxDescription.Focus();
             }
-            VerifyInformation(sender, e);
+            VerifyInformation();
         }
 
         // Cuando se ingresa un precio.
@@ -214,7 +214,7 @@ namespace UserInterface.Pages.Admin
             {
                 txbxPrice.CssClass = Constants.FormControlValid;
             }
-            VerifyInformation(sender, e);
+            VerifyInformation();
         }
 
         // Cuando se selecciona una marca en el DropDownList.
@@ -227,7 +227,7 @@ namespace UserInterface.Pages.Admin
                 ddlBrand.Items.Remove(ddlBrand.Items.FindByValue("0"));
             }
             ddlBrand.CssClass = Constants.FormSelectOptionSelected + " is-valid"; // Se cambia los estilos para las opciones seleccionadas.
-            VerifyInformation(sender, e);
+            VerifyInformation();
         }
 
         // Cuando se selecciona una categoría en el DropDownList.
@@ -240,7 +240,7 @@ namespace UserInterface.Pages.Admin
                 ddlCategory.Items.Remove(ddlCategory.Items.FindByValue("0"));
             }
             ddlCategory.CssClass = Constants.FormSelectOptionSelected + " is-valid"; // Se cambia los estilos para las opciones seleccionadas.
-            VerifyInformation(sender, e);
+            VerifyInformation();
         }
 
         // Cuando se ingresa una URL para la imagen.

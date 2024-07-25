@@ -28,6 +28,7 @@ namespace Domain
         // Auth
         public const string LoginPagePath = "/Pages/Auth/Login.aspx";
         public const string RegisterPagePath = "/Pages/Auth/Register.aspx";
+        public const string ForgottenPassPath = "/Pages/Auth/ForgottenPass.aspx";
 
         // User
         public const string FavoritesPagePath = "/Pages/User/Favorites.aspx";

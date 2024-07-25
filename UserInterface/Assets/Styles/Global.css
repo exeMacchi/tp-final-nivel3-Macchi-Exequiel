@@ -60,6 +60,21 @@ figure > img {
     color: rgba(var(--bs-white-rgb), 0.3);
 }
 
+/* Estilos formulario flotante */
+.form-floating > label {
+    color: rgba(var(--bs-white-rgb), 0.8);
+}
+    .form-floating > .form-control:focus~label,
+    .form-floating>.form-control:not(:placeholder-shown)~label {
+        color: rgba(var(--bs-white-rgb), 0.3);
+    }
+
+    .form-floating > .form-control:focus~label::after,
+    .form-floating>.form-control:not(:placeholder-shown)~label::after{
+        background-color: transparent;
+    }
+
+/* Estilos filtros productos */
 .filter-link {
     color: rgba(var(--bs-white-rgb), 0.8);
     transition: color 0.3s ease;

@@ -64,7 +64,7 @@
                             <ItemTemplate>
                                 <% if (ProductIndex < 5) { // Mostrar 5 cartas de demostración %>
                                     <div class="carousel-item h-100 <%= ProductIndex == 0 ? "active" : "" %>">
-                                        <article class="card w-75 h-100 mx-auto bg-dark overflow-hidden border rounded-5">
+                                        <article class="card w-50 h-100 mx-auto bg-dark overflow-hidden border rounded-5">
                                             <figure class="card-img-top bg-gradient text-white">
                                                 <img src="<%# Eval("Image") %>"
                                                      alt="Imagen del producto <%# Eval("Name") %>">

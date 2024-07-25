@@ -78,6 +78,7 @@
     <Content Include="Global.asax" />
     <Content Include="Pages\Admin\Admin.aspx" />
     <Content Include="Pages\Admin\CreateEdit.aspx" />
+    <Content Include="Pages\Auth\Login.aspx" />
     <Content Include="Pages\Global\ProductDetail.aspx" />
     <Content Include="Pages\Global\Products.aspx" />
     <Content Include="Pages\User\Favorites.aspx" />
@@ -115,6 +116,13 @@
     <Compile Include="Pages\Admin\CreateEdit.aspx.designer.cs">
       <DependentUpon>CreateEdit.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Pages\Auth\Login.aspx.cs">
+      <DependentUpon>Login.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Pages\Auth\Login.aspx.designer.cs">
+      <DependentUpon>Login.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Pages\Global\ProductDetail.aspx.cs">
       <DependentUpon>ProductDetail.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -151,7 +159,6 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Assets\Images\Uploads\" />
-    <Folder Include="Pages\Auth\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BusinessLogic\BusinessLogic.csproj">
