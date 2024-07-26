@@ -93,14 +93,21 @@
 
                 <% } else { %>
                     <!-- Nombre/Email -->
-                    <p class="text-white mb-0"><%: ((Domain.User)Session["USER"]).Email %></p>
+                    <p class="text-white mb-0">
+                        <%:!string.IsNullOrEmpty(((Domain.User)Session["USER"]).Firstname) && 
+                           !string.IsNullOrEmpty(((Domain.User)Session["USER"]).Lastname)
+                           ? ((Domain.User)Session["USER"]).Firstname + " " + ((Domain.User)Session["USER"]).Lastname
+                           : ((Domain.User)Session["USER"]).Email %>
+                    </p>
 
                     <!-- Avatar -->
                     <a href="#" 
                        class="dropdown-toggle d-flex align-items-center text-white"
                        data-bs-toggle="dropdown">
                         <figure class="rounded-circle" style="height: 50px">
-                            <img src="<%: Domain.Constants.AvatarPlaceholderPath %>"/>
+                            <img src='<%:!string.IsNullOrEmpty(((Domain.User)Session["USER"]).Avatar)
+                                          ? ((Domain.User)Session["USER"]).Avatar
+                                          : Domain.Constants.AvatarPlaceholderPath %>'/>
                         </figure>
                     </a>
                     <ul class="dropdown-menu dropdown-menu-dark shadow text-small end-0 border-secondary-subtle">

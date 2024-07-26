@@ -11,7 +11,19 @@
 
     <!-- Alertas -->
     <!-- Middlewares -->
-    <div></div>
+    <div class="row justify-content-center my-1">
+        <div class="col-6">
+            <% if (Request.QueryString["alert"] != null) { %>
+                <% if (Request.QueryString["alert"] == "error") { %>
+                    <asp:Panel ID="loginErrorAlert" runat="server" 
+                               CssClass="alert border-danger bg-dark text-danger text-center">
+                        <h2 class="alert-heading fs-2">Error</h2>
+                        <p class="lead fs-5"><%:Session["ALERTMESSAGE"].ToString()%></p>
+                    </asp:Panel>
+                <% } %>
+            <% } %>
+        </div>
+    </div>
 
     <!-- Datos incorrectos -->
     <div class="row justify-content-center my-1">

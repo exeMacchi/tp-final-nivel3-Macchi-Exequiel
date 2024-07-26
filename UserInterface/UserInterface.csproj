@@ -79,8 +79,11 @@
     <Content Include="Global.asax" />
     <Content Include="Pages\Admin\Admin.aspx" />
     <Content Include="Pages\Admin\CreateEdit.aspx" />
+    <Content Include="Pages\Auth\ForgottenPass.aspx" />
     <Content Include="Pages\Auth\Login.aspx" />
+    <Content Include="Pages\Auth\Register.aspx" />
     <Content Include="Pages\Global\Contact.aspx" />
+    <Content Include="Pages\Global\ErrorPage.aspx" />
     <Content Include="Pages\Global\ProductDetail.aspx" />
     <Content Include="Pages\Global\Products.aspx" />
     <Content Include="Pages\User\Favorites.aspx" />
@@ -119,6 +122,13 @@
     <Compile Include="Pages\Admin\CreateEdit.aspx.designer.cs">
       <DependentUpon>CreateEdit.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Pages\Auth\ForgottenPass.aspx.cs">
+      <DependentUpon>ForgottenPass.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Pages\Auth\ForgottenPass.aspx.designer.cs">
+      <DependentUpon>ForgottenPass.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Pages\Auth\Login.aspx.cs">
       <DependentUpon>Login.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -126,12 +136,26 @@
     <Compile Include="Pages\Auth\Login.aspx.designer.cs">
       <DependentUpon>Login.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Pages\Auth\Register.aspx.cs">
+      <DependentUpon>Register.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Pages\Auth\Register.aspx.designer.cs">
+      <DependentUpon>Register.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Pages\Global\Contact.aspx.cs">
       <DependentUpon>Contact.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Pages\Global\Contact.aspx.designer.cs">
       <DependentUpon>Contact.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Global\ErrorPage.aspx.cs">
+      <DependentUpon>ErrorPage.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Pages\Global\ErrorPage.aspx.designer.cs">
+      <DependentUpon>ErrorPage.aspx</DependentUpon>
     </Compile>
     <Compile Include="Pages\Global\ProductDetail.aspx.cs">
       <DependentUpon>ProductDetail.aspx</DependentUpon>
