@@ -10,7 +10,7 @@
     <div class="row">
 
     <aside class="col-3 border-end">
-        <h1 class="text-white text-center my-4">Catálogo de productos</h1>
+        <h1 class="text-white text-center my-4">Catálogo</h1>
         <!-- Texto de filtro -->
         <div class="col input-group">
             <asp:TextBox ID="txbxFilter" runat="server"

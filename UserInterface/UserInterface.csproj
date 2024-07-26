@@ -67,6 +67,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Assets\Images\AvatarPlaceholder.jpg" />
     <Content Include="Assets\Images\Placeholder.jpg" />
     <Content Include="Assets\Scripts\CreateEdit.js" />
     <Content Include="Assets\Scripts\FileInput.js" />
@@ -79,9 +80,11 @@
     <Content Include="Pages\Admin\Admin.aspx" />
     <Content Include="Pages\Admin\CreateEdit.aspx" />
     <Content Include="Pages\Auth\Login.aspx" />
+    <Content Include="Pages\Global\Contact.aspx" />
     <Content Include="Pages\Global\ProductDetail.aspx" />
     <Content Include="Pages\Global\Products.aspx" />
     <Content Include="Pages\User\Favorites.aspx" />
+    <Content Include="Pages\User\Profile.aspx" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
@@ -123,6 +126,13 @@
     <Compile Include="Pages\Auth\Login.aspx.designer.cs">
       <DependentUpon>Login.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Pages\Global\Contact.aspx.cs">
+      <DependentUpon>Contact.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Pages\Global\Contact.aspx.designer.cs">
+      <DependentUpon>Contact.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Pages\Global\ProductDetail.aspx.cs">
       <DependentUpon>ProductDetail.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -143,6 +153,13 @@
     </Compile>
     <Compile Include="Pages\User\Favorites.aspx.designer.cs">
       <DependentUpon>Favorites.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\User\Profile.aspx.cs">
+      <DependentUpon>Profile.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Pages\User\Profile.aspx.designer.cs">
+      <DependentUpon>Profile.aspx</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

@@ -10,6 +10,7 @@ namespace Domain
     {
         /* --- IMÁGENES --- */
         public const string PlaceholderImagePath = "/Assets/Images/Placeholder.jpg";
+        public const string AvatarPlaceholderPath = "/Assets/Images/AvatarPlaceholder.jpg";
         public const string LocalImagePath = "/Assets/Images/Uploads/";
 
         /* --- RUTAS --- */ 
@@ -32,6 +33,7 @@ namespace Domain
 
         // User
         public const string FavoritesPagePath = "/Pages/User/Favorites.aspx";
+        public const string ProfilePagePath = "/Pages/User/Profile.aspx";
 
         /* --- CLASES --- */ 
         public const string FormControlNormal = "form-control bg-dark text-white";

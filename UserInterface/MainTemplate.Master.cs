@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Domain;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -12,6 +13,15 @@ namespace UserInterface
         protected void Page_Load(object sender, EventArgs e)
         {
 
+        }
+
+        /// <summary>
+        /// El usuario cierra su sesión.
+        /// </summary>
+        protected void btnLogOut_Click(object sender, EventArgs e)
+        {
+            Session.Clear();
+            Response.Redirect(Constants.DefaultPagePath);
         }
     }
 }

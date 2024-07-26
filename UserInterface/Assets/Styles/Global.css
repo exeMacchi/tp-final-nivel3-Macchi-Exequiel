@@ -38,6 +38,19 @@ figure > img {
     box-shadow: 0 0 0 0.25rem rgb(214 200 16 / 13%);
 }
 
+    /* Estilos fondo autofill */
+    input:-webkit-autofill,
+    input:-webkit-autofill:hover, 
+    input:-webkit-autofill:focus, 
+    input:-webkit-autofill:active{
+        -webkit-box-shadow: 0 0 0 30px var(--bs-dark) inset !important;
+    }
+
+    /* Estilos texto autofill */
+    input:-webkit-autofill{
+        -webkit-text-fill-color: var(--bs-white) !important;
+    }
+
 .form-control::placeholder,
 .form-select--placeholder {  /* Clase para el DropDownList cuando tiene el placeholder */ 
     color: rgba(var(--bs-white-rgb), 0.3);
@@ -74,15 +87,16 @@ figure > img {
         background-color: transparent;
     }
 
-/* Estilos filtros productos */
-.filter-link {
-    color: rgba(var(--bs-white-rgb), 0.8);
+
+.header-link, /* Estilos links header */
+.filter-link /* Estilos filtros productos */ {
+    color: rgba(var(--bs-white-rgb), 0.9);
     transition: color 0.3s ease;
 }
 
+.header-link:hover,
 .filter-link:hover {
     color: rgba(var(--bs-warning-rgb), 0.8);
-    
 }
 
 /* Clase que se aplica cuando un link o botón está deshabilitado por CodeBehind,

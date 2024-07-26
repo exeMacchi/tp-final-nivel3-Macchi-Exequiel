@@ -22,57 +22,101 @@
     <link href="/Assets/Styles/HeaderFooter.css" rel="stylesheet" />
 </head>
 <body>
+    <form id="form1" runat="server" class="d-flex flex-column h-100">
     <!-- Header -->
     <header class="container-fluid text-bg-dark sticky-top border-bottom">
-        <nav class="navbar navbar-expand container d-flex flex-wrap align-items-center justify-content-between">
+        <nav class="navbar navbar-expand container position-relative">
             <!-- Icon -->
             <a href="<%: Domain.Constants.DefaultPagePath %>" 
-               class="navbar-brand text-white text-decoration-none">
+               class="navbar-brand text-white text-decoration-none position-absolute">
                 <i class="bi bi-box" style="font-size: 50px"></i>
             </a>
 
             <!-- Navbar -->
-            <ul class="navbar-nav flex-fill justify-content-center gap-3">
-                <li class="nav-item">
+            <ul class="navbar-nav flex-fill justify-content-center gap-3 my-2">
+                <li class="nav-item ms-4">
                     <a href="<%: Domain.Constants.DefaultPagePath %>"
-                       class="nav-link d-flex flex-column align-items-center ms-5 <%= Page is UserInterface.Default ? "text-secondary" : "text-white"%>">
+                       class="nav-link d-flex flex-column align-items-center <%= Page is UserInterface.Default ? "text-secondary" : "header-link"%>">
                         <i class="bi bi-house"></i>
                         <span>INICIO</span>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a href="<%: Domain.Constants.ProductsPagePath %>"
-                       class="nav-link d-flex flex-column align-items-center <%= Page is UserInterface.Pages.Global.Products ? "text-secondary" : "text-white"%>">
+                       class="nav-link d-flex flex-column align-items-center <%= Page is UserInterface.Pages.Global.Products ? "text-secondary" : "header-link"%>">
                         <i class="bi bi-boxes"></i>
                         <span>PRODUCTOS</span>
                     </a>
                 </li>
+
+                <% if (Session["USER"] != null) { %>
+                    <li class="nav-item">
+                        <a href="<%: Domain.Constants.FavoritesPagePath %>" 
+                           class="nav-link d-flex flex-column align-items-center <%= Page is UserInterface.Pages.User.Favorites ? "text-secondary" : "header-link"%>">
+                            <i class="bi bi-star-half"></i>
+                            <span>FAVORITOS</span>
+                        </a>
+                    </li>
+
+                <% } %>
+
                 <li class="nav-item">
-                    <a href="<%: Domain.Constants.FavoritesPagePath %>" 
-                       class="nav-link d-flex flex-column align-items-center <%= Page is UserInterface.Pages.User.Favorites ? "text-secondary" : "text-white"%>">
-                        <i class="bi bi-star-half"></i>
-                        <span>FAVORITOS</span>
+                    <a href="<%: Domain.Constants.ContactPagePath %>" 
+                       class="nav-link d-flex flex-column align-items-center <%= Page is UserInterface.Pages.Global.Contact ? "text-secondary" : "header-link"%>">
+                        <i class="bi bi-mailbox-flag"></i>
+                        <span>CONTACTO</span>
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a href="<%: Domain.Constants.AdminPagePath %>" 
-                       class="nav-link d-flex flex-column align-items-center <%= Page is UserInterface.Pages.Admin.Admin ? "text-secondary" : "text-white"%>">
-                        <i class="bi bi-grid-3x3"></i>
-                        <span>ADMINISTRADOR</span>
-                    </a>
-                </li>
+
+                <% if (Session["USER"] != null && ((Domain.User)Session["USER"]).IsAdmin) { %>
+                    <li class="nav-item">
+                        <a href="<%: Domain.Constants.AdminPagePath %>" 
+                           class="nav-link d-flex flex-column align-items-center <%= Page is UserInterface.Pages.Admin.Admin ? "text-secondary" : "header-link"%>">
+                            <i class="bi bi-grid-3x3"></i>
+                            <span>ADMINISTRADOR</span>
+                        </a>
+                    </li>
+                <% } %>
             </ul>
 
             <!-- User session -->
-            <div class="d-flex flex-row gap-2">
-                <a href="<%: Domain.Constants.LoginPagePath %>"
-                   class="btn btn-outline-light">
-                    Ingresar
-                </a>
-                <a href="<%: Domain.Constants.RegisterPagePath %>" 
-                   class="btn btn-warning">
-                    Registrarse
-                </a>
+            <div class="d-flex align-items-center gap-2 position-absolute end-0">
+                <% if (Session["USER"] == null) { %>
+                    <a href="<%: Domain.Constants.LoginPagePath %>"
+                       class="btn btn-outline-light">
+                        Ingresar
+                    </a>
+                    <a href="<%: Domain.Constants.RegisterPagePath %>" 
+                       class="btn btn-warning">
+                        Registrarse
+                    </a>
+
+                <% } else { %>
+                    <!-- Nombre/Email -->
+                    <p class="text-white mb-0"><%: ((Domain.User)Session["USER"]).Email %></p>
+
+                    <!-- Avatar -->
+                    <a href="#" 
+                       class="dropdown-toggle d-flex align-items-center text-white"
+                       data-bs-toggle="dropdown">
+                        <figure class="rounded-circle" style="height: 50px">
+                            <img src="<%: Domain.Constants.AvatarPlaceholderPath %>"/>
+                        </figure>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-dark shadow text-small end-0 border-secondary-subtle">
+                        <li class="nav-item d-flex justify-content-center py-2">
+                            <a href="<%: Domain.Constants.ProfilePagePath %>" 
+                               class="nav-link d-flex gap-2 header-link">
+                                <i class="bi bi-person-circle"></i>
+                                <span>PERFIL</span>
+                            </a>
+                        </li>
+                        <li class="nav-item d-flex justify-content-center border-top pt-2">
+                            <asp:LinkButton ID="btnLogOut" runat="server" Text="Cerrar sesión"
+                                            CssClass="btn btn-outline-light" OnClick="btnLogOut_Click"></asp:LinkButton>
+                        </li>
+                    </ul>
+                <% } %>
             </div> 
         </nav>
     </header>
@@ -80,12 +124,10 @@
 
     <!-- Main -->
     <main class="container-fluid flex-grow-1">
-        <form id="form1" runat="server" class="d-flex flex-column h-100">
             <div class="container">
                 <asp:ContentPlaceHolder ID="mainContent" runat="server">
                 </asp:ContentPlaceHolder>
             </div>
-        </form>
     </main>
 
     <!-- Footer -->
@@ -98,34 +140,54 @@
                 <i class="bi bi-box"></i>
             </a>
 
-            <ul class="navbar-nav col-md-4 justify-content-end">
-              <li class="nav-item">
+            <ul class="navbar-nav col row gap-2">
+              <li class="nav-item col-3 d-flex justify-content-center">
                   <a href="<%: Domain.Constants.DefaultPagePath %>"
-                     class="nav-link <%= Page is UserInterface.Default ? "text-secondary" : "text-white"%>">
+                     class="nav-link <%= Page is UserInterface.Default ? "text-secondary" : "header-link"%>">
                       INICIO
                   </a>
               </li>
-              <li class="nav-item">
+              <li class="nav-item col-3 d-flex justify-content-center">
                   <a href="<%: Domain.Constants.ProductsPagePath %>"
-                     class="nav-link px-2 <%= Page is UserInterface.Pages.Global.Products ? "text-secondary" : "text-white"%>">
+                     class="nav-link px-2 <%= Page is UserInterface.Pages.Global.Products ? "text-secondary" : "header-link"%>">
                       PRODUCTOS
                   </a>
               </li>
-              <li class="nav-item">
-                  <a href="<%: Domain.Constants.FavoritesPagePath %>"
-                     class="nav-link px-2 <%= Page is UserInterface.Pages.User.Favorites ? "text-secondary" : "text-white"%>">
-                      FAVORITOS
-                  </a>
-              </li>
-              <li class="nav-item">
-                  <a href="<%: Domain.Constants.AdminPagePath %>"
-                     class="nav-link px-2 <%= Page is UserInterface.Pages.Admin.Admin ? "text-secondary" : "text-white"%>">
-                      ADMINISTRADOR
-                  </a>
-              </li>
+                <% if (Session["USER"] != null) { %>
+                    <li class="nav-item col-3 d-flex justify-content-center">
+                        <a href="<%: Domain.Constants.FavoritesPagePath %>"
+                           class="nav-link px-2 <%= Page is UserInterface.Pages.User.Favorites ? "text-secondary" : "header-link"%>">
+                            FAVORITOS
+                        </a>
+                    </li>
+
+                    <li class="nav-item col-3 d-flex justify-content-center">
+                        <a href="<%: Domain.Constants.ProfilePagePath %>" 
+                           class="nav-link <%= Page is UserInterface.Pages.User.Profile ? "text-secondary" : "header-link"%>">
+                            PERFIL
+                        </a>
+                    </li>
+                <% } %>
+
+                <li class="nav-item col-3 d-flex justify-content-center">
+                    <a href="<%: Domain.Constants.ContactPagePath %>" 
+                       class="nav-link <%= Page is UserInterface.Pages.Global.Contact ? "text-secondary" : "header-link"%>">
+                        CONTACTO
+                    </a>
+                </li>
+
+                <% if (Session["USER"] != null && ((Domain.User)Session["USER"]).IsAdmin) { %>
+                  <li class="nav-item col-3 d-flex justify-content-center">
+                      <a href="<%: Domain.Constants.AdminPagePath %>"
+                         class="nav-link px-2 <%= Page is UserInterface.Pages.Admin.Admin ? "text-secondary" : "header-link"%>">
+                          ADMINISTRADOR
+                      </a>
+                  </li>
+                <% } %>
             </ul>
         </nav>
     </footer>
+    </form>
 
     <!-- Bootstrap -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
