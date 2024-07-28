@@ -130,7 +130,7 @@
 
 
     <!-- Main -->
-    <main class="container-fluid flex-grow-1">
+    <main class="container-fluid flex-grow-1 bg-black">
             <div class="container">
                 <asp:ContentPlaceHolder ID="mainContent" runat="server">
                 </asp:ContentPlaceHolder>

@@ -1,5 +1,7 @@
 ﻿using System;
+using System.CodeDom;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -41,5 +43,7 @@ namespace Domain
         public const string FormControlInvalid = "form-control bg-dark text-white is-invalid";
         public const string FormSelectPlaceholder = "form-select bg-dark form-select--placeholder";
         public const string FormSelectOptionSelected = "form-select bg-dark form-select--option-selected";
+        public const string FilterLinkNormal = "filter-link text-decoration-none ms-4";
+        public const string FilterLinkSelected = "filter-link text-decoration-none ms-4 text-warning";
     }
 }

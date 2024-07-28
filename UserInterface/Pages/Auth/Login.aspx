@@ -60,7 +60,7 @@
             <asp:Label ID="lbPassword" runat="server" CssClass="ps-4"
                        AssociatedControlID="txbxPassword" Text="Contraseña"></asp:Label>
             <div id="invalidPass" class="invalid-feedback">
-                El correo electrónico debe tener entre 1 a 20 caracteres.
+                La contraseña debe tener entre 1 a 20 caracteres.
             </div>
         </div>
     </div>

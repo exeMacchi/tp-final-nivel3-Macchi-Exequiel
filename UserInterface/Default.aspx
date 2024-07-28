@@ -77,7 +77,7 @@
                                                     <span class="badge rounded-pill text-white border bg-gradient"><%# Eval("Brand.Description") %></span>
                                                     <span class="badge rounded-pill text-white border bg-gradient"><%# Eval("Category.Description") %></span>
                                                 </div>
-                                                <p class="card-text text-white lead">
+                                                <p class="card-text text-white lead text-center">
                                                     <%# Eval("Description") %>
                                                 </p>
                                                 <p class="card-text text-warning text-center fs-2">
@@ -116,7 +116,7 @@
                                         <span class="badge rounded-pill text-white border bg-gradient">Marca</span>
                                         <span class="badge rounded-pill text-white border bg-gradient">Categoría</span>
                                     </div>
-                                    <p class="card-text text-white lead">
+                                    <p class="card-text text-white lead text-center">
                                         Descripción del producto.
                                     </p>
                                     <p class="card-text text-warning text-center fs-2">

@@ -271,7 +271,7 @@ namespace BusinessLogic
                            "BEGIN " +
                            "    SET @Exists = 1; " + 
                            "END " +
-                           "SELECT @Exists AS ExisteElCodigo;";
+                           "SELECT @Exists AS CodeExists;";
 
             try
             {

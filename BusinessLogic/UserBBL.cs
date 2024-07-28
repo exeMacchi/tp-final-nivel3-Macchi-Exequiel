@@ -64,5 +64,39 @@ namespace BusinessLogic
                 db.CloseConnection();
             }
         }
+
+        /// <summary>
+        /// Verificar si en la base de datos existe un email prexistente al que
+        /// un usuario intenta utilizar para registrarse.
+        /// </summary>
+        /// <param name="email">Cadena que repersenta el email a verificar</param>
+        /// <returns>Valor booleano que indica la existencia o no del email introducido</returns>
+        public static bool EmailExistsInDB(string email)
+        {
+            DataBase db = new DataBase();
+            string query = "DECLARE @Email VARCHAR(100) = @UserEmail; " +
+                           "DECLARE @Exists BIT; " +
+                           "SET @Exists = 0; " +
+                           "IF EXISTS (SELECT 1 FROM USERS WHERE email = @Email) " +
+                           "BEGIN " +
+                           "    SET @Exists = 1; " +
+                           "END " +
+                           "SELECT @Exists AS EmailExists;";
+            try
+            {
+                db.SetQuery(query);
+                db.SetParam("@UserEmail", email);
+                return db.ExecuteScalar();
+            }
+            catch (Exception ex)
+            {
+                // TODO: manejar error
+                throw ex;
+            }
+            finally
+            {
+                db.CloseConnection();
+            }
+        }
     }
 }

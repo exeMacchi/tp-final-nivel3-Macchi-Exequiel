@@ -90,6 +90,7 @@ namespace UserInterface.Pages.Global
         protected void btnFindByCategory_Click(object sender, EventArgs e)
         {
             string category = ((LinkButton) sender).CommandArgument;
+
             List<Product> filteredProducts = ((List<Product>)Session["PRODUCTS"]).FindAll(p => p.Category.Description == category);
             ProductCards.DataSource = filteredProducts;
             ProductCards.DataBind();
@@ -100,6 +101,11 @@ namespace UserInterface.Pages.Global
                 alertProductNotFound.Visible = true;
                 alertEmptyDB.Visible = false; // Por las dudas.
             }
+
+            // Estilos para el filtro
+            ResetFilterStyles();
+            ActiveResetButton(CategoriesFilter, "btnResetCategory", category);
+            ((LinkButton)sender).CssClass = Constants.FilterLinkSelected;
         }
 
         /// <summary>
@@ -118,6 +124,11 @@ namespace UserInterface.Pages.Global
                 alertProductNotFound.Visible = true;
                 alertEmptyDB.Visible = false; // Por las dudas.
             }
+
+            // Estilos para el filtro
+            ResetFilterStyles();
+            ActiveResetButton(BrandsFilter, "btnResetBrand", brand);
+            ((LinkButton)sender).CssClass = Constants.FilterLinkSelected;
         }
 
         /// <summary>
@@ -154,6 +165,11 @@ namespace UserInterface.Pages.Global
                 alertProductNotFound.Visible = true;
                 alertEmptyDB.Visible = false; // Por las dudas.
             }
+
+            // Estilos para el filtro
+            ResetFilterStyles();
+            ActiveResetButton(PriceFilter, "btnResetPrice", price);
+            ((LinkButton)sender).CssClass = Constants.FilterLinkSelected;
         }
 
         /// <summary>
@@ -269,24 +285,6 @@ namespace UserInterface.Pages.Global
         }
 
         /// <summary>
-        /// Verificar si se debe desactivar un filtro de marca si su conteo de productos
-        /// que coincidan equivale a 0.
-        /// </summary>
-        protected void BrandsFilter_ItemDataBound(object sender, RepeaterItemEventArgs e)
-        {
-            if (e.Item.ItemType == ListItemType.Item || e.Item.ItemType == ListItemType.AlternatingItem)
-            {
-                KeyValuePair<string, int> filter = (KeyValuePair<string, int>)e.Item.DataItem;
-                LinkButton btnFilter = (LinkButton)e.Item.FindControl("btnFindBrand");
-
-                if (filter.Value == 0)
-                {
-                    btnFilter.Enabled = false;
-                }
-            }
-        }
-
-        /// <summary>
         /// Verificar si se debe desactivar un filtro de categoría si su conteo de productos
         /// que coincidan equivale a 0.
         /// </summary>
@@ -296,6 +294,25 @@ namespace UserInterface.Pages.Global
             {
                 KeyValuePair<string, int> filter = (KeyValuePair<string, int>)e.Item.DataItem;
                 LinkButton btnFilter = (LinkButton)e.Item.FindControl("btnFindCategory");
+
+                // Si el contador del filtro es 0, se deshabilita.
+                if (filter.Value == 0)
+                {
+                    btnFilter.Enabled = false;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Verificar si se debe desactivar un filtro de marca si su conteo de productos
+        /// que coincidan equivale a 0.
+        /// </summary>
+        protected void BrandsFilter_ItemDataBound(object sender, RepeaterItemEventArgs e)
+        {
+            if (e.Item.ItemType == ListItemType.Item || e.Item.ItemType == ListItemType.AlternatingItem)
+            {
+                KeyValuePair<string, int> filter = (KeyValuePair<string, int>)e.Item.DataItem;
+                LinkButton btnFilter = (LinkButton)e.Item.FindControl("btnFindBrand");
 
                 if (filter.Value == 0)
                 {
@@ -335,6 +352,80 @@ namespace UserInterface.Pages.Global
                 else
                 {
                     btnFilter.Text = $"Superior a $500.000 ({filter.Value})";
+                }
+            }
+        }
+
+        /// <summary>
+        /// Activar el botón de reset del filtro seleccionado.
+        /// </summary>
+        /// <param name="repeater">Filtro (categorías, marcas, precio)</param>
+        /// <param name="btnResetID">ID del botón de reinicio</param>
+        /// <param name="filter">Filtro seleccionado</param>
+        private void ActiveResetButton(Repeater repeater, string btnResetID, string filter)
+        {
+            foreach (RepeaterItem item in repeater.Items)
+            {
+                LinkButton button = (LinkButton)item.FindControl(btnResetID);
+                if (button != null && button.CommandArgument == filter)
+                {
+                    button.Visible = true;
+                }
+                else
+                {
+                    button.Visible = false;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Reiniciar todos los filtros de búsqueda (reinciar estilos, ocultar todos
+        /// los botones de reinicio y volver a bindear todos los productos).
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        protected void ResetAllFilters(object sender, EventArgs e)
+        {
+            ResetFilterStyles();
+            ProductCards.DataSource = (List<Product>)Session["PRODUCTS"];
+            ProductCards.DataBind();
+        }
+
+        /// <summary>
+        /// Reiniciar los estilos de todos los filtros y ocultar todos los botones de reinicio.
+        /// </summary>
+        private void ResetFilterStyles()
+        {
+            foreach (RepeaterItem item in CategoriesFilter.Items)
+            {
+                LinkButton filter = (LinkButton)item.FindControl("btnFindCategory");
+                LinkButton resetButton = (LinkButton)item.FindControl("btnResetCategory");
+                if (filter != null && resetButton != null)
+                {
+                    filter.CssClass = Constants.FilterLinkNormal;
+                    resetButton.Visible = false;
+                }
+            }
+
+            foreach (RepeaterItem item in BrandsFilter.Items)
+            {
+                LinkButton filter = (LinkButton)item.FindControl("btnFindBrand");
+                LinkButton resetButton = (LinkButton)item.FindControl("btnResetBrand");
+                if (filter != null && resetButton != null)
+                {
+                    filter.CssClass = Constants.FilterLinkNormal;
+                    resetButton.Visible = false;
+                }
+            }
+
+            foreach (RepeaterItem item in PriceFilter.Items)
+            {
+                LinkButton filter = (LinkButton)item.FindControl("btnFindPrice");
+                LinkButton resetButton = (LinkButton)item.FindControl("btnResetPrice");
+                if (filter != null && resetButton != null)
+                {
+                    filter.CssClass = Constants.FilterLinkNormal;
+                    resetButton.Visible = false;
                 }
             }
         }

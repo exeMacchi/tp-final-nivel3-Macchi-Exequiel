@@ -36,10 +36,12 @@
                                      Required="true" Placeholder="Ingrese el código..."
                                      AutoPostBack="true" OnTextChanged="txbxCode_TextChanged"
                                      MaxLength="50"></asp:TextBox>
-                        <asp:Panel ID="invalidCodeLength" runat="server" Visible="false">
+                        <asp:Panel ID="invalidCodeLength" runat="server" Visible="false" 
+                                   CssClass="invalid-feedback">
                             El código del producto debe tener entre 1 a 50 caracteres.
                         </asp:Panel>
-                        <asp:Panel ID="invalidCodeName" runat="server" Visible="false">
+                        <asp:Panel ID="invalidCodeName" runat="server" Visible="false"
+                                   CssClass="invalid-feedback">
                             El código introducido ya existe en la base de datos. Introduzca otro.
                         </asp:Panel>
                     </div>

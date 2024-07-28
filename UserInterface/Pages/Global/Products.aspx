@@ -34,11 +34,19 @@
                 <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
                     <asp:Repeater ID="CategoriesFilter" runat="server" OnItemDataBound="CategoriesFilter_ItemDataBound">
                         <ItemTemplate>
-                            <li class="my-2">
+                            <li class="d-flex gap-3 my-2 align-items-center">
                                 <asp:LinkButton ID="btnFindCategory" runat="server"
                                                 Text='<%# Eval("Key") + " (" + Eval("Value") + ")" %>'
-                                                CssClass="d-inline-flex rounded text-decoration-none filter-link ms-4"
-                                                CommandArgument='<%# Eval("Key") %>' OnClick="btnFindByCategory_Click"></asp:LinkButton>
+                                                CssClass="filter-link text-decoration-none ms-4"
+                                                CommandArgument='<%# Eval("Key") %>'
+                                                OnClick="btnFindByCategory_Click"></asp:LinkButton>
+
+                                <asp:LinkButton ID="btnResetCategory" runat="server"
+                                                CssClass="btn btn-outline-warning rounded-circle p-1 lh-1"
+                                                Visible="false" CommandArgument='<%# Eval("Key") %>'
+                                                OnClick="ResetAllFilters">
+                                    <i class="bi bi-x-lg fs-6"></i>
+                                </asp:LinkButton>
                             </li>
                         </ItemTemplate>
                     </asp:Repeater>
@@ -51,11 +59,19 @@
                 <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
                     <asp:Repeater ID="BrandsFilter" runat="server" OnItemDataBound="BrandsFilter_ItemDataBound">
                         <ItemTemplate>
-                            <li class="my-2">
+                            <li class="d-flex gap-3 my-2 align-items-center">
                                 <asp:LinkButton ID="btnFindBrand" runat="server"
                                                 Text='<%# Eval("Key") + " (" + Eval("Value") + ")" %>'
-                                                CssClass="d-inline-flex rounded text-decoration-none filter-link ms-4"
-                                                CommandArgument='<%# Eval("Key") %>' OnClick="btnFindByBrand_Click"></asp:LinkButton>
+                                                CssClass="filter-link text-decoration-none ms-4"
+                                                CommandArgument='<%# Eval("Key") %>' 
+                                                OnClick="btnFindByBrand_Click"></asp:LinkButton>
+
+                                <asp:LinkButton ID="btnResetBrand" runat="server"
+                                                CssClass="btn btn-outline-warning rounded-circle p-1 lh-1"
+                                                Visible="false" CommandArgument='<%# Eval("Key") %>'
+                                                OnClick="ResetAllFilters">
+                                    <i class="bi bi-x-lg fs-6"></i>
+                                </asp:LinkButton>
                             </li>
                         </ItemTemplate>
                     </asp:Repeater>
@@ -66,13 +82,20 @@
             <li class="my-4">
                 <h3 class="text-white">Precios</h3>
                 <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                    <li class="my-2">
                     <asp:Repeater ID="PriceFilter" runat="server" OnItemDataBound="PriceFilter_ItemDataBound">
                         <ItemTemplate>
-                            <li class="my-2">
+                            <li class="d-flex gap-3 my-2 align-items-center">
                                 <asp:LinkButton ID="btnFindPrice" runat="server"
-                                                CssClass="d-inline-flex rounded text-decoration-none filter-link ms-4"
-                                                CommandArgument='<%# Eval("Key") %>' OnClick="btnFindByPrice_Click"></asp:LinkButton>
+                                                CssClass="filter-link text-decoration-none ms-4"
+                                                CommandArgument='<%# Eval("Key") %>'
+                                                OnClick="btnFindByPrice_Click"></asp:LinkButton>
+
+                                <asp:LinkButton ID="btnResetPrice" runat="server"
+                                                CssClass="btn btn-outline-warning rounded-circle p-1 lh-1"
+                                                Visible="false" CommandArgument='<%# Eval("Key") %>'
+                                                OnClick="ResetAllFilters">
+                                    <i class="bi bi-x-lg fs-6"></i>
+                                </asp:LinkButton>
                             </li>
                         </ItemTemplate>
                     </asp:Repeater>
@@ -129,7 +152,7 @@
                                     <span class="badge rounded-pill text-white border bg-gradient"><%# Eval("Brand.Description") %></span>
                                     <span class="badge rounded-pill text-white border bg-gradient"><%# Eval("Category.Description") %></span>
                                 </div>
-                                <p class="card-text text-white lead fs-6 mt-2">
+                                <p class="card-text text-white lead fs-6 mt-2 text-center">
                                     <%# Eval("Description") %>
                                 </p>
                                 <p class="card-text text-warning text-center fs-2">

@@ -123,7 +123,6 @@ namespace UserInterface.Pages.Admin
                     {
                         txbxCode.Text = string.Empty;
                         txbxCode.CssClass = Constants.FormControlInvalid;
-                        invalidCodeName.CssClass = "invalid-feedback";
                         invalidCodeName.Visible = true;
                         invalidCodeLength.Visible = false; 
                         txbxCode.Focus();
@@ -143,7 +142,6 @@ namespace UserInterface.Pages.Admin
                     {
                         txbxCode.Text = string.Empty;
                         txbxCode.CssClass = Constants.FormControlInvalid;
-                        invalidCodeName.CssClass = "invalid-feedback";
                         invalidCodeName.Visible = true;
                         invalidCodeLength.Visible = false; 
                         txbxCode.Focus();
@@ -160,7 +158,6 @@ namespace UserInterface.Pages.Admin
             {
                 txbxCode.Text = string.Empty;
                 txbxCode.CssClass = Constants.FormControlInvalid;
-                invalidCodeLength.CssClass = "invalid-feedback";
                 invalidCodeLength.Visible = true;
                 invalidCodeName.Visible = false;
                 txbxCode.Focus();
