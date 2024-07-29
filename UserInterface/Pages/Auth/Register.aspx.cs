@@ -21,6 +21,10 @@ namespace UserInterface.Pages.Auth
                     txbxEmail.CssClass = Constants.FormControlNormal;
                     txbxFirstPassword.CssClass = Constants.FormControlNormal;
                     txbxSecondPassword.CssClass = Constants.FormControlNormal;
+
+                    // Se utiliza el atributo 'disabled' en lugar de la propiedad 'Enabled'
+                    // porque la habilitación del botón también se gestiona desde el cliente.
+                    btnRegister.Attributes["disabled"] = "true";
                 }
                 catch (Exception ex)
                 {
@@ -28,7 +32,6 @@ namespace UserInterface.Pages.Auth
                     throw ex;
                 }
             }
-
         }
 
         protected void txbxEmail_TextChanged(object sender, EventArgs e)
@@ -60,21 +63,59 @@ namespace UserInterface.Pages.Auth
                 txbxEmail.Focus();
             }
         }
+
         protected void btnRegister_Click(object sender, EventArgs e)
         {
+            if (string.IsNullOrEmpty(txbxEmail.Text) || 
+                string.IsNullOrEmpty(txbxFirstPassword.Text) ||
+                string.IsNullOrEmpty(txbxSecondPassword.Text))
+            {
+                lbRegisterError.Text = "No pueden haber campos vacíos.";
+                registerErrorAlert.Visible = true;
+                return;
+            }
+            else if (UserBBL.EmailExistsInDB(txbxEmail.Text))
+            {
+                lbRegisterError.Text = "El correo electrónico introducido ya existe en la base de datos.";
+                registerErrorAlert.Visible = true;
+                return;
+            }
+            else if (txbxFirstPassword.Text != txbxSecondPassword.Text)
+            {
+                lbRegisterError.Text = "Las contraseñas deben coincidir.";
+                registerErrorAlert.Visible = true;
+                return;
+            }
 
+            try
+            {
+                UserBBL.CreateUser(txbxEmail.Text, txbxFirstPassword.Text);
+                // TODO: Enviar un mail de confirmación de cuenta.
+
+
+                Session["ALERTMESSAGE"] = "¡Usuario registrado de forma exitosa!";
+                Response.Redirect($"{Constants.LoginPagePath}?alert=success", false);
+            }
+            catch (Exception ex)
+            {
+                // TODO: manejar error
+                throw ex;
+            }
         }
 
         private void VerifyInformation()
         {
-            if (!string.IsNullOrEmpty(txbxEmail.Text))
+            if (!string.IsNullOrEmpty(txbxEmail.Text) && 
+                !string.IsNullOrEmpty(txbxFirstPassword.Text) && 
+                !string.IsNullOrEmpty(txbxSecondPassword.Text))
             {
+                btnRegister.Attributes.Remove("disabled");
             }
             else
             {
+                btnRegister.Attributes["disabled"] = "true";
 
             }
         }
-
     }
 }

@@ -20,6 +20,12 @@
                         <h2 class="alert-heading fs-2">Error</h2>
                         <p class="lead fs-5"><%:Session["ALERTMESSAGE"].ToString()%></p>
                     </asp:Panel>
+                <% } else if (Request.QueryString["alert"] == "success") { %>
+                    <asp:Panel ID="loginSuccessAlert" runat="server"
+                               CssClass="alert border-success bg-dark my-4 text-success">
+                        <h2 class="alert-heading fs-2">¡Éxito!</h2>
+                        <p class="lead fs-5"><%:Session["ALERTMESSAGE"].ToString()%></p>
+                    </asp:Panel>
                 <% } %>
             <% } %>
         </div>

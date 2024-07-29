@@ -66,6 +66,34 @@ namespace BusinessLogic
         }
 
         /// <summary>
+        /// Crear un nuevo <see cref="User"/> en la base de datos.
+        /// </summary>
+        /// <param name="email">Correo electrónico del nuevo usuario</param>
+        /// <param name="password">Contraseña de la cuenta del nuevo usuario</param>
+        public static void CreateUser(string email, string password)
+        {
+            DataBase db = new DataBase();
+            string query = "INSERT INTO USERS VALUES (@Email, @Pass, NULL, NULL, NULL, 0);";
+
+            try
+            {
+                db.SetQuery(query);
+                db.SetParam("@Email", email);
+                db.SetParam("@Pass", password);
+                db.ExecuteNonQuery();
+            }
+            catch (Exception ex)
+            {
+                // TODO: manejar error
+                throw ex;
+            }
+            finally
+            {
+                db.CloseConnection();
+            }
+        }
+
+        /// <summary>
         /// Verificar si en la base de datos existe un email prexistente al que
         /// un usuario intenta utilizar para registrarse.
         /// </summary>

@@ -12,7 +12,15 @@
     </div>
 
     <!-- Alertas -->
-    <div class="row">
+    <div class="row justify-content-center my-1">
+        <div class="col-6">
+            <asp:Panel ID="registerErrorAlert" runat="server" Visible="false"
+                       CssClass="alert border-danger bg-dark text-danger text-center">
+                <h2 class="alert-heading fs-2">Error</h2>
+                <asp:Label ID="lbRegisterError" runat="server" 
+                           CssClass="lead fs-5">Error</asp:Label>
+            </asp:Panel>
+        </div>
     </div>
 
     <asp:ScriptManager ID="spRegister" runat="server"></asp:ScriptManager>
@@ -23,7 +31,8 @@
                 <div class="form-floating col-6">
                     <asp:TextBox ID="txbxEmail" runat="server" Placeholder="usuario@ejemplo.com"
                                  Required="true" MaxLength="100" TextMode="Email"
-                                 AutoPostBack="true" OnTextChanged="txbxEmail_TextChanged"></asp:TextBox>
+                                 ClientIDMode="Static" AutoPostBack="true" 
+                                 OnTextChanged="txbxEmail_TextChanged"></asp:TextBox>
                     <asp:Label ID="lbEmail" runat="server" AssociatedControlID="txbxEmail"
                                Text="Correo electrónico" CssClass="ps-4"></asp:Label>
                     <asp:Panel ID="invalidEmailLength" runat="server" Visible="false"
@@ -44,12 +53,9 @@
                         <div class="form-floating">
                             <asp:TextBox ID="txbxFirstPassword" runat="server" Required="true"
                                          Placeholder="•••••••" MaxLength="20" TextMode="Password"
-                                         ClientIDMode="Static"></asp:TextBox>
+                                         ClientIDMode="Static" oninput="checkPasswordsMatch()"></asp:TextBox>
                             <asp:Label ID="lbFirstPassword" runat="server" Text="Contraseña"
                                        AssociatedControlID="txbxFirstPassword"></asp:Label>
-                            <div id="invalidFirstPassword" class="invalid-feedback">
-                                La contraseña debe tener entre 1 a 20 caracteres.
-                            </div>
                         </div>
 
                         <button id="btnFirstPassword" type="button" tabindex="-1"
@@ -69,12 +75,9 @@
                         <div class="form-floating">
                             <asp:TextBox ID="txbxSecondPassword" runat="server" Required="true"
                                          Placeholder="•••••••" MaxLength="20" TextMode="Password"
-                                         ClientIDMode="Static"></asp:TextBox>
+                                         ClientIDMode="Static" oninput="checkPasswordsMatch()"></asp:TextBox>
                             <asp:Label ID="lbSecondPassword" runat="server" Text="Confirmar contraseña"
                                        AssociatedControlID="txbxFirstPassword"></asp:Label>
-                            <div id="invalidSecondPassword" class="invalid-feedback">
-                                La contraseña debe tener entre 1 a 20 caracteres.
-                            </div>
                         </div>
 
                         <button id="btnSecondPassword" type="button" tabindex="-1"
@@ -84,13 +87,18 @@
                                 <i class="bi bi-eye-slash text-warning fs-4"></i>
                         </button>
                     </div>
+                    <asp:Label ID="lbPassAlert" runat="server" ClientIDMode="Static" 
+                               CssClass="invalid-feedback" style="display:none;">
+                        Las contraseñas no coinciden.
+                    </asp:Label>
                 </div>
             </div>
 
             <!-- Terms & Conditions -->
                 <div class="row justify-content-center my-4">
                 <div class="col-6">
-                    <input type="checkbox" class="form-check-input" required />
+                    <input id="chbxTermsConditions" type="checkbox" required
+                           class="form-check-input" oninput="verifyInformation()" />
                     <span class="ms-1 text-white">
                         Acepto los 
                         <a href="#" class="link-warning link-underline-opacity-0"
@@ -106,7 +114,7 @@
                 <div class="col-6">
                     <asp:Button ID="btnRegister" runat="server" Text="REGISTRARSE"
                                 CssClass="btn btn-outline-warning w-100 p-3"
-                                OnClick="btnRegister_Click" />
+                                ClientIDMode="Static" OnClick="btnRegister_Click" />
                 </div>
             </div>
 
@@ -128,4 +136,5 @@
     </asp:UpdatePanel>
 
     <script src="/Assets/Scripts/TogglePasswordReveal.js"></script>
+    <script src="/Assets/Scripts/CheckPasswords.js"></script>
 </asp:Content>

@@ -15,6 +15,24 @@ namespace UserInterface.Pages.Auth
     {
 
         /// <summary>
+        /// registerErrorAlert control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Panel registerErrorAlert;
+
+        /// <summary>
+        /// lbRegisterError control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lbRegisterError;
+
+        /// <summary>
         /// spRegister control.
         /// </summary>
         /// <remarks>
@@ -103,6 +121,15 @@ namespace UserInterface.Pages.Auth
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lbSecondPassword;
+
+        /// <summary>
+        /// lbPassAlert control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lbPassAlert;
 
         /// <summary>
         /// btnRegister control.
