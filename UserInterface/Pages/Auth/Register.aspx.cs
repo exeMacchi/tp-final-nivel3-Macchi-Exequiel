@@ -90,8 +90,10 @@ namespace UserInterface.Pages.Auth
             try
             {
                 UserBBL.CreateUser(txbxEmail.Text, txbxFirstPassword.Text);
-                // TODO: Enviar un mail de confirmación de cuenta.
 
+                EmailService es = new EmailService();
+                es.CreateMail("no-replay@almacenero.com", txbxEmail.Text, "¡Bienvenido!", Auxiliary.CreateRegisterHTMLBody());
+                es.SendMail();
 
                 Session["ALERTMESSAGE"] = "¡Usuario registrado de forma exitosa!";
                 Response.Redirect($"{Constants.LoginPagePath}?alert=success", false);
