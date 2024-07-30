@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Runtime.Remoting.Messaging;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -111,18 +112,35 @@ namespace Domain
         public static string CreateRegisterHTMLBody()
         {
             string body =
-                "<body style=\"font-family: Arial, sans-serif; background-color: #f4f4f4; margin: 0; padding: 0;\">" +
-                    "<div style=\"max-width: 600px; margin: 20px auto; background-color: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);\">" +
-                        "<h1 style=\"color: #333;\">¡Bienvenido a El Almacenero!</h1>" +
-                        "<p style=\"color: #666; line-height: 1.6;\">¡Gracias por registrarte en El Almacenero! Estamos encantados de tenerte como parte de nuestra comunidad.</p>" +
-                        "<p style=\"color: #666; line-height: 1.6;\">Nuestra plataforma está diseñada para ofrecerte la mejor experiencia de usuario. Puedes explorar nuestro catálogo de productos de manera sencilla y atractiva, accediendo a detalles específicos de cada uno.</p>" +
-                        "<p style=\"color: #666; line-height: 1.6;\">Utiliza nuestros filtros por nombre, marca y categoría para encontrar fácilmente lo que buscas. Además, con tu cuenta podrás realizar un seguimiento de tus productos favoritos y disfrutar de una navegación personalizada.</p>" +
-                        "<p style=\"color: #666; line-height: 1.6;\">Haz clic en el botón de abajo para comenzar a explorar nuestro catálogo y descubrir todo lo que tenemos para ofrecer.</p>" +
-                        "<a href=\"https://localhost:44323/Default.aspx\" style=\"display: inline-block; padding: 10px 20px; background-color: #007bff; color: #fff; text-decoration: none; border-radius: 5px; transition: background-color 0.3s ease;\">¡Explora ahora!</a>" +
-                        "<p style=\"color: #666; line-height: 1.6;\">¡Esperamos que disfrutes de tu experiencia en El Almacenero!</p>" +
-                        "<p style=\"color: #666; line-height: 1.6;\">Equipo de El Almacenero</p>" +
-                    "</div>" +
-                "</body>";
+            "<body style=\"font-family: Arial, sans-serif; background-color: #f4f4f4; margin: 0; padding: 0;\">" +
+                "<div style=\"max-width: 600px; margin: 20px auto; background-color: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);\">" +
+                    "<h1 style=\"color: #333;\">¡Bienvenido a El Almacenero!</h1>" +
+                    "<p style=\"color: #666; line-height: 1.6;\">¡Gracias por registrarte en El Almacenero! Estamos encantados de tenerte como parte de nuestra comunidad.</p>" +
+                    "<p style=\"color: #666; line-height: 1.6;\">Nuestra plataforma está diseñada para ofrecerte la mejor experiencia de usuario. Puedes explorar nuestro catálogo de productos de manera sencilla y atractiva, accediendo a detalles específicos de cada uno.</p>" +
+                    "<p style=\"color: #666; line-height: 1.6;\">Utiliza nuestros filtros por nombre, marca y categoría para encontrar fácilmente lo que buscas. Además, con tu cuenta podrás realizar un seguimiento de tus productos favoritos y disfrutar de una navegación personalizada.</p>" +
+                    "<p style=\"color: #666; line-height: 1.6;\">Haz clic en el botón de abajo para comenzar a explorar nuestro catálogo y descubrir todo lo que tenemos para ofrecer.</p>" +
+                    "<a href=\"https://localhost:44323/Default.aspx\" style=\"display: inline-block; padding: 10px 20px; background-color: #007bff; color: #fff; text-decoration: none; border-radius: 5px; transition: background-color 0.3s ease;\">¡Explora ahora!</a>" +
+                    "<p style=\"color: #666; line-height: 1.6;\">¡Esperamos que disfrutes de tu experiencia en El Almacenero!</p>" +
+                    "<p style=\"color: #666; line-height: 1.6;\">Equipo de El Almacenero</p>" +
+                "</div>" +
+            "</body>";
+
+            return body;
+        }
+
+        public static string CreateForgottenPassHTMLBody(int id, string hash)
+        {
+            string body = 
+            "<body style=\"font-family: Arial, sans-serif; background-color: #f4f4f4; margin: 0; padding: 0;\">" +
+                "<div style=\"max-width: 600px; margin: 20px auto; background-color: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);\">" +
+                    "<h1 style=\"color: #333;\">Recuperar cuenta de El Almacenero</h1>" +
+                    "<p style=\"color: #666; line-height: 1.6;\">Recibimos una solicitud para restablecer la contraseña asociada a tu cuenta.</p>" +
+                    "<p style=\"color: #666; line-height: 1.6;\">Por favor, haz clic en el siguiente enlace para proceder con el restablecimiento de tu contraseña:</p>" +
+                    $"<a href=\"https://localhost:44323/Pages/Auth/ForgottenPass.aspx?id={id}&hash={hash}\" style=\"display: inline-block; padding: 10px 20px; background-color: #007bff; color: #fff; text-decoration: none; border-radius: 5px; transition: background-color 0.3s ease;\">Cambiar contraseña</a>" +
+                    "<p style=\"color: #666; line-height: 1.6;\">Si no solicitaste este cambio, puedes ignorar este mensaje.</p>" +
+                    "<p style=\"color: #666; line-height: 1.6;\">Atentamente, equipo de soporte de El Almacenero.</p>" +
+                "</div>" +
+            "</body>";
 
             return body;
         }

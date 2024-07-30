@@ -66,21 +66,25 @@ namespace UserInterface.Pages.Auth
 
         protected void btnRegister_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrEmpty(txbxEmail.Text) || 
-                string.IsNullOrEmpty(txbxFirstPassword.Text) ||
-                string.IsNullOrEmpty(txbxSecondPassword.Text))
+            string email = txbxEmail.Text.Trim();
+            string firstPass = txbxFirstPassword.Text.Trim();
+            string secondPass = txbxSecondPassword.Text.Trim();
+
+            if (string.IsNullOrEmpty(email) || 
+                string.IsNullOrEmpty(firstPass) ||
+                string.IsNullOrEmpty(secondPass))
             {
                 lbRegisterError.Text = "No pueden haber campos vacíos.";
                 registerErrorAlert.Visible = true;
                 return;
             }
-            else if (UserBBL.EmailExistsInDB(txbxEmail.Text))
+            else if (UserBBL.EmailExistsInDB(email))
             {
                 lbRegisterError.Text = "El correo electrónico introducido ya existe en la base de datos.";
                 registerErrorAlert.Visible = true;
                 return;
             }
-            else if (txbxFirstPassword.Text != txbxSecondPassword.Text)
+            else if (firstPass != secondPass)
             {
                 lbRegisterError.Text = "Las contraseñas deben coincidir.";
                 registerErrorAlert.Visible = true;
@@ -89,10 +93,10 @@ namespace UserInterface.Pages.Auth
 
             try
             {
-                UserBBL.CreateUser(txbxEmail.Text, txbxFirstPassword.Text);
+                UserBBL.CreateUser(email, firstPass);
 
                 EmailService es = new EmailService();
-                es.CreateMail("no-replay@almacenero.com", txbxEmail.Text, "¡Bienvenido!", Auxiliary.CreateRegisterHTMLBody());
+                es.CreateMail("no-replay@almacenero.com", email, "¡Bienvenido!", Auxiliary.CreateRegisterHTMLBody());
                 es.SendMail();
 
                 Session["ALERTMESSAGE"] = "¡Usuario registrado de forma exitosa!";
@@ -116,7 +120,6 @@ namespace UserInterface.Pages.Auth
             else
             {
                 btnRegister.Attributes["disabled"] = "true";
-
             }
         }
     }

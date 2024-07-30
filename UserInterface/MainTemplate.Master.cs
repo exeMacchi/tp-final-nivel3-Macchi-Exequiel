@@ -41,7 +41,6 @@ namespace UserInterface
                                               "necesarias para acceder a la página solicitada. " +
                                               "Por favor, inicie sesión con un usuario válido";
                     Response.Redirect($"{Constants.LoginPagePath}?alert=error");
-
                 }
             }
         }

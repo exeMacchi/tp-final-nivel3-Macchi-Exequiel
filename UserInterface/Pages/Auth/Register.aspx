@@ -136,5 +136,5 @@
     </asp:UpdatePanel>
 
     <script src="/Assets/Scripts/TogglePasswordReveal.js"></script>
-    <script src="/Assets/Scripts/CheckPasswords.js"></script>
+    <script src="/Assets/Scripts/CheckPasswordsRegister.js"></script>
 </asp:Content>

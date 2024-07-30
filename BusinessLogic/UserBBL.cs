@@ -66,6 +66,44 @@ namespace BusinessLogic
         }
 
         /// <summary>
+        /// Devolver el ID de un usuario según un correo electrónico especificado.
+        /// </summary>
+        /// <param name="email">Correo electrónico del usuario</param>
+        /// <returns>
+        /// Devuelve el ID del usuario del email especificado o, en caso contrario,
+        /// devuelve 0.
+        /// </returns>
+        public static int GetUserIDByEmail(string email)
+        {
+            DataBase db = new DataBase();
+            string query = "SELECT Id AS ID FROM USERS WHERE email = @Email;";
+            try
+            {
+                db.SetQuery(query);
+                db.SetParam("@Email", email);
+                db.ExecuteRead();
+
+                if (db.Reader.Read())
+                {
+                    return (int)db.Reader["ID"];
+                }
+                else
+                {
+                    return 0;
+                }
+            }
+            catch (Exception ex)
+            {
+                // TODO: manejar error
+                throw ex;
+            }
+            finally
+            {
+                db.CloseConnection();
+            }
+        }
+
+        /// <summary>
         /// Crear un nuevo <see cref="User"/> en la base de datos.
         /// </summary>
         /// <param name="email">Correo electrónico del nuevo usuario</param>
@@ -80,6 +118,34 @@ namespace BusinessLogic
                 db.SetQuery(query);
                 db.SetParam("@Email", email);
                 db.SetParam("@Pass", password);
+                db.ExecuteNonQuery();
+            }
+            catch (Exception ex)
+            {
+                // TODO: manejar error
+                throw ex;
+            }
+            finally
+            {
+                db.CloseConnection();
+            }
+        }
+
+        /// <summary>
+        /// Actualizar en la base de datos la contraseña de un usuario por una nueva.
+        /// </summary>
+        /// <param name="id">ID del usuario</param>
+        /// <param name="password">Nueva contraseña</param>
+        public static void UpdateUserPassword(int id, string password)
+        {
+            DataBase db = new DataBase();
+            string query = "UPDATE USERS SET pass = @Pass WHERE Id = @ID;";
+
+            try
+            {
+                db.SetQuery(query);
+                db.SetParam("@Pass", password);
+                db.SetParam("@ID", id);
                 db.ExecuteNonQuery();
             }
             catch (Exception ex)

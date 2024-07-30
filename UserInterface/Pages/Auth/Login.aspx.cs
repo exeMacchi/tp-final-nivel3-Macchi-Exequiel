@@ -30,7 +30,10 @@ namespace UserInterface.Pages.Auth
 
         protected void btnLogin_Click(object sender, EventArgs e)
         {
-            if (txbxEmail.Text.Length > 100 || txbxEmail.Text == "")
+            string email = txbxEmail.Text.Trim();
+            string pass = txbxPassword.Text.Trim();
+
+            if (email.Length > 100 || email == "")
             {
                 txbxEmail.Text = string.Empty;
                 txbxEmail.CssClass = Constants.FormControlInvalid;
@@ -38,7 +41,7 @@ namespace UserInterface.Pages.Auth
                 return;
             }
 
-            if (txbxPassword.Text.Length > 20 || txbxPassword.Text == "")
+            if (pass.Length > 20 || pass == "")
             {
                 txbxPassword.Text = string.Empty;
                 txbxPassword.CssClass = Constants.FormControlInvalid;
@@ -48,7 +51,7 @@ namespace UserInterface.Pages.Auth
 
             try
             {
-                Domain.User user = UserBBL.GetUser(txbxEmail.Text, txbxPassword.Text);
+                Domain.User user = UserBBL.GetUser(email, pass);
                 if (user.ID != 0)
                 {
                     Session["USER"] = user;
