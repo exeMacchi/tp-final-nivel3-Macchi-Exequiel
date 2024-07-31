@@ -144,6 +144,18 @@ namespace Domain
 
             return body;
         }
-    }
 
+        public static string CreateContactHTMLBody(string email, string message)
+        {
+            string body = 
+            "<body style=\"font-family: Arial, sans-serif; background-color: #f4f4f4; margin: 0; padding: 0;\">" +
+                "<div style=\"max-width: 600px; margin: 20px auto; background-color: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);\">" +
+                    $"<h1 style=\"color: #333;\">Consulta de {email}</h1>" +
+                    $"<p style=\"color: #666; line-height: 1.6;\">{message}</p>" +
+                "</div>" +
+            "</body>";
+
+            return body;
+        }
+    }
 }

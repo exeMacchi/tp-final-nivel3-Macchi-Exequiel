@@ -3,6 +3,7 @@ using Domain;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Mail;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -95,12 +96,21 @@ namespace UserInterface.Pages.Auth
             {
                 UserBBL.CreateUser(email, firstPass);
 
-                EmailService es = new EmailService();
-                es.CreateMail("no-replay@almacenero.com", email, "¡Bienvenido!", Auxiliary.CreateRegisterHTMLBody());
-                es.SendMail();
+                try
+                {
+                    EmailService es = new EmailService();
+                    es.CreateMail("no-replay@almacenero.com", email, "¡Bienvenido!", Auxiliary.CreateRegisterHTMLBody());
+                    es.SendMail();
 
-                Session["ALERTMESSAGE"] = "¡Usuario registrado de forma exitosa!";
-                Response.Redirect($"{Constants.LoginPagePath}?alert=success", false);
+                    Session["ALERTMESSAGE"] = "¡Usuario registrado de forma exitosa!";
+                    Response.Redirect($"{Constants.LoginPagePath}?alert=success", false);
+                }
+                catch (SmtpException)
+                {
+                    Session["ALERTMESSAGE"] = "Usuario registrado, pero ocurrió un error al " + 
+                                              "enviar el correo de bienvenida.";
+                    Response.Redirect($"{Constants.LoginPagePath}?alert=success", false);
+                }
             }
             catch (Exception ex)
             {

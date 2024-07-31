@@ -24,24 +24,6 @@ namespace UserInterface.Pages.Auth
         protected global::System.Web.UI.WebControls.Panel forgottenSuccess;
 
         /// <summary>
-        /// forgottenSuccessHeader control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label forgottenSuccessHeader;
-
-        /// <summary>
-        /// forgottenSuccessText control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label forgottenSuccessText;
-
-        /// <summary>
         /// forgottenError control.
         /// </summary>
         /// <remarks>
@@ -49,15 +31,6 @@ namespace UserInterface.Pages.Auth
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Panel forgottenError;
-
-        /// <summary>
-        /// forgottenErrorHeader control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label forgottenErrorHeader;
 
         /// <summary>
         /// forgottenErrorText control.

@@ -3,6 +3,7 @@ using Domain;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Mail;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -98,21 +99,27 @@ namespace UserInterface.Pages.Auth
                 if (id != 0)
                 {
                     Session["FORGOTTENHASH"] = $"{id}{DateTime.Now.Ticks}";
-                    EmailService es = new EmailService();
-                    es.CreateMail("no-replay@almacenero.com", email, "Restaurar contraseña", Auxiliary.CreateForgottenPassHTMLBody(id, Session["FORGOTTENHASH"].ToString()));
-                    es.SendMail();
-                    forgottenSuccessHeader.Text = "¡Correo electrónico enviado!";
-                    forgottenSuccessText.Text = "Le hemos enviado un correo electrónico con " +
-                                                "las instrucciones a seguir para cambiar su " +
-                                                "contraseña. Verifique su bandeja de entrada " +
-                                                "principal o en la bandeja spam.";
-                    forgottenSuccess.Visible = true;
-                    forgottenError.Visible = false;
-                    btnSend.Enabled = false;
+                    try
+                    {
+                        EmailService es = new EmailService();
+                        es.CreateMail("no-replay@almacenero.com", email, "Restaurar contraseña", 
+                                      Auxiliary.CreateForgottenPassHTMLBody(id, Session["FORGOTTENHASH"].ToString()));
+                        es.SendMail();
+
+                        forgottenSuccess.Visible = true;
+                        forgottenError.Visible = false;
+                        btnSend.Enabled = false;
+                    }
+                    catch (SmtpException)
+                    {
+                        forgottenErrorText.Text = "No se pudo enviar el correo electrónico con " + 
+                                                  "las instrucciones. Por favor, inténtalo nuevamente " +
+                                                  "más tarde.";
+                        forgottenError.Visible = true;
+                    }
                 }
                 else
                 {
-                    forgottenErrorHeader.Text = "Error";
                     forgottenErrorText.Text = "El correo electrónico proporcionado no se " +
                                               "encuentra en la base de datos. Por favor, " +
                                               "verifique que el correo electrónico ingresado " +
@@ -140,7 +147,6 @@ namespace UserInterface.Pages.Auth
 
                 if (firstPass != secondPass)
                 {
-                    forgottenErrorHeader.Text = "Error";
                     forgottenErrorText.Text = "Las contraseñas introducidas no coinciden. " +
                                               "Por favor, inténtelo de nuevo.";
                     forgottenError.Visible = true;

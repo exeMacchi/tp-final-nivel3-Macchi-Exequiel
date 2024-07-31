@@ -29,20 +29,22 @@
     <!-- Alertas -->
     <div class="row justify-content-center my-1">
         <div class="col-6">
-            <!-- Alertas de éxito -->
+            <!-- Alerta de éxito -->
             <asp:Panel ID="forgottenSuccess" runat="server" Visible="false"
                        CssClass="alert border-success bg-dark text-success text-center">
-                <asp:Label ID="forgottenSuccessHeader" runat="server"
-                           CssClass="d-block alert-heading fs-2" style="font-weight: 500;"></asp:Label>
-                <asp:Label ID="forgottenSuccessText" runat="server" CssClass="text-success"></asp:Label>
+                <h2 class="alert-heading fs-2">¡Correo electrónico enviado!</h2>
+                <p class="text-success my-0">
+                    Le hemos enviado un correo electrónico con las instrucciones a seguir 
+                    para cambiar su contraseña. Verifique su bandeja de entrada principal 
+                    o en la bandeja spam.
+                </p>
             </asp:Panel>
 
-            <!-- Alertas de error -->
+            <!-- Alerta de error -->
             <asp:Panel ID="forgottenError" runat="server" Visible="false"
                        CssClass="alert border-danger bg-dark text-danger text-center">
-                <asp:Label ID="forgottenErrorHeader" runat="server"
-                           CssClass="d-block alert-heading fs-2" style="font-weight: 500;"></asp:Label>
-                <asp:Label ID="forgottenErrorText" runat="server" CssClass="text-dagner"></asp:Label>
+                <h2 class="alert-heading fs-2 text-center">Error</h2>
+                <asp:Label ID="forgottenErrorText" runat="server" CssClass="text-danger"></asp:Label>
             </asp:Panel>
         </div>
     </div>
