@@ -9,15 +9,15 @@
     <% if (Request.QueryString["alert"] != null) { %>
         <% if (Request.QueryString["alert"] == "success") { %>
             <asp:Panel ID="adminSuccessAlert" runat="server"
-                       CssClass="alert border-success bg-dark my-4 text-success">
+                       CssClass="alert border-success bg-dark my-4 text-success text-center">
                 <h2 class="alert-heading fs-2">¡Éxito!</h2>
-                <p class="lead fs-5"><%:(string)Session["ALERTMESSAGE"] %></p>
+                <p class="lead fs-5 mb-0"><%:(string)Session["ALERTMESSAGE"] %></p>
             </asp:Panel>
         <% } else if (Request.QueryString["alert"] == "error") { %>
             <asp:Panel ID="adminErrorAlert" runat="server" 
                        CssClass="alert border-danger my-4 bg-dark text-danger">
                 <h2 class="alert-heading fs-2">Error</h2>
-                <p class="lead fs-5"><%:(string)Session["ALERTMESSAGE"] %></p>
+                <p class="lead fs-5 mb-0"><%:(string)Session["ALERTMESSAGE"] %></p>
             </asp:Panel>
         <% } %>
     <% } %>

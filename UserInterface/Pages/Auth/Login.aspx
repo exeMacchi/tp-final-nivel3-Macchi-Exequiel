@@ -49,7 +49,8 @@
     <div class="row justify-content-center my-4">
         <div class="form-floating col-6">
             <asp:TextBox ID="txbxEmail" runat="server" Placeholder="usuario@ejemplo.com"
-                         Required="true" MaxLength="100" TextMode="Email"></asp:TextBox>
+                         Required="true" MaxLength="100" TextMode="Email"
+                         ClientIDMode="Static"></asp:TextBox>
             <asp:Label ID="lbEmail" runat="server" CssClass="ps-4"
                        AssociatedControlID="txbxEmail" Text="Correo electrónico"></asp:Label>
             <div id="invalidEmail" class="invalid-feedback">
@@ -59,7 +60,7 @@
     </div>
 
     <!-- Password -->
-    <div class="row justify-content-center my-4">
+<%--    <div class="row justify-content-center my-4">
         <div class="form-floating col-6">
             <asp:TextBox ID="txbxPassword" runat="server" Placeholder="•••••••"
                          Required="true" MaxLength="20" TextMode="Password"></asp:TextBox>
@@ -68,6 +69,30 @@
             <div id="invalidPass" class="invalid-feedback">
                 La contraseña debe tener entre 1 a 20 caracteres.
             </div>
+        </div>
+    </div>--%>
+    <div class="row justify-content-center my-4">
+        <div class="col-6">
+            <div class="input-group">
+                <div class="form-floating">
+                    <asp:TextBox ID="txbxPassword" runat="server" Required="true"
+                                 Placeholder="•••••••" MaxLength="20" TextMode="Password"
+                                 ClientIDMode="Static"></asp:TextBox>
+                    <asp:Label ID="lbFirstPassword" runat="server" Text="Contraseña"
+                               AssociatedControlID="txbxPassword"></asp:Label>
+                </div>
+
+                <button id="btnPassword" type="button" tabindex="-1"
+                        class="btn border border-1 p-1 px-2 rounded-1 bg-black"
+                        style="width: 15%;"
+                        onclick="togglePassword('txbxPassword', 'btnPassword')">
+                        <i class="bi bi-eye-slash text-warning fs-4"></i>
+                </button>
+            </div>
+            <asp:Label ID="lbPassAlert" runat="server" ClientIDMode="Static" 
+                       CssClass="invalid-feedback" style="display:none;">
+                La contraseña debe tener entre 1 a 20 caracteres.
+            </asp:Label>
         </div>
     </div>
 
@@ -93,7 +118,10 @@
         <div class="col-6">
             <asp:Button ID="btnLogin" runat="server" Text="INGRESAR"
                         CssClass="btn btn-outline-warning w-100 p-3"
-                        OnClick="btnLogin_Click" />
+                        ClientIDMode="Static" OnClick="btnLogin_Click" />
         </div>
     </div>
+
+    <script src="/Assets/Scripts/TogglePasswordReveal.js"></script>
+    <script src="/Assets/Scripts/CheckInputsLogin.js"></script>
 </asp:Content>

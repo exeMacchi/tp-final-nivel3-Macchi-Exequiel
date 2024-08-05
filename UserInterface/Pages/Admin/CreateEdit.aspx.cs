@@ -2,6 +2,7 @@
 using Domain;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.Eventing.Reader;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -272,8 +273,9 @@ namespace UserInterface.Pages.Admin
                     string fileName = $"{DateTime.Now.Ticks}-{fuImage.PostedFile.FileName}";
                     string path = Path.Combine(Server.MapPath($"~{Constants.LocalImagePath}"), fileName);
 
-                    // Si se está modificando una imagen local, y existe una imagen local en sesión,
-                    // se borra la imagen anterior para guardar la nueva referencia.
+                    // Si se está modificando y se carga una imagen local, y existe una imagen
+                    // local previa guardada en sesión (se verifica al principio), se borra la
+                    // imagen anterior y su referencia para posteriormente guardar la nueva (FILE).
                     if (Request.QueryString["id"] != null && Session["PRODUCTIMAGE"] != null)
                     {
                         string localImagePath = Server.MapPath(Session["PRODUCTIMAGE"].ToString());
@@ -289,8 +291,10 @@ namespace UserInterface.Pages.Admin
                 // Si se cargó una imagen por URL
                 else if (!string.IsNullOrEmpty(txbxImage.Text))
                 {
-                    // Si se está modificando una imagen local, y existe una imagen local en sesión,
-                    // se borra la imagen anterior para guardar la nueva referencia.
+                    // Si se está modificando y se carga una imagen por URL, y existe una
+                    // imagen local en sesión (se verifica al principio), se borra la
+                    // imagen anterior y su referencia para posteriormente guardar la nueva
+                    // referencia (URL).
                     if (Request.QueryString["id"] != null && Session["PRODUCTIMAGE"] != null)
                     {
                         string localImagePath = Server.MapPath(Session["PRODUCTIMAGE"].ToString());
@@ -302,10 +306,12 @@ namespace UserInterface.Pages.Admin
 
                     myProd.Image = txbxImage.Text;
                 }
-                // Si no se cargó una imagen al crear un producto. Si se modifica un producto,
-                // y no se cargó nada, se sobreentiende que no se está modificando la imagen
-                // preexistente
-                else if (Request.QueryString["id"] == null)
+                // • Si no se cargó una imagen al crear un producto, se guarda el placeholder.
+                // • Si se modifica un producto, y no se cargó nada, se sobreentiende que
+                // no se está modificando la imagen preexistente; exceptuando el caso de que
+                // la imagen cargada al inicio sea un placeholder.
+                else if (Request.QueryString["id"] == null ||
+                        (Request.QueryString["id"] != null && imgProduct.ImageUrl == Constants.PlaceholderImagePath))
                 {
                     myProd.Image = Constants.PlaceholderImagePath;
                 }

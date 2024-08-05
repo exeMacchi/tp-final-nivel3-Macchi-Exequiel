@@ -19,6 +19,9 @@ namespace UserInterface.Pages.Auth
                 {
                     txbxEmail.CssClass = Constants.FormControlNormal;
                     txbxPassword.CssClass = Constants.FormControlNormal;
+                    // Se utiliza el atributo 'disabled' en lugar de la propiedad 'Enabled'
+                    // porque la habilitación del botón se gestiona desde el cliente.
+                    btnLogin.Attributes["disabled"] = "true";
                 }
                 catch (Exception ex)
                 {
@@ -33,7 +36,7 @@ namespace UserInterface.Pages.Auth
             string email = txbxEmail.Text.Trim();
             string pass = txbxPassword.Text.Trim();
 
-            if (email.Length > 100 || email == "")
+            if (email.Length > 100 || string.IsNullOrEmpty(email))
             {
                 txbxEmail.Text = string.Empty;
                 txbxEmail.CssClass = Constants.FormControlInvalid;
@@ -41,7 +44,7 @@ namespace UserInterface.Pages.Auth
                 return;
             }
 
-            if (pass.Length > 20 || pass == "")
+            if (pass.Length > 20 || string.IsNullOrEmpty(pass))
             {
                 txbxPassword.Text = string.Empty;
                 txbxPassword.CssClass = Constants.FormControlInvalid;

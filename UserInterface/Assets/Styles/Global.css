@@ -111,8 +111,19 @@ figure > img {
 
 /* Clase que se aplica cuando un link o botón está deshabilitado por CodeBehind,
    como en el filtro de productos por categorías o marcas. */
-.aspNetDisabled, .aspNetDisabled:hover {
+.aspNetDisabled, 
+.aspNetDisabled:hover,
+.aspNetDisabled > .bi,
+.aspNetDisabled > .bi:hover {
     color: rgba(var(--bs-white-rgb), 0.3);
     transition: none;
     cursor: default;
+    background-color: transparent;
 }
+
+    /* Esto aplica específicamente a los botones de la paginación de productos */
+    .aspNetDisabled {
+        opacity: var(--bs-btn-disabled-opacity);
+    }
+
+

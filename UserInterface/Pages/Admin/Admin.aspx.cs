@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.UI;
@@ -13,10 +14,13 @@ namespace UserInterface.Pages.Admin
     {
         protected void Page_Init(object sender, EventArgs e)
         {
-            // En la página de administrador, siempre que se cargue, se recargan
-            // los productos por el caso de que esta página provenga de una operación
-            // de creación, modificación o eliminación.
-            Session["PRODUCTS"] = ProductBBL.GetProducts();
+            if (!IsPostBack)
+            {
+                // En la página de administrador, siempre que se cargue por primera vez,
+                // se recargan los productos por el caso de que esta página provenga
+                // de una operación de creación, modificación o eliminación.
+                Session["PRODUCTS"] = ProductBBL.GetProducts();
+            }
         }
 
         protected void Page_Load(object sender, EventArgs e)
@@ -100,6 +104,19 @@ namespace UserInterface.Pages.Admin
 
             try
             {
+                // Verificar si el producto que se quiere eliminar tiene alguna referencia
+                // de una imagen local. Si tiene una imagen local, se elimina antes de que
+                // se elimine el producto.
+                string productImage = ProductBBL.GetProductImage(id);
+                if (productImage.StartsWith(Constants.LocalImagePath))
+                {
+                    string localImagePath = Server.MapPath(productImage);
+                    if (File.Exists(localImagePath))
+                    {
+                        File.Delete(localImagePath);
+                    }
+                }
+
                 ProductBBL.DeleteProduct(id);
                 Session["ALERTMESSAGE"] = "El producto fue eliminado de la base de datos de forma exitosa.";
                 Response.Redirect($"{Constants.AdminPagePath}?alert=success", false);

@@ -69,6 +69,7 @@
   <ItemGroup>
     <Content Include="Assets\Images\AvatarPlaceholder.jpg" />
     <Content Include="Assets\Images\Placeholder.jpg" />
+    <Content Include="Assets\Scripts\CheckInputsLogin.js" />
     <Content Include="Assets\Scripts\CheckPasswordsForgotten.js" />
     <Content Include="Assets\Scripts\CheckPasswordsRegister.js" />
     <Content Include="Assets\Scripts\CreateEdit.js" />

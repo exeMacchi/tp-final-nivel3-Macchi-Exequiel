@@ -11,41 +11,13 @@ namespace UserInterface.Pages.Global
 {
     public partial class Products : System.Web.UI.Page
     {
-        protected void Page_Load(object sender, EventArgs e)
+        // Número de elementos por página
+        private const int PageSize = 6;
+
+        private int CurrentPage
         {
-            if (!IsPostBack)
-            {
-                try
-                {
-                    if (((List<Product>)Session["PRODUCTS"]).Count > 0)
-                    {
-                        ProductCards.DataSource = (List<Product>)Session["PRODUCTS"];
-                        ProductCards.DataBind();
-
-                        fillCategoryFilter();
-                        fillBrandFilter();
-                        fillPriceFilter();
-
-                        txbxFilter.Enabled = true;
-                        btnFind.Enabled = true;
-                        alertEmptyDB.Visible = false;
-                        alertProductNotFound.Visible = false;
-                    }
-                    else
-                    {
-                        // Se bloquea la búsqueda de productos.
-                        alertEmptyDB.Visible = true;
-                        alertProductNotFound.Visible = false;
-                        txbxFilter.Enabled = false;
-                        btnFind.Enabled = false;
-                    }
-                }
-                catch (Exception ex)
-                {
-                    // Manejo de errores
-                    throw ex;
-                }
-            }
+            get { return int.Parse(hfCurrentPage.Value); }
+            set { hfCurrentPage.Value = value.ToString(); }
         }
 
         protected void Page_Init(object sender, EventArgs e)
@@ -66,22 +38,56 @@ namespace UserInterface.Pages.Global
             }
         }
 
+        protected void Page_Load(object sender, EventArgs e)
+        {
+            if (!IsPostBack)
+            {
+                try
+                {
+                    if (((List<Product>)Session["PRODUCTS"]).Count > 0)
+                    {
+                        Session["PAGEITEMS"] = (List<Product>)Session["PRODUCTS"];
+                        CurrentPage = 1;
+                        BindRepeater();
+
+                        fillCategoryFilter();
+                        fillBrandFilter();
+                        fillPriceFilter();
+
+                        txbxFilter.Enabled = true;
+                        btnFind.Enabled = true;
+                        alertEmptyDB.Visible = false;
+                        alertProductNotFound.Visible = false;
+                    }
+                    else
+                    {
+                        alertEmptyDB.Visible = true;
+                        alertProductNotFound.Visible = false;
+                        // Se bloquea la búsqueda de productos.
+                        txbxFilter.Enabled = false;
+                        btnFind.Enabled = false;
+                        btnPrev.Enabled = false;
+                        btnNext.Enabled = false;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    // TODO: Manejo de errores
+                    throw ex;
+                }
+            }
+        }
+
         /// <summary>
         /// Buscar productos que coincidan con el nombre del producto introducido.
         /// </summary>
         protected void btnFindByName_Click(object sender, EventArgs e)
         {
             string filterText = txbxFilter.Text;
-            List<Product> filteredProducts = ((List<Product>)Session["PRODUCTS"]).FindAll(p => p.Name.ToUpper().Contains(filterText.ToUpper()));
-            ProductCards.DataSource = filteredProducts;
-            ProductCards.DataBind();
-
-            // Si no se encuentra resultados.
-            if (filteredProducts.Count == 0)
-            {
-                alertProductNotFound.Visible = true;
-                alertEmptyDB.Visible = false; // Por las dudas.
-            }
+            Session["PAGEITEMS"] = ((List<Product>)Session["PRODUCTS"]).FindAll(p => p.Name.ToUpper().Contains(filterText.ToUpper()));
+            CurrentPage = 1;
+            BindRepeater();
+            ResetFilterStyles();
         }
 
         /// <summary>
@@ -90,17 +96,9 @@ namespace UserInterface.Pages.Global
         protected void btnFindByCategory_Click(object sender, EventArgs e)
         {
             string category = ((LinkButton) sender).CommandArgument;
-
-            List<Product> filteredProducts = ((List<Product>)Session["PRODUCTS"]).FindAll(p => p.Category.Description == category);
-            ProductCards.DataSource = filteredProducts;
-            ProductCards.DataBind();
-
-            // Si no se encuentra resultados.
-            if (filteredProducts.Count == 0)
-            {
-                alertProductNotFound.Visible = true;
-                alertEmptyDB.Visible = false; // Por las dudas.
-            }
+            Session["PAGEITEMS"] = ((List<Product>)Session["PRODUCTS"]).FindAll(p => p.Category.Description == category);
+            CurrentPage = 1;
+            BindRepeater();
 
             // Estilos para el filtro
             ResetFilterStyles();
@@ -114,16 +112,9 @@ namespace UserInterface.Pages.Global
         protected void btnFindByBrand_Click(object sender, EventArgs e)
         {
             string brand = ((LinkButton) sender).CommandArgument;
-            List<Product> filteredProducts = ((List<Product>)Session["PRODUCTS"]).FindAll(p => p.Brand.Description == brand);
-            ProductCards.DataSource = filteredProducts;
-            ProductCards.DataBind();
-
-            // Si no se encuentra resultados.
-            if (filteredProducts.Count == 0)
-            {
-                alertProductNotFound.Visible = true;
-                alertEmptyDB.Visible = false; // Por las dudas.
-            }
+            Session["PAGEITEMS"] = ((List<Product>)Session["PRODUCTS"]).FindAll(p => p.Brand.Description == brand);
+            CurrentPage = 1;
+            BindRepeater();
 
             // Estilos para el filtro
             ResetFilterStyles();
@@ -137,34 +128,25 @@ namespace UserInterface.Pages.Global
         protected void btnFindByPrice_Click(object sender, EventArgs e)
         {
             string price = ((LinkButton) sender).CommandArgument;
-            List<Product> filteredProducts = (List<Product>)Session["PRODUCTS"];
 
             if (price == "LOW")
             {
-                filteredProducts = filteredProducts.FindAll(p => p.Price < 50_000);
+                Session["PAGEITEMS"] = ((List<Product>)Session["PRODUCTS"]).FindAll(p => p.Price < 50_000);
             }
             else if (price == "MEDIUM")
             {
-                filteredProducts = filteredProducts.FindAll(p => p.Price >= 50_000 && p.Price < 100_000);
+                Session["PAGEITEMS"] = ((List<Product>)Session["PRODUCTS"]).FindAll(p => p.Price >= 50_000 && p.Price < 100_000);
             }
             else if (price == "HIGH")
             {
-                filteredProducts = filteredProducts.FindAll(p => p.Price >= 100_000 && p.Price < 500_000);
+                Session["PAGEITEMS"] = ((List<Product>)Session["PRODUCTS"]).FindAll(p => p.Price >= 100_000 && p.Price < 500_000);
             }
             else
             {
-                filteredProducts = filteredProducts.FindAll(p => p.Price >= 500_000);
+                Session["PAGEITEMS"] = ((List<Product>)Session["PRODUCTS"]).FindAll(p => p.Price >= 500_000);
             }
-
-            ProductCards.DataSource = filteredProducts;
-            ProductCards.DataBind();
-
-            // Si no se encuentra resultados.
-            if (filteredProducts.Count == 0)
-            {
-                alertProductNotFound.Visible = true;
-                alertEmptyDB.Visible = false; // Por las dudas.
-            }
+            CurrentPage = 1;
+            BindRepeater();
 
             // Estilos para el filtro
             ResetFilterStyles();
@@ -387,8 +369,9 @@ namespace UserInterface.Pages.Global
         protected void ResetAllFilters(object sender, EventArgs e)
         {
             ResetFilterStyles();
-            ProductCards.DataSource = (List<Product>)Session["PRODUCTS"];
-            ProductCards.DataBind();
+            Session["PAGEITEMS"] = (List<Product>)Session["PRODUCTS"];
+            CurrentPage = 1;
+            BindRepeater();
         }
 
         /// <summary>
@@ -428,6 +411,45 @@ namespace UserInterface.Pages.Global
                     resetButton.Visible = false;
                 }
             }
+        }
+
+        /// <summary>
+        /// Vincular los productos al repetidor según la paginación actual.
+        /// </summary>
+        private void BindRepeater()
+        {
+            int skip = (CurrentPage - 1) * PageSize;
+            List<Product> pagedItems = ((List<Product>)Session["PAGEITEMS"]).Skip(skip).Take(PageSize).ToList();
+            ProductCards.DataSource = pagedItems;
+            ProductCards.DataBind();
+
+            // Verificación de la exitencia de productos
+            if (pagedItems.Count == 0)
+                alertProductNotFound.Visible = true;
+            else
+                alertProductNotFound.Visible = false;
+
+            // Habilitar/Deshabilitar botones de paginación
+            btnPrev.Enabled = CurrentPage > 1;
+            btnNext.Enabled = (skip + PageSize) < ((List<Product>)Session["PAGEITEMS"]).Count;
+        }
+
+        /// <summary>
+        /// Retroceder una página de la paginación de productos vinculados en el repetidor.
+        /// </summary>
+        protected void btnPrev_Click(object sender, EventArgs e)
+        {
+            CurrentPage--;
+            BindRepeater();
+        }
+
+        /// <summary>
+        /// Avanzar una página de la paginación de productos vinculados en el repetidor.
+        /// </summary>
+        protected void btnNext_Click(object sender, EventArgs e)
+        {
+            CurrentPage++;
+            BindRepeater();
         }
     }
 }

@@ -173,7 +173,7 @@ namespace BusinessLogic
                 db.SetParam("@ProductDescription", newProduct.Description);
                 db.SetParam("@BrandID", newProduct.Brand.ID);
                 db.SetParam("@CategoryID", newProduct.Category.ID);
-                db.SetParam("@ProductImage", newProduct.Image);
+                db.SetParam("@ProductImage", newProduct.Image ?? Constants.PlaceholderImagePath);
                 db.SetParam("@ProductPrice", newProduct.Price);
                 db.ExecuteNonQuery();
             }
@@ -213,7 +213,7 @@ namespace BusinessLogic
                 db.SetParam("@ProductDescription", product.Description);
                 db.SetParam("@BrandID", product.Brand.ID);
                 db.SetParam("@CategoryID", product.Category.ID);
-                db.SetParam("@ProductImage", product.Image);
+                db.SetParam("@ProductImage", product.Image ?? Constants.PlaceholderImagePath);
                 db.SetParam("@ProductPrice", product.Price);
                 db.SetParam("@ProductID", product.ID);
                 db.ExecuteNonQuery();
@@ -346,6 +346,36 @@ namespace BusinessLogic
                 }
 
                 return filteredProducts;
+            }
+            catch (Exception ex)
+            {
+                // TODO: manejar error
+                throw ex;
+            }
+            finally
+            {
+                db.CloseConnection();
+            }
+        }
+
+        public static string GetProductImage(int id)
+        {
+            DataBase db = new DataBase();
+            string query = "SELECT ImagenUrl AS ProductImage " +
+                           "FROM ARTICULOS " +
+                           "WHERE Id = @ID";
+
+            try
+            {
+                db.SetQuery(query);
+                db.SetParam("@ID", id);
+                db.ExecuteRead();
+
+                if (db.Reader.Read())
+                {
+                    return db.Reader["ProductImage"].ToString();
+                }
+                return string.Empty;
             }
             catch (Exception ex)
             {
