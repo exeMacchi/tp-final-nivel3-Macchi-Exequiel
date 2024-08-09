@@ -178,18 +178,12 @@
                     <% // Elemento fundamental para la paginación al proporcionar la página actual %>
                     <asp:HiddenField ID="hfCurrentPage" runat="server" Value="1"/>
 
-<%--                    <asp:Button ID="btnPrev" runat="server" Text="«"
-                                CssClass="btn btn-outline-warning"
-                                OnClick="btnPrev_Click"/>--%>
                     <asp:LinkButton ID="btnPrev" runat="server"
                                     CssClass="btn btn-outline-warning"
                                     OnClick="btnPrev_Click">
                         <i class="bi bi-chevron-left"></i>
                     </asp:LinkButton>
 
-<%--                        <asp:Button ID="btnNext" runat="server" Text=">"
-                                    CssClass="btn btn-outline-warning"
-                                    OnClick="btnNext_Click" />--%>
                     <asp:LinkButton ID="btnNext" runat="server" 
                                     CssClass="btn btn-outline-warning"
                                     OnClick="btnNext_Click">

@@ -19,6 +19,5 @@ namespace Domain
         public string Avatar { get; set; }
 
         public bool IsAdmin { get; set; }
-        
     }
 }

@@ -131,6 +131,36 @@ namespace BusinessLogic
             }
         }
 
+        public static void UpdateUser(User user)
+        {
+            DataBase db = new DataBase();
+            string query = "UPDATE USERS " +
+                           "SET email = @UserEmail, " +
+                           "    nombre = @UserFirstname, " +
+                           "    apellido = @UserLastname, " +
+                           "    urlImagenPerfil = @UserAvatar " +
+                           "WHERE Id = @UserID;";
+            try
+            {
+                db.SetQuery(query);
+                db.SetParam("@UserEmail", user.Email);
+                db.SetParam("@UserFirstname", (object)user.Firstname ?? DBNull.Value);
+                db.SetParam("@UserLastname", (object)user.Lastname ?? DBNull.Value);
+                db.SetParam("@UserAvatar", user.Avatar ?? Constants.AvatarPlaceholderPath);
+                db.SetParam("@UserID", user.ID);
+                db.ExecuteNonQuery();
+            }
+            catch(Exception ex)
+            {
+                // TODO: manejar error
+                throw ex;
+            }
+            finally
+            {
+                db.CloseConnection();
+            }
+        }
+
         /// <summary>
         /// Actualizar en la base de datos la contraseña de un usuario por una nueva.
         /// </summary>

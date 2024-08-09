@@ -60,17 +60,6 @@
     </div>
 
     <!-- Password -->
-<%--    <div class="row justify-content-center my-4">
-        <div class="form-floating col-6">
-            <asp:TextBox ID="txbxPassword" runat="server" Placeholder="•••••••"
-                         Required="true" MaxLength="20" TextMode="Password"></asp:TextBox>
-            <asp:Label ID="lbPassword" runat="server" CssClass="ps-4"
-                       AssociatedControlID="txbxPassword" Text="Contraseña"></asp:Label>
-            <div id="invalidPass" class="invalid-feedback">
-                La contraseña debe tener entre 1 a 20 caracteres.
-            </div>
-        </div>
-    </div>--%>
     <div class="row justify-content-center my-4">
         <div class="col-6">
             <div class="input-group">
