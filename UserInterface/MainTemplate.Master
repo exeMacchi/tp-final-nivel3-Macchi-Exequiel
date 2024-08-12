@@ -104,7 +104,7 @@
                     <a href="#" 
                        class="dropdown-toggle d-flex align-items-center text-white"
                        data-bs-toggle="dropdown">
-                        <figure class="rounded-circle" style="height: 50px">
+                        <figure class="rounded-circle" style="height: 50px; width: 50px;">
                             <img src='<%:!string.IsNullOrEmpty(((Domain.User)Session["USER"]).Avatar)
                                           ? ((Domain.User)Session["USER"]).Avatar
                                           : Domain.Constants.AvatarPlaceholderPath %>'/>

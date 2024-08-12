@@ -45,7 +45,7 @@ namespace Domain
         public const string FormSelectOptionSelected = "form-select bg-dark form-select--option-selected";
         public const string FilterLinkNormal = "filter-link text-decoration-none ms-4";
         public const string FilterLinkSelected = "filter-link text-decoration-none ms-4 text-warning";
-        public const string EditButtonIcon = "bi bi-pencil-square text-white fs-5";
-        public const string ConfirmButtonIcon = "bi bi-check-circle text-white fs-5";
+        public const string EditButtonIcon = "bi bi-pencil-square text-warning fs-5";
+        public const string ConfirmButtonIcon = "bi bi-check-circle text-warning fs-5";
     }
 }

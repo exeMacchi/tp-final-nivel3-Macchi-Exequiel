@@ -2,6 +2,7 @@
 using Domain;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.UI;
@@ -105,6 +106,40 @@ namespace UserInterface.Pages.User
                     txbxSurname.ReadOnly = true;
 
                     Session["ALERTMESSAGE"] = "Apellido de usuario actualizado correctamente.";
+                    Response.Redirect($"{Constants.ProfilePagePath}?alert=success", false);
+                }
+                catch (Exception ex)
+                {
+                    // TODO: manejar error
+                    throw ex;
+                }
+            }
+        }
+
+        protected void btnAvatarSubmit_Click(object sender, EventArgs e)
+        {
+            // Si se subió una imagen
+            if (fuAvatar.HasFile)
+            {
+                string fileName = $"{((Domain.User)Session["USER"]).ID}-{fuAvatar.PostedFile.FileName}";
+                string path = Path.Combine(Server.MapPath($"~{Constants.LocalImagePath}"), fileName);
+
+                // Se verifica si el usuario tiene un avatar previo, si existe, se elimina.
+                if (((Domain.User)Session["USER"]).Avatar.StartsWith(Constants.LocalImagePath))
+                {
+                    string localAvatarPath = Server.MapPath(((Domain.User)Session["USER"]).Avatar);
+                    if (File.Exists(localAvatarPath))
+                    {
+                        File.Delete(localAvatarPath);
+                    }
+                }
+
+                try
+                {
+                    fuAvatar.SaveAs(path);
+                    ((Domain.User)Session["USER"]).Avatar = $"{Constants.LocalImagePath}{fileName}";
+                    UserBBL.UpdateUser((Domain.User)Session["USER"]);
+                    Session["ALERTMESSAGE"] = "Avatar de usuario actualizado correctamente.";
                     Response.Redirect($"{Constants.ProfilePagePath}?alert=success", false);
                 }
                 catch (Exception ex)

@@ -123,6 +123,15 @@ namespace UserInterface.Pages.User
         protected global::System.Web.UI.WebControls.Panel pnSurname;
 
         /// <summary>
+        /// lbAvatar control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lbAvatar;
+
+        /// <summary>
         /// imgAvatar control.
         /// </summary>
         /// <remarks>
@@ -130,5 +139,32 @@ namespace UserInterface.Pages.User
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Image imgAvatar;
+
+        /// <summary>
+        /// btnAvatar control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.LinkButton btnAvatar;
+
+        /// <summary>
+        /// fuAvatar control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.FileUpload fuAvatar;
+
+        /// <summary>
+        /// btnAvatarSubmit control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnAvatarSubmit;
     }
 }

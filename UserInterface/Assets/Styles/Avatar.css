@@ -1,0 +1,11 @@
+﻿
+/* Profile */
+.btn-avatar {
+    opacity: 0.05;
+    transition: opacity 5s ease;
+}
+
+    .btn-avatar:hover {
+        opacity: 1;
+        background-color: rgba(var(--bs-black-rgb), 0.5) !important;
+    }

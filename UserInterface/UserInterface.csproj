@@ -69,6 +69,7 @@
   <ItemGroup>
     <Content Include="Assets\Images\AvatarPlaceholder.jpg" />
     <Content Include="Assets\Images\Placeholder.jpg" />
+    <Content Include="Assets\Scripts\AvatarProfile.js" />
     <Content Include="Assets\Scripts\CheckInputsLogin.js" />
     <Content Include="Assets\Scripts\CheckPasswordsForgotten.js" />
     <Content Include="Assets\Scripts\CheckPasswordsRegister.js" />
@@ -76,6 +77,7 @@
     <Content Include="Assets\Scripts\FileInput.js" />
     <Content Include="Assets\Scripts\NumberInput.js" />
     <Content Include="Assets\Scripts\TogglePasswordReveal.js" />
+    <Content Include="Assets\Styles\Avatar.css" />
     <Content Include="Assets\Styles\Global.css" />
     <Content Include="Assets\Styles\HeaderFooter.css" />
     <Content Include="Assets\Styles\Pagination.css" />
