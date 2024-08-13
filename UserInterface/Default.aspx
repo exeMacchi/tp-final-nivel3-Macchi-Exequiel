@@ -6,7 +6,7 @@
 
 <asp:Content ID="Content2" ContentPlaceHolderID="mainContent" runat="server">
     <!-- HERO -->
-    <section class="my-5 py-4 bg-dark text-center text-white border rounded-5 border-opacity-50">
+    <section class="my-5 py-4 bg-dark text-center text-white border rounded-5">
         <div>
             <i class="bi bi-box" style="font-size: 80px"></i>
         </div>

@@ -290,6 +290,11 @@ namespace BusinessLogic
             }
         }
 
+        /// <summary>
+        /// Buscar y devolver productos de la base de datos según una condición especificada.
+        /// </summary>
+        /// <param name="condition">Condición de búsqueda después del WHERE</param>
+        /// <returns>Lista de productos filtrados</returns>
         public static List<Product> SearchProducts(string condition)
         {
             DataBase db = new DataBase();
@@ -358,6 +363,11 @@ namespace BusinessLogic
             }
         }
 
+        /// <summary>
+        /// Devolver la URL de imagen del producto especificado.
+        /// </summary>
+        /// <param name="id">ID del producto</param>
+        /// <returns>URL de imagen del producto especificado si existe</returns>
         public static string GetProductImage(int id)
         {
             DataBase db = new DataBase();
@@ -376,6 +386,100 @@ namespace BusinessLogic
                     return db.Reader["ProductImage"].ToString();
                 }
                 return string.Empty;
+            }
+            catch (Exception ex)
+            {
+                // TODO: manejar error
+                throw ex;
+            }
+            finally
+            {
+                db.CloseConnection();
+            }
+        }
+
+        /// <summary>
+        /// Agregar un producto como favorito de un usuario en la base de datos.
+        /// </summary>
+        /// <param name="userID">ID del usuario</param>
+        /// <param name="productID">ID del producto</param>
+        public static void AddFavoriteProduct(int userID, int productID)
+        {
+            DataBase db = new DataBase();
+            string query = "INSERT INTO FAVORITOS (IdUser, IdArticulo) VALUES (@UserID, @ProductID);";
+
+            try
+            {
+                db.SetQuery(query);
+                db.SetParam("@UserID", userID);
+                db.SetParam("@ProductID", productID);
+                db.ExecuteNonQuery();
+            }
+            catch (Exception ex)
+            {
+                // TODO: manejar error
+                throw ex;
+            }
+            finally
+            {
+                db.CloseConnection();
+            }
+        }
+
+        /// <summary>
+        /// Quitar un producto como favorito de un usuario en la base de datos.
+        /// </summary>
+        /// <param name="userID"></param>
+        /// <param name="productID"></param>
+        public static void RemoveFavorite(int userID, int productID)
+        {
+            DataBase db = new DataBase();
+            string query = "DELETE FROM FAVORITOS WHERE IdUser = @UserID AND IdArticulo = @ProductID;";
+
+            try
+            {
+                db.SetQuery(query);
+                db.SetParam("@UserID", userID);
+                db.SetParam("@ProductID", productID);
+                db.ExecuteNonQuery();
+            }
+            catch (Exception ex)
+            {
+                // TODO: manejar error
+                throw ex;
+            }
+            finally
+            {
+                db.CloseConnection();
+            }
+        }
+
+        /// <summary>
+        /// Devolver un valor booleano que indica si el producto especificado es favorito
+        /// para el usuario determinado.
+        /// </summary>
+        /// <param name="userID">ID del usuario</param>
+        /// <param name="productID">ID del producto</param>
+        /// <returns>Valor booleano que indica si el producto es favorito o no</returns>
+        public static bool IsFavoriteProduct(int userID, int productID)
+        {
+            DataBase db = new DataBase();
+            string query = "DECLARE @UserID INTEGER = @MyUserID; " +
+                           "DECLARE @ProductID INTEGER = @MyProductID; " +
+                           "DECLARE @Favorite BIT; " +
+                           "SET @Favorite = 0; " +
+                           "IF EXISTS (SELECT 1 FROM FAVORITOS WHERE IdUser = @UserID AND IdArticulo = @ProductID) " +
+                           "BEGIN " +
+                           "    SET @Favorite = 1; " +
+                           "END " +
+                           "SELECT @Favorite AS IsFavorite;";
+
+            try
+            {
+                db.SetQuery(query);
+                db.SetParam("@MyUserID", userID);
+                db.SetParam("@MyProductID", productID);
+                return db.ExecuteScalar();
             }
             catch (Exception ex)
             {

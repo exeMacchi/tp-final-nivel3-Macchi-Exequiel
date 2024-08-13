@@ -1,0 +1,23 @@
+﻿
+.btn-unfav > .bi {
+    color: var(--bs-light);
+}
+    .btn-unfav:hover {
+        border-color: var(--bs-warning) !important;
+    }
+
+    .btn-unfav:hover > .bi {
+        color: var(--bs-warning);
+    }
+
+.btn-fav > .bi {
+    color: var(--bs-warning);
+}
+
+    .btn-fav:hover {
+        background-color: var(--bs-warning) !important;
+    }
+
+    .btn-fav:hover > .bi {
+        color: var(--bs-dark);
+    }

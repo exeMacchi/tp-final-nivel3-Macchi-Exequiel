@@ -78,6 +78,7 @@
     <Content Include="Assets\Scripts\NumberInput.js" />
     <Content Include="Assets\Scripts\TogglePasswordReveal.js" />
     <Content Include="Assets\Styles\Avatar.css" />
+    <Content Include="Assets\Styles\FavoriteProduct.css" />
     <Content Include="Assets\Styles\Global.css" />
     <Content Include="Assets\Styles\HeaderFooter.css" />
     <Content Include="Assets\Styles\Pagination.css" />

@@ -51,20 +51,6 @@ namespace DataAccess
         }
 
         /// <summary>
-        /// Configurar el parámetro de salida booleano de una consulta SQL.
-        /// </summary>
-        /// <param name="param"></param>
-        /// <returns>SqlParameter</returns>
-        public SqlParameter SetOutputParam(string param)
-        {
-            SqlParameter output = new SqlParameter(param, SqlDbType.Bit);
-            output.Direction = ParameterDirection.Output;
-            command.Parameters.Add(output);
-            return output;
-        }
-
-
-        /// <summary>
         /// Ejecutar la consulta SQL para una operación SELECT.
         /// </summary>
         public void ExecuteRead()
