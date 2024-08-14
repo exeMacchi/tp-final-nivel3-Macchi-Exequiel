@@ -106,7 +106,7 @@ namespace BusinessLogic
                            "FROM ARTICULOS AS A " +
                            "INNER JOIN CATEGORIAS AS C ON A.IdCategoria = C.Id " +
                            "INNER JOIN MARCAS AS M ON A.IdMarca = M.Id " +
-                           "WHERE A.Id = @ProductID; ";
+                           "WHERE A.Id = @ProductID;";
 
             try
             {
@@ -116,7 +116,6 @@ namespace BusinessLogic
                 Product product = new Product();
                 if (db.Reader.Read())
                 {
-
                     product.ID = (int)db.Reader["ProductID"];
 
                     if (!(db.Reader["ProductCode"] is DBNull))
@@ -386,6 +385,82 @@ namespace BusinessLogic
                     return db.Reader["ProductImage"].ToString();
                 }
                 return string.Empty;
+            }
+            catch (Exception ex)
+            {
+                // TODO: manejar error
+                throw ex;
+            }
+            finally
+            {
+                db.CloseConnection();
+            }
+        }
+
+        /// <summary>
+        /// Devolver los productos favoritos de un usuario desde la base de datos.
+        /// </summary>
+        /// <param name="userID">ID del usuario</param>
+        /// <returns>Lista de <see cref="Product"/> con la información cargada</returns>
+        public static List<Product> GetFavoriteProducts(int userID)
+        {
+            DataBase db = new DataBase();
+            List<Product> favoriteProducts = new List<Product>();
+            string query = "SELECT A.Id AS ProductID, " +
+                           "       A.Codigo AS ProductCode, " +
+                           "       A.Nombre AS ProductName, " +
+                           "       A.Descripcion AS ProductDescription, " +
+                           "       A.ImagenUrl AS ProductImage, " +
+                           "       A.Precio AS ProductPrice, " +
+                           "       C.Id AS CategoryID, " +
+                           "       C.Descripcion AS CategoryDescription, " +
+                           "       M.Id AS BrandID, " +
+                           "       M.Descripcion AS BrandDescription " +
+                           "FROM ARTICULOS AS A " +
+                           "INNER JOIN CATEGORIAS AS C ON A.IdCategoria = C.Id " +
+                           "INNER JOIN MARCAS AS M ON A.IdMarca = M.Id " +
+                           "INNER JOIN FAVORITOS AS F ON A.Id = F.IdArticulo " +
+                           "WHERE F.IdUser = @UserID;";
+
+            try
+            {
+                db.SetQuery(query);
+                db.SetParam("@UserID", userID);
+                db.ExecuteRead();
+
+                while (db.Reader.Read())
+                {
+                    Product product = new Product();
+
+                    product.ID = (int)db.Reader["ProductID"];
+
+                    if (!(db.Reader["ProductCode"] is DBNull))
+                        product.Code = db.Reader["ProductCode"].ToString();
+
+                    if (!(db.Reader["ProductName"] is DBNull))
+                        product.Name = db.Reader["ProductName"].ToString();
+
+                    if (!(db.Reader["ProductDescription"] is DBNull))
+                        product.Description = db.Reader["ProductDescription"].ToString();
+
+                    if (!(db.Reader["ProductImage"] is DBNull))
+                        product.Image = Auxiliary.VerifyImage(db.Reader["ProductImage"].ToString());
+
+                    if (!(db.Reader["ProductPrice"] is DBNull))
+                        product.Price = (decimal)db.Reader["ProductPrice"];
+
+                    if (!(db.Reader["CategoryID"] is DBNull || db.Reader["CategoryDescription"] is DBNull))
+                        product.Category = new Category((int)db.Reader["CategoryID"],
+                                                         db.Reader["CategoryDescription"].ToString());
+
+                    if (!(db.Reader["BrandID"] is DBNull || db.Reader["BrandDescription"] is DBNull))
+                        product.Brand = new Brand((int)db.Reader["BrandID"],
+                                                   db.Reader["BrandDescription"].ToString());
+
+                    favoriteProducts.Add(product);
+                }
+
+                return favoriteProducts;
             }
             catch (Exception ex)
             {

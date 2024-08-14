@@ -140,15 +140,21 @@
             <!-- Productos -->
             <section class="col d-flex flex-wrap my-4">
             <% if (((List<Domain.Product>)Session["PRODUCTS"]).Count > 0) { %>
-                <asp:Repeater ID="ProductCards" runat="server">
+                <asp:Repeater ID="ProductCards" runat="server" OnItemDataBound="ProductCards_ItemDataBound">
                     <ItemTemplate>
                         <div class="col-4 p-4">
-                            <article class="card bg-dark overflow-hidden border rounded-5" style="max-height: 420px">
+                            <asp:Panel ID="pnlProductCard" runat="server"
+                                       CssClass="card bg-dark overflow-hidden border rounded-5"
+                                       style="max-height: 420px">
                                 <figure class="card-img-top bg-gradient text-white">
                                     <img src="<%# Eval("Image") %>"
                                          alt="Imagen del producto <%# Eval("Name") %>">
                                 </figure>
                                 <div class="card-body d-flex flex-column gap-1 justify-content-between">
+                                    <asp:Panel ID="pnlFavoriteProduct" runat="server" Visible="false"
+                                               CssClass="d-flex justify-content-center">
+                                        <i class="bi bi-star-fill text-warning"></i>
+                                    </asp:Panel>
                                     <h5 class="card-title text-center text-white fw-bold">
                                         <%# Eval("Name") %>
                                     </h5>
@@ -165,7 +171,7 @@
                                     <a href="<%: Domain.Constants.ProductDetailPagePath %>?id=<%# Eval("ID") %>"
                                        class="btn btn-outline-light">Ver detalle →</a>
                                 </div>
-                            </article>
+                            </asp:Panel>
                         </div>
                     </ItemTemplate>
                 </asp:Repeater>

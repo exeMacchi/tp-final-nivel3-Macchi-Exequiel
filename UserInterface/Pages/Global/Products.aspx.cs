@@ -22,19 +22,30 @@ namespace UserInterface.Pages.Global
 
         protected void Page_Init(object sender, EventArgs e)
         {
-            if (!(Session["PRODUCTS"] != null))
+            if (!IsPostBack)
             {
-                Session["PRODUCTS"] = ProductBBL.GetProducts();
-            }
+                if (Session["PRODUCTS"] == null)
+                {
+                    Session["PRODUCTS"] = ProductBBL.GetProducts();
+                }
 
-            if (!(Session["CATEGORIES"] != null))
-            {
-                Session["CATEGORIES"] = CategoryBBL.GetCategories();
-            }
+                if (Session["USER"] != null)
+                {
+                    // Se actualiza siempre la lista de productos favoritos cuando se recarga
+                    // la página porque el usuario puede que haya agregado o eliminado algún
+                    // producto de su lista de favoritos.
+                    Session["FAVORITEPRODUCTS"] = ProductBBL.GetFavoriteProducts(((Domain.User)Session["USER"]).ID);
+                }
 
-            if (!(Session["BRANDS"] != null))
-            {
-                Session["BRANDS"] = BrandBBL.GetBrands();
+                if (Session["CATEGORIES"] == null)
+                {
+                    Session["CATEGORIES"] = CategoryBBL.GetCategories();
+                }
+
+                if (Session["BRANDS"] == null)
+                {
+                    Session["BRANDS"] = BrandBBL.GetBrands();
+                }
             }
         }
 
@@ -334,6 +345,30 @@ namespace UserInterface.Pages.Global
                 else
                 {
                     btnFilter.Text = $"Superior a $500.000 ({filter.Value})";
+                }
+            }
+        }
+
+        /// <summary>
+        /// Si hay una sesión de usuario, verificar si se deben activar estilos para las
+        /// cards de productos según sean favoritos o no.
+        /// </summary>
+        protected void ProductCards_ItemDataBound(object sender, RepeaterItemEventArgs e)
+        {
+            if (Session["USER"] != null)
+            {
+                if (e.Item.ItemType == ListItemType.Item || e.Item.ItemType == ListItemType.AlternatingItem)
+                {
+                    int productID = (int)DataBinder.Eval(e.Item.DataItem, "ID");
+                    bool isFavorite = ((List<Product>)Session["FAVORITEPRODUCTS"]).Any(p => p.ID == productID);
+
+                    if (isFavorite)
+                    {
+                        Panel pnlFavoriteProduct = (Panel)e.Item.FindControl("pnlFavoriteProduct");
+                        Panel pnlProductCard = (Panel)e.Item.FindControl("pnlProductCard");
+                        pnlFavoriteProduct.Visible = true;
+                        pnlProductCard.CssClass += " border-warning border-3";
+                    }
                 }
             }
         }

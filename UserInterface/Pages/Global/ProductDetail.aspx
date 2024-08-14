@@ -20,8 +20,9 @@
         </asp:Panel>
 
         <!-- Detalle -->
-        <article class="row bg-dark rounded-5 border text-white py-4 px-3">
-            <div class="col-6 d-flex justify-content-center align-content-center">
+        <asp:Panel ID="pnlProductDetail" runat="server" 
+                   CssClass="row bg-dark rounded-5 border text-white py-4 px-3">
+            <div class="col-6 d-flex justify-content-center align-items-center">
                 <figure class="text-white" style="height: 300px">
                     <asp:Image ID="productImage" runat="server"/>
                 </figure>
@@ -61,7 +62,11 @@
                 <!-- Descripción -->
                 <asp:Label ID="lbDescription" runat="server"
                            CssClass="lead fst-italic"></asp:Label>
+
+                <!-- Volver a la lista de productos -->
+                <a href="<%: Domain.Constants.ProductsPagePath %>"
+                   class="btn btn-outline-light">← Volver a la lista de productos</a>
             </div>
-        </article>
+        </asp:Panel>
     </div>
 </asp:Content>

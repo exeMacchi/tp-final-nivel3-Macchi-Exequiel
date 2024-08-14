@@ -36,17 +36,21 @@ namespace UserInterface.Pages.Global
                             lbCategory.Text = product.Category.Description;
                         }
 
+                        // Si hay sesión de usuario, verificar si el producto actual es uno
+                        // de sus favoritos.
                         if (Session["USER"] != null)
                         {
                             if (ProductBBL.IsFavoriteProduct(((Domain.User)Session["USER"]).ID, product.ID))
                             {
                                 btnFavorite.CssClass = Constants.FavoriteProductButton;
                                 pnlFavoriteIcon.CssClass = Constants.FavoriteProductIcon;
+                                pnlProductDetail.CssClass = Constants.FavoriteProductDetail;
                             }
                             else
                             {
                                 btnFavorite.CssClass = Constants.UnfavoriteProductButton;
                                 pnlFavoriteIcon.CssClass = Constants.UnfavoriteProductIcon;
+                                pnlProductDetail.CssClass = Constants.UnfavoriteProductDetail;
                             }
                         }
                     }
@@ -79,6 +83,7 @@ namespace UserInterface.Pages.Global
                     ProductBBL.AddFavoriteProduct(userID, productID);
                     btnFavorite.CssClass = Constants.FavoriteProductButton;
                     pnlFavoriteIcon.CssClass = Constants.FavoriteProductIcon;
+                    pnlProductDetail.CssClass = Constants.FavoriteProductDetail;
                     lbFavoriteAlertText.Text = "Producto añadido como favorito";
                     pnlFavoriteAlert.Visible = true;
                 }
@@ -88,6 +93,7 @@ namespace UserInterface.Pages.Global
                     ProductBBL.RemoveFavorite(userID, productID);
                     btnFavorite.CssClass = Constants.UnfavoriteProductButton;
                     pnlFavoriteIcon.CssClass = Constants.UnfavoriteProductIcon;
+                    pnlProductDetail.CssClass = Constants.UnfavoriteProductDetail;
                     lbFavoriteAlertText.Text = "Producto removido como favorito";
                     pnlFavoriteAlert.Visible = true;
                 }
