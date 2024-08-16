@@ -23,12 +23,14 @@
                 Además, contamos con un sistema de registro que permite a los usuarios 
                 realizar un seguimiento de sus productos favoritos.
             </p>
-            <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
-                <a href="<%: Domain.Constants.RegisterPagePath %>" 
-                   class="btn btn-outline-light w-100 btn-lg px-4 gap-3">
-                    ¡Regístrate!
-                </a>
-            </div>
+            <% if (Session["USER"] == null) { %>
+                <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
+                    <a href="<%: Domain.Constants.RegisterPagePath %>" 
+                       class="btn btn-outline-light w-100 btn-lg px-4 gap-3">
+                        ¡Regístrate!
+                    </a>
+                </div>
+            <% } %>
         </div>
     </section>
 

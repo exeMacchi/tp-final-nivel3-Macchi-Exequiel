@@ -27,6 +27,7 @@
         </div>
     </div>
 
+    <!-- Filtros -->
     <div class="row">
         <!-- Filtro básico -->
         <div class="col-6 d-flex gap-3">

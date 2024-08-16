@@ -64,8 +64,13 @@
                            CssClass="lead fst-italic"></asp:Label>
 
                 <!-- Volver a la lista de productos -->
-                <a href="<%: Domain.Constants.ProductsPagePath %>"
-                   class="btn btn-outline-light">← Volver a la lista de productos</a>
+                <% if (Request.QueryString["p"] == "favorites") { %>
+                    <a href="<%: Domain.Constants.FavoritesPagePath %>"
+                       class="btn btn-outline-light">← Volver a la lista de productos favoritos</a>
+                <% } else { %>
+                    <a href="<%: Domain.Constants.ProductsPagePath %>"
+                       class="btn btn-outline-light">← Volver a la lista de productos</a>
+                <% } %>
             </div>
         </asp:Panel>
     </div>

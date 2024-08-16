@@ -210,7 +210,7 @@ namespace UserInterface.Pages.Admin
         /// </summary>
         protected void ddlFirstCriteria_SelectedIndexChanged(object sender, EventArgs e)
         {
-            txbxFilter.Text = "";
+            txbxFilter.Text = string.Empty;
             // Criterio por valor
             if (ddlFirstCriteria.SelectedValue == "Price")
             {

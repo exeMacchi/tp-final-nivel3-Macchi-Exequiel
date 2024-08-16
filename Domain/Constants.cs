@@ -53,5 +53,7 @@ namespace Domain
         public const string UnfavoriteProductButton = "btn border p-2 border rounded-circle lh-1 btn-unfav";
         public const string UnfavoriteProductIcon = "bi bi-star";
         public const string UnfavoriteProductDetail = "row bg-dark rounded-5 border text-white py-4 px-3";
+        public const string ResetFilterButtonDisabled = "btn btn-warning border disabled";
+        public const string ResetFilterButtonEnabled = "btn btn-warning border";
     }
 }

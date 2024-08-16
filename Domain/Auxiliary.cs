@@ -73,10 +73,8 @@ namespace Domain
         private static string CreateCriteria(string firstCriteria, string secondCriteria, string text)
         {
             string criteria = string.Empty;
-            if (firstCriteria == "Name" ||
-                firstCriteria == "Code" ||
-                firstCriteria == "Brand" ||
-                firstCriteria == "Category")
+            if (firstCriteria == "Name"  || firstCriteria == "Code" ||
+                firstCriteria == "Brand" || firstCriteria == "Category")
             {
                 if (secondCriteria == "Starts")
                     criteria = $"LIKE '{text}%' ";
