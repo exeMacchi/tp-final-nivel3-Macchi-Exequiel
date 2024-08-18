@@ -24,27 +24,35 @@ namespace UserInterface.Pages.Global
         {
             if (!IsPostBack)
             {
-                if (Session["PRODUCTS"] == null)
+                try
                 {
-                    Session["PRODUCTS"] = ProductBBL.GetProducts();
-                }
+                    if (Session["PRODUCTS"] == null)
+                    {
+                        Session["PRODUCTS"] = ProductBBL.GetProducts();
+                    }
 
-                if (Session["USER"] != null)
-                {
-                    // Se actualiza siempre la lista de productos favoritos cuando se recarga
-                    // la página porque el usuario puede que haya agregado o eliminado algún
-                    // producto de su lista de favoritos.
-                    Session["FAVORITEPRODUCTS"] = ProductBBL.GetFavoriteProducts(((Domain.User)Session["USER"]).ID);
-                }
+                    if (Session["USER"] != null)
+                    {
+                        // Se actualiza siempre la lista de productos favoritos cuando se recarga
+                        // la página porque el usuario puede que haya agregado o eliminado algún
+                        // producto de su lista de favoritos.
+                        Session["FAVORITEPRODUCTS"] = ProductBBL.GetFavoriteProducts(((Domain.User)Session["USER"]).ID);
+                    }
 
-                if (Session["CATEGORIES"] == null)
-                {
-                    Session["CATEGORIES"] = CategoryBBL.GetCategories();
-                }
+                    if (Session["CATEGORIES"] == null)
+                    {
+                        Session["CATEGORIES"] = CategoryBBL.GetCategories();
+                    }
 
-                if (Session["BRANDS"] == null)
+                    if (Session["BRANDS"] == null)
+                    {
+                        Session["BRANDS"] = BrandBBL.GetBrands();
+                    }
+                }
+                catch (Exception ex)
                 {
-                    Session["BRANDS"] = BrandBBL.GetBrands();
+                    Session["ERROR"] = ex;
+                    Response.Redirect(Constants.ErrorPagePath);
                 }
             }
         }
@@ -83,8 +91,8 @@ namespace UserInterface.Pages.Global
                 }
                 catch (Exception ex)
                 {
-                    // TODO: Manejo de errores
-                    throw ex;
+                    Session["ERROR"] = ex;
+                    Response.Redirect(Constants.ErrorPagePath);
                 }
             }
         }
@@ -94,11 +102,19 @@ namespace UserInterface.Pages.Global
         /// </summary>
         protected void btnFindByName_Click(object sender, EventArgs e)
         {
-            string filterText = txbxFilter.Text;
-            Session["PAGEITEMS"] = ((List<Product>)Session["PRODUCTS"]).FindAll(p => p.Name.ToUpper().Contains(filterText.ToUpper()));
-            CurrentPage = 1;
-            BindRepeater();
-            ResetFilterStyles();
+            try
+            {
+                string filterText = txbxFilter.Text;
+                Session["PAGEITEMS"] = ((List<Product>)Session["PRODUCTS"]).FindAll(p => p.Name.ToUpper().Contains(filterText.ToUpper()));
+                CurrentPage = 1;
+                BindRepeater();
+                ResetFilterStyles();
+            }
+            catch (Exception ex)
+            {
+                Session["ERROR"] = ex;
+                Response.Redirect(Constants.ErrorPagePath);
+            }
         }
 
         /// <summary>
@@ -106,15 +122,23 @@ namespace UserInterface.Pages.Global
         /// </summary>
         protected void btnFindByCategory_Click(object sender, EventArgs e)
         {
-            string category = ((LinkButton) sender).CommandArgument;
-            Session["PAGEITEMS"] = ((List<Product>)Session["PRODUCTS"]).FindAll(p => p.Category.Description == category);
-            CurrentPage = 1;
-            BindRepeater();
+            try
+            {
+                string category = ((LinkButton) sender).CommandArgument;
+                Session["PAGEITEMS"] = ((List<Product>)Session["PRODUCTS"]).FindAll(p => p.Category.Description == category);
+                CurrentPage = 1;
+                BindRepeater();
 
-            // Estilos para el filtro
-            ResetFilterStyles();
-            ActiveResetButton(CategoriesFilter, "btnResetCategory", category);
-            ((LinkButton)sender).CssClass = Constants.FilterLinkSelected;
+                // Estilos para el filtro
+                ResetFilterStyles();
+                ActiveResetButton(CategoriesFilter, "btnResetCategory", category);
+                ((LinkButton)sender).CssClass = Constants.FilterLinkSelected;
+            }
+            catch (Exception ex)
+            {
+                Session["ERROR"] = ex;
+                Response.Redirect(Constants.ErrorPagePath);
+            }
         }
 
         /// <summary>
@@ -122,15 +146,23 @@ namespace UserInterface.Pages.Global
         /// </summary>
         protected void btnFindByBrand_Click(object sender, EventArgs e)
         {
-            string brand = ((LinkButton) sender).CommandArgument;
-            Session["PAGEITEMS"] = ((List<Product>)Session["PRODUCTS"]).FindAll(p => p.Brand.Description == brand);
-            CurrentPage = 1;
-            BindRepeater();
+            try
+            {
+                string brand = ((LinkButton) sender).CommandArgument;
+                Session["PAGEITEMS"] = ((List<Product>)Session["PRODUCTS"]).FindAll(p => p.Brand.Description == brand);
+                CurrentPage = 1;
+                BindRepeater();
 
-            // Estilos para el filtro
-            ResetFilterStyles();
-            ActiveResetButton(BrandsFilter, "btnResetBrand", brand);
-            ((LinkButton)sender).CssClass = Constants.FilterLinkSelected;
+                // Estilos para el filtro
+                ResetFilterStyles();
+                ActiveResetButton(BrandsFilter, "btnResetBrand", brand);
+                ((LinkButton)sender).CssClass = Constants.FilterLinkSelected;
+            }
+            catch (Exception ex)
+            {
+                Session["ERROR"] = ex;
+                Response.Redirect(Constants.ErrorPagePath);
+            }
         }
 
         /// <summary>
@@ -138,31 +170,39 @@ namespace UserInterface.Pages.Global
         /// </summary>
         protected void btnFindByPrice_Click(object sender, EventArgs e)
         {
-            string price = ((LinkButton) sender).CommandArgument;
+            try
+            {
+                string price = ((LinkButton) sender).CommandArgument;
 
-            if (price == "LOW")
-            {
-                Session["PAGEITEMS"] = ((List<Product>)Session["PRODUCTS"]).FindAll(p => p.Price < 50_000);
-            }
-            else if (price == "MEDIUM")
-            {
-                Session["PAGEITEMS"] = ((List<Product>)Session["PRODUCTS"]).FindAll(p => p.Price >= 50_000 && p.Price < 100_000);
-            }
-            else if (price == "HIGH")
-            {
-                Session["PAGEITEMS"] = ((List<Product>)Session["PRODUCTS"]).FindAll(p => p.Price >= 100_000 && p.Price < 500_000);
-            }
-            else
-            {
-                Session["PAGEITEMS"] = ((List<Product>)Session["PRODUCTS"]).FindAll(p => p.Price >= 500_000);
-            }
-            CurrentPage = 1;
-            BindRepeater();
+                if (price == "LOW")
+                {
+                    Session["PAGEITEMS"] = ((List<Product>)Session["PRODUCTS"]).FindAll(p => p.Price < 50_000);
+                }
+                else if (price == "MEDIUM")
+                {
+                    Session["PAGEITEMS"] = ((List<Product>)Session["PRODUCTS"]).FindAll(p => p.Price >= 50_000 && p.Price < 100_000);
+                }
+                else if (price == "HIGH")
+                {
+                    Session["PAGEITEMS"] = ((List<Product>)Session["PRODUCTS"]).FindAll(p => p.Price >= 100_000 && p.Price < 500_000);
+                }
+                else
+                {
+                    Session["PAGEITEMS"] = ((List<Product>)Session["PRODUCTS"]).FindAll(p => p.Price >= 500_000);
+                }
+                CurrentPage = 1;
+                BindRepeater();
 
-            // Estilos para el filtro
-            ResetFilterStyles();
-            ActiveResetButton(PriceFilter, "btnResetPrice", price);
-            ((LinkButton)sender).CssClass = Constants.FilterLinkSelected;
+                // Estilos para el filtro
+                ResetFilterStyles();
+                ActiveResetButton(PriceFilter, "btnResetPrice", price);
+                ((LinkButton)sender).CssClass = Constants.FilterLinkSelected;
+            }
+            catch (Exception ex)
+            {
+                Session["ERROR"] = ex;
+                Response.Redirect(Constants.ErrorPagePath);
+            }
         }
 
         /// <summary>
@@ -193,8 +233,8 @@ namespace UserInterface.Pages.Global
             }
             catch (Exception ex)
             {
-                // TODO: manejar error
-                throw ex;
+                Session["ERROR"] = ex;
+                Response.Redirect(Constants.ErrorPagePath);
             }
         }
 
@@ -226,8 +266,8 @@ namespace UserInterface.Pages.Global
             }
             catch (Exception ex)
             {
-                // TODO: manejar error
-                throw ex;
+                Session["ERROR"] = ex;
+                Response.Redirect(Constants.ErrorPagePath);
             }
         }
 
@@ -272,8 +312,8 @@ namespace UserInterface.Pages.Global
             }
             catch (Exception ex)
             {
-                // TODO: manejar error
-                throw ex;
+                Session["ERROR"] = ex;
+                Response.Redirect(Constants.ErrorPagePath);
             }
         }
 
@@ -355,21 +395,29 @@ namespace UserInterface.Pages.Global
         /// </summary>
         protected void ProductCards_ItemDataBound(object sender, RepeaterItemEventArgs e)
         {
-            if (Session["USER"] != null)
+            try
             {
-                if (e.Item.ItemType == ListItemType.Item || e.Item.ItemType == ListItemType.AlternatingItem)
+                if (Session["USER"] != null)
                 {
-                    int productID = (int)DataBinder.Eval(e.Item.DataItem, "ID");
-                    bool isFavorite = ((List<Product>)Session["FAVORITEPRODUCTS"]).Any(p => p.ID == productID);
-
-                    if (isFavorite)
+                    if (e.Item.ItemType == ListItemType.Item || e.Item.ItemType == ListItemType.AlternatingItem)
                     {
-                        Panel pnlFavoriteProduct = (Panel)e.Item.FindControl("pnlFavoriteProduct");
-                        Panel pnlProductCard = (Panel)e.Item.FindControl("pnlProductCard");
-                        pnlFavoriteProduct.Visible = true;
-                        pnlProductCard.CssClass += " border-warning border-3";
+                        int productID = (int)DataBinder.Eval(e.Item.DataItem, "ID");
+                        bool isFavorite = ((List<Product>)Session["FAVORITEPRODUCTS"]).Any(favoriteP => favoriteP.ID == productID);
+
+                        if (isFavorite)
+                        {
+                            Panel pnlFavoriteProduct = (Panel)e.Item.FindControl("pnlFavoriteProduct");
+                            Panel pnlProductCard = (Panel)e.Item.FindControl("pnlProductCard");
+                            pnlFavoriteProduct.Visible = true;
+                            pnlProductCard.CssClass += " border-warning border-3";
+                        }
                     }
                 }
+            }
+            catch (Exception ex)
+            {
+                Session["ERROR"] = ex;
+                Response.Redirect(Constants.ErrorPagePath);
             }
         }
 
@@ -403,10 +451,18 @@ namespace UserInterface.Pages.Global
         /// <param name="e"></param>
         protected void ResetAllFilters(object sender, EventArgs e)
         {
-            ResetFilterStyles();
-            Session["PAGEITEMS"] = (List<Product>)Session["PRODUCTS"];
-            CurrentPage = 1;
-            BindRepeater();
+            try
+            {
+                ResetFilterStyles();
+                Session["PAGEITEMS"] = (List<Product>)Session["PRODUCTS"];
+                CurrentPage = 1;
+                BindRepeater();
+            }
+            catch (Exception ex)
+            {
+                Session["ERROR"] = ex;
+                Response.Redirect(Constants.ErrorPagePath);
+            }
         }
 
         /// <summary>
@@ -453,20 +509,28 @@ namespace UserInterface.Pages.Global
         /// </summary>
         private void BindRepeater()
         {
-            int skip = (CurrentPage - 1) * PageSize;
-            List<Product> pagedItems = ((List<Product>)Session["PAGEITEMS"]).Skip(skip).Take(PageSize).ToList();
-            ProductCards.DataSource = pagedItems;
-            ProductCards.DataBind();
+            try
+            {
+                int skip = (CurrentPage - 1) * PageSize;
+                List<Product> pagedItems = ((List<Product>)Session["PAGEITEMS"]).Skip(skip).Take(PageSize).ToList();
+                ProductCards.DataSource = pagedItems;
+                ProductCards.DataBind();
 
-            // Verificación de la exitencia de productos
-            if (pagedItems.Count == 0)
-                alertProductNotFound.Visible = true;
-            else
-                alertProductNotFound.Visible = false;
+                // Verificación de la exitencia de productos
+                if (pagedItems.Count == 0)
+                    alertProductNotFound.Visible = true;
+                else
+                    alertProductNotFound.Visible = false;
 
-            // Habilitar/Deshabilitar botones de paginación
-            btnPrev.Enabled = CurrentPage > 1;
-            btnNext.Enabled = (skip + PageSize) < ((List<Product>)Session["PAGEITEMS"]).Count;
+                // Habilitar/Deshabilitar botones de paginación
+                btnPrev.Enabled = CurrentPage > 1;
+                btnNext.Enabled = (skip + PageSize) < ((List<Product>)Session["PAGEITEMS"]).Count;
+            }
+            catch (Exception ex)
+            {
+                Session["ERROR"] = ex;
+                Response.Redirect(Constants.ErrorPagePath);
+            }
         }
 
         /// <summary>

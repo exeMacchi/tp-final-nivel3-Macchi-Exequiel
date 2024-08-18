@@ -148,7 +148,8 @@
                                        style="max-height: 420px">
                                 <figure class="card-img-top bg-gradient text-white">
                                     <img src="<%# Eval("Image") %>"
-                                         alt="Imagen del producto <%# Eval("Name") %>">
+                                         alt="Imagen del producto <%# Eval("Name") %>"
+                                         style="max-height: 140px">
                                 </figure>
                                 <div class="card-body d-flex flex-column gap-1 justify-content-between">
                                     <asp:Panel ID="pnlFavoriteProduct" runat="server" Visible="false"
@@ -162,7 +163,7 @@
                                         <span class="badge rounded-pill text-white border bg-gradient"><%# Eval("Brand.Description") %></span>
                                         <span class="badge rounded-pill text-white border bg-gradient"><%# Eval("Category.Description") %></span>
                                     </div>
-                                    <p class="card-text text-white lead fs-6 mt-2 text-center">
+                                    <p class="card-text text-white lead fs-6 m-0 text-center">
                                         <%# Eval("Description") %>
                                     </p>
                                     <p class="card-text text-warning text-center fs-2">

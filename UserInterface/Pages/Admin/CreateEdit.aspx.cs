@@ -14,6 +14,9 @@ namespace UserInterface.Pages.Admin
 {
     public partial class CreateEdit : System.Web.UI.Page
     {
+        /* ---------------------------------------------------------------------------- */
+        /*                                      GENERAL                                 */
+        /* ---------------------------------------------------------------------------- */
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!IsPostBack)
@@ -21,83 +24,123 @@ namespace UserInterface.Pages.Admin
                 try
                 {
                     // Cargas iniciales
-                    ddlBrand.DataSource = BrandBBL.GetBrands();
-                    ddlBrand.DataTextField = "Description";
-                    ddlBrand.DataValueField = "ID";
-                    ddlBrand.DataBind();
-
-                    ddlCategory.DataSource = CategoryBBL.GetCategories();
-                    ddlCategory.DataTextField = "Description";
-                    ddlCategory.DataValueField = "ID";
-                    ddlCategory.DataBind();
-
-                    imgProduct.ImageUrl = Constants.PlaceholderImagePath;
-
-                    // Si se está modificando un producto...
-                    if (Request.QueryString["id"] != null)
-                    {
-                        // Carga de datos
-                        Product productMOD = ProductBBL.GetProduct(int.Parse(Request.QueryString["id"]));
-                        txbxCode.Text = productMOD.Code;
-                        // Objeto en sesión que sirve para la verificación de cambio de código (deben ser únicos).
-                        Session["PRODUCTCODE"] = productMOD.Code; 
-                        txbxName.Text = productMOD.Name;
-                        txbxDescription.Text = productMOD.Description;
-                        txbxPrice.Text = productMOD.Price.ToString("0.##", CultureInfo.CurrentCulture);
-                        ddlBrand.SelectedValue = productMOD.Brand.ID.ToString();
-                        ddlCategory.SelectedValue = productMOD.Category.ID.ToString();
-                        if (productMOD.Image.StartsWith("https"))
-                        {
-                            txbxImage.Text = productMOD.Image;
-                        }
-                        else if (productMOD.Image.StartsWith(Constants.LocalImagePath))
-                        {
-                            // Objeto en sesión que sirve por un posible reemplazo de imagen local.
-                            Session["PRODUCTIMAGE"] = productMOD.Image; 
-                        }
-                        imgProduct.ImageUrl = productMOD.Image;
-
-                        // Estilos de los DropDownList
-                        ddlBrand.CssClass = Constants.FormSelectOptionSelected;
-                        ddlCategory.CssClass = Constants.FormSelectOptionSelected;
-
-                        // Botón
-                        btnSubmit.Text = "MODIFICAR";
-                    }
+                    InitialPageLoad();
 
                     // Si se está creando un nuevo producto...
+                    if (IsCreatePageMode())
+                    {
+                        LoadPageForCreate();
+                    }
+                    // Si se está modificando un producto...
                     else
                     {
-                        // Botón
-                        btnSubmit.Text = "AGREGAR";
-                        btnSubmit.Enabled = false;
-
-                        // Placeholder marca
-                        ListItem brandPlaceholder = new ListItem("Seleccione una marca...", "0");
-                        brandPlaceholder.Attributes["disabled"] = "true";
-                        brandPlaceholder.Attributes["selected"] = "true";
-                        brandPlaceholder.Attributes["class"] = "form-option--placeholder";
-                        ddlBrand.Items.Insert(0, brandPlaceholder);
-                        ddlBrand.CssClass = Constants.FormSelectPlaceholder; // Es necesario para los estilos del placeholder inicial.
-
-                        // Placeholder categoría
-                        ListItem categoryPlaceholder = new ListItem("Seleccione una categoría...", "0");
-                        categoryPlaceholder.Attributes["disabled"] = "true";
-                        categoryPlaceholder.Attributes["selected"] = "true";
-                        categoryPlaceholder.Attributes["class"] = "form-option--placeholder";
-                        ddlCategory.Items.Insert(0, categoryPlaceholder);
-                        ddlCategory.CssClass = Constants.FormSelectPlaceholder; // Es necesario para los estilos del placeholder inicial.
+                        LoadPageForEdit();
                     }
                 }
                 catch (Exception ex)
                 {
-                    // TODO: manejar errores
-                    Session.Add("ERROR", ex);
-                    throw ex;
+                    HandleException(ex);
                 }
             }
         }
 
+        /// <summary>
+        /// Cargar algunos controles por defecto
+        /// </summary>
+        private void InitialPageLoad()
+        {
+            try
+            {
+                ddlBrand.DataSource = BrandBBL.GetBrands();
+                ddlBrand.DataTextField = "Description";
+                ddlBrand.DataValueField = "ID";
+                ddlBrand.DataBind();
+
+                ddlCategory.DataSource = CategoryBBL.GetCategories();
+                ddlCategory.DataTextField = "Description";
+                ddlCategory.DataValueField = "ID";
+                ddlCategory.DataBind();
+
+                imgProduct.ImageUrl = Constants.PlaceholderImagePath;
+            }
+            catch (Exception ex)
+            {
+                HandleException(ex);
+            }
+        }
+
+        /// <summary>
+        /// Cargar los campos de los controles según la información del producto que se
+        /// quiere modificar.
+        /// </summary>
+        private void LoadPageForEdit()
+        {
+            try
+            {
+                Product productMOD = ProductBBL.GetProduct(int.Parse(Request.QueryString["id"]));
+                txbxCode.Text = productMOD.Code;
+                // Objeto en sesión que sirve para la verificación de cambio de código (deben ser únicos).
+                Session["PRODUCTCODE"] = productMOD.Code; 
+                txbxName.Text = productMOD.Name;
+                txbxDescription.Text = productMOD.Description;
+                txbxPrice.Text = productMOD.Price.ToString("0.##", CultureInfo.CurrentCulture);
+                ddlBrand.SelectedValue = productMOD.Brand.ID.ToString();
+                ddlCategory.SelectedValue = productMOD.Category.ID.ToString();
+                if (productMOD.Image.StartsWith("https"))
+                {
+                    txbxImage.Text = productMOD.Image;
+                }
+                else if (productMOD.Image.StartsWith(Constants.LocalImagePath))
+                {
+                    // Objeto en sesión que sirve por un posible reemplazo de imagen local.
+                    Session["PRODUCTIMAGE"] = productMOD.Image; 
+                }
+                imgProduct.ImageUrl = productMOD.Image;
+
+                // Estilos de los DropDownList
+                ddlBrand.CssClass = Constants.FormSelectOptionSelected;
+                ddlCategory.CssClass = Constants.FormSelectOptionSelected;
+
+                // Botón
+                btnSubmit.Text = "MODIFICAR";
+            }
+            catch (Exception ex)
+            {
+                Session["ERROR"] = ex;
+                Response.Redirect(Constants.ErrorPagePath);
+            }
+        }
+
+        /// <summary>
+        /// Preparar la página para la creación de un nuevo producto.
+        /// </summary>
+        private void LoadPageForCreate()
+        {
+            // Botón
+            btnSubmit.Text = "AGREGAR";
+            btnSubmit.Enabled = false;
+
+            // Placeholder marca
+            ListItem brandPlaceholder = new ListItem("Seleccione una marca...", "0");
+            brandPlaceholder.Attributes["disabled"] = "true";
+            brandPlaceholder.Attributes["selected"] = "true";
+            brandPlaceholder.Attributes["class"] = "form-option--placeholder";
+            ddlBrand.Items.Insert(0, brandPlaceholder);
+            ddlBrand.CssClass = Constants.FormSelectPlaceholder; // Es necesario para los estilos del placeholder inicial.
+
+            // Placeholder categoría
+            ListItem categoryPlaceholder = new ListItem("Seleccione una categoría...", "0");
+            categoryPlaceholder.Attributes["disabled"] = "true";
+            categoryPlaceholder.Attributes["selected"] = "true";
+            categoryPlaceholder.Attributes["class"] = "form-option--placeholder";
+            ddlCategory.Items.Insert(0, categoryPlaceholder);
+            ddlCategory.CssClass = Constants.FormSelectPlaceholder; // Es necesario para los estilos del placeholder inicial.
+        }
+
+        /// <summary>
+        /// Verificar que los campos obligatorios estén rellenados para poder habilitar
+        /// el botón de envío.
+        /// </summary>
         protected void VerifyInformation()
         {
             if (txbxCode.Text != "" && txbxName.Text != "" && 
@@ -112,61 +155,144 @@ namespace UserInterface.Pages.Admin
             }
         }
 
-        // Cuando se ingresa un código.
+        /// <summary>
+        /// Verificar que la página actual sea la creación de un nuevo producto.
+        /// </summary>
+        /// <returns>Valor booleano que indica si se está creando un nuevo producto o no</returns>
+        private bool IsCreatePageMode()
+        {
+            return Request.QueryString["id"] == null;
+        }
+
+        /// <summary>
+        /// Manejar la excepción guardándola en sesión para después rederigirla a la
+        /// página de error.
+        /// </summary>
+        /// <param name="ex"></param>
+        private void HandleException(Exception ex)
+        {
+            Session["ERROR"] = ex;
+            Response.Redirect(Constants.ErrorPagePath);
+        }
+
+
+        /* ---------------------------------------------------------------------------- */
+        /*                                      CÓDIGO                                  */
+        /* ---------------------------------------------------------------------------- */
+        /// <summary>
+        /// Cuando se ingresa un código de producto.
+        /// </summary>
         protected void txbxCode_TextChanged(object sender, EventArgs e)
         {
             if (txbxCode.Text.Length <= 50 && txbxCode.Text.Length > 0)
             {
                 // Verificación de código único cuando se está creando un producto
-                if (Request.QueryString["id"] == null)
+                if (IsCreatePageMode())
                 {
-                    if (ProductBBL.CodeExistsInDB(txbxCode.Text.Trim()))
-                    {
-                        txbxCode.Text = string.Empty;
-                        txbxCode.CssClass = Constants.FormControlInvalid;
-                        invalidCodeName.Visible = true;
-                        invalidCodeLength.Visible = false; 
-                        txbxCode.Focus();
-                    }
-                    else
-                    {
-                        txbxCode.CssClass = Constants.FormControlValid;
-                        invalidCodeLength.Visible = false; 
-                        invalidCodeName.Visible = false;
-                    }
+                    ValidateProductCodeForCreate();
                 } 
                 // Verificación de código único cuando se está modificando un producto.
                 else
                 {
-                    if (txbxCode.Text.Trim() != Session["PRODUCTCODE"].ToString() &&
-                        ProductBBL.CodeExistsInDB(txbxCode.Text.Trim()))
-                    {
-                        txbxCode.Text = string.Empty;
-                        txbxCode.CssClass = Constants.FormControlInvalid;
-                        invalidCodeName.Visible = true;
-                        invalidCodeLength.Visible = false; 
-                        txbxCode.Focus();
-                    }
-                    else
-                    {
-                        txbxCode.CssClass = Constants.FormControlValid;
-                        invalidCodeLength.Visible = false; 
-                        invalidCodeName.Visible = false;
-                    }
+                    ValidateProductCodeForEdit();
                 }
             }
             else
             {
-                txbxCode.Text = string.Empty;
-                txbxCode.CssClass = Constants.FormControlInvalid;
-                invalidCodeLength.Visible = true;
-                invalidCodeName.Visible = false;
-                txbxCode.Focus();
+                InvalidProductCodeLength();
             }
             VerifyInformation();
         }
 
-        // Cuando se ingresa un nombre.
+        /// <summary>
+        /// Validar el código introducido cuando se quiere crear un nuevo producto
+        /// verificando que no exista en la base de datos.
+        /// </summary>
+        private void ValidateProductCodeForCreate()
+        {
+            try
+            {
+                if (ProductBBL.CodeExistsInDB(txbxCode.Text.Trim()))
+                {
+                    InvalidProductCodeAlreadyExists();
+                }
+                else
+                {
+                    ValidProductCode();
+                }
+            }
+            catch (Exception ex)
+            {
+                HandleException(ex);
+            }
+        }
+
+        /// <summary>
+        /// Validar el código introducido cuando se está modificando un producto
+        /// verificando que este no exista en la base de datos y sea diferente al
+        /// código original.
+        /// </summary>
+        private void ValidateProductCodeForEdit()
+        {
+            try
+            {
+                if (txbxCode.Text.Trim() != Session["PRODUCTCODE"].ToString() &&
+                    ProductBBL.CodeExistsInDB(txbxCode.Text.Trim()))
+                {
+                    InvalidProductCodeAlreadyExists();
+                }
+                else
+                {
+                    ValidProductCode();
+                }
+            }
+            catch (Exception ex)
+            {
+                HandleException(ex);
+            }
+        }
+
+        /// <summary>
+        /// El código introducido es inválido al ya existir en la base de datos.
+        /// </summary>
+        private void InvalidProductCodeAlreadyExists()
+        {
+            txbxCode.Text = string.Empty;
+            txbxCode.CssClass = Constants.FormControlInvalid;
+            invalidCodeName.Visible = true;
+            invalidCodeLength.Visible = false; 
+            txbxCode.Focus();
+        }
+
+        /// <summary>
+        /// El código introducido es inválido debido a su longitud.
+        /// </summary>
+        private void InvalidProductCodeLength()
+        {
+            txbxCode.Text = string.Empty;
+            txbxCode.CssClass = Constants.FormControlInvalid;
+            invalidCodeLength.Visible = true;
+            invalidCodeName.Visible = false;
+            txbxCode.Focus();
+        }
+
+        /// <summary>
+        /// El código introducido es válido.
+        /// </summary>
+        private void ValidProductCode()
+        {
+            txbxCode.CssClass = Constants.FormControlValid;
+            invalidCodeLength.Visible = false; 
+            invalidCodeName.Visible = false;
+        }
+
+
+        /* ---------------------------------------------------------------------------- */
+        /*                                      NOMBRE                                  */
+        /* ---------------------------------------------------------------------------- */
+        /// <summary>
+        /// Cuando se ingresa un nombre de producto
+        /// </summary>
         protected void txbxName_TextChanged(object sender, EventArgs e)
         {
             if (txbxName.Text.Length <= 50 && txbxName.Text.Length > 0)
@@ -182,7 +308,13 @@ namespace UserInterface.Pages.Admin
             VerifyInformation();
         }
 
-        // Cuando se ingresa una descripción
+
+        /* ---------------------------------------------------------------------------- */
+        /*                                   DESCRIPCIÓN                                */
+        /* ---------------------------------------------------------------------------- */
+        /// <summary>
+        /// Cuando se ingresa una descripción de producto.
+        /// </summary>
         protected void txbxDescription_TextChanged(object sender, EventArgs e)
         {
             if (txbxDescription.Text.Length <= 50 && txbxDescription.Text.Length > 0)
@@ -198,7 +330,13 @@ namespace UserInterface.Pages.Admin
             VerifyInformation();
         }
 
-        // Cuando se ingresa un precio.
+
+        /* ---------------------------------------------------------------------------- */
+        /*                                     PRECIO                                   */
+        /* ---------------------------------------------------------------------------- */
+        /// <summary>
+        /// Cuando se ingresa un precio de producto.
+        /// </summary>
         protected void txbxPrice_TextChanged(object sender, EventArgs e)
         {
             // Verificar que se haya ingresado un número correcto.
@@ -215,11 +353,17 @@ namespace UserInterface.Pages.Admin
             VerifyInformation();
         }
 
-        // Cuando se selecciona una marca en el DropDownList.
+
+        /* ---------------------------------------------------------------------------- */
+        /*                                      MARCA                                   */
+        /* ---------------------------------------------------------------------------- */
+        /// <summary>
+        /// Cuando se selecciona una marca del producto en el DropDownList.
+        /// </summary>
         protected void ddlBrand_SelectedIndexChanged(object sender, EventArgs e)
         {
             // Si se está creando un producto
-            if (Request.QueryString["id"] == null)
+            if (IsCreatePageMode())
             {
                 // Se elimina el Placeholder luego de que se seleccione una marca.
                 ddlBrand.Items.Remove(ddlBrand.Items.FindByValue("0"));
@@ -228,11 +372,17 @@ namespace UserInterface.Pages.Admin
             VerifyInformation();
         }
 
-        // Cuando se selecciona una categoría en el DropDownList.
+
+        /* ---------------------------------------------------------------------------- */
+        /*                                   CATEGORIA                                  */
+        /* ---------------------------------------------------------------------------- */
+        /// <summary>
+        /// Cuando se selecciona una categoría del producto en el DropDownList.
+        /// </summary>
         protected void ddlCategory_SelectedIndexChanged(object sender, EventArgs e)
         {
             // Si se está creando un producto
-            if (Request.QueryString["id"] == null)
+            if (IsCreatePageMode())
             {
                 // Se elimina el Placeholder luego de que se seleccione una categoría.
                 ddlCategory.Items.Remove(ddlCategory.Items.FindByValue("0"));
@@ -241,7 +391,13 @@ namespace UserInterface.Pages.Admin
             VerifyInformation();
         }
 
-        // Cuando se ingresa una URL para la imagen.
+
+        /* ---------------------------------------------------------------------------- */
+        /*                                   URL IMAGEN                                 */
+        /* ---------------------------------------------------------------------------- */
+        /// <summary>
+        /// Cuando se ingresa una URL para la imagen del producto.
+        /// </summary>
         protected void txbxImage_TextChanged(object sender, EventArgs e)
         {
             if (txbxImage.Text != "" && txbxImage.Text.Length <= 1000)
@@ -256,74 +412,26 @@ namespace UserInterface.Pages.Admin
             }
         }
 
+
+        /* ---------------------------------------------------------------------------- */
+        /*                                     SUBMIT                                   */
+        /* ---------------------------------------------------------------------------- */
+        /// <summary>
+        /// Crear/Modificar un producto en la base de datos.
+        /// </summary>
         protected void btnSubmit_Click(object sender, EventArgs e)
         {
             try
             {
-                Product myProd = new Product();
-                myProd.Code = txbxCode.Text.Trim().ToUpper();
-                myProd.Name = txbxName.Text.Trim();
-                myProd.Description = txbxDescription.Text.Trim();
-                myProd.Price = decimal.Parse(txbxPrice.Text.Trim());
-                myProd.Brand = new Brand(int.Parse(ddlBrand.SelectedValue), ddlBrand.SelectedItem.Text);
-                myProd.Category = new Category(int.Parse(ddlCategory.SelectedValue), ddlCategory.SelectedItem.Text);
-                // Si se cargó una imagen por sistema de archivos local
-                if (fuImage.HasFile)
-                {
-                    string fileName = $"{DateTime.Now.Ticks}-{fuImage.PostedFile.FileName}";
-                    string path = Path.Combine(Server.MapPath($"~{Constants.LocalImagePath}"), fileName);
+                Product myProd = ReturnCompleteProduct();
 
-                    // Si se está modificando y se carga una imagen local, y existe una imagen
-                    // local previa guardada en sesión (se verifica al principio), se borra la
-                    // imagen anterior y su referencia para posteriormente guardar la nueva (FILE).
-                    if (Request.QueryString["id"] != null && Session["PRODUCTIMAGE"] != null)
-                    {
-                        string localImagePath = Server.MapPath(Session["PRODUCTIMAGE"].ToString());
-                        if (File.Exists(localImagePath))
-                        {
-                            File.Delete(localImagePath);
-                        }
-                    }
-
-                    fuImage.SaveAs(path);
-                    myProd.Image = $"{Constants.LocalImagePath}{fileName}";
-                }
-                // Si se cargó una imagen por URL
-                else if (!string.IsNullOrEmpty(txbxImage.Text))
-                {
-                    // Si se está modificando y se carga una imagen por URL, y existe una
-                    // imagen local en sesión (se verifica al principio), se borra la
-                    // imagen anterior y su referencia para posteriormente guardar la nueva
-                    // referencia (URL).
-                    if (Request.QueryString["id"] != null && Session["PRODUCTIMAGE"] != null)
-                    {
-                        string localImagePath = Server.MapPath(Session["PRODUCTIMAGE"].ToString());
-                        if (File.Exists(localImagePath))
-                        {
-                            File.Delete(localImagePath);
-                        }
-                    }
-
-                    myProd.Image = txbxImage.Text;
-                }
-                // • Si no se cargó una imagen al crear un producto, se guarda el placeholder.
-                // • Si se modifica un producto, y no se cargó nada, se sobreentiende que
-                // no se está modificando la imagen preexistente; exceptuando el caso de que
-                // la imagen cargada al inicio sea un placeholder.
-                else if (Request.QueryString["id"] == null ||
-                        (Request.QueryString["id"] != null && imgProduct.ImageUrl == Constants.PlaceholderImagePath))
-                {
-                    myProd.Image = Constants.PlaceholderImagePath;
-                }
-
-                if (Request.QueryString["id"] == null)
+                if (IsCreatePageMode())
                 {
                     ProductBBL.CreateProduct(myProd);
                     Session["ALERTMESSAGE"] = "Nuevo producto agregado en la base de datos de forma exitosa.";
                 }
                 else
                 {
-                    myProd.ID = int.Parse(Request.QueryString["id"]);
                     ProductBBL.UpdateProduct(myProd);
                     Session["ALERTMESSAGE"] = "El producto fue modificado en la base de datos de forma exitosa.";
                 }
@@ -332,8 +440,122 @@ namespace UserInterface.Pages.Admin
             }
             catch (Exception ex)
             {
-                // TODO: manejar error
-                throw ex;
+                HandleException(ex);
+            }
+        }
+
+        /// <summary>
+        /// Devolver un <see cref="Product"/> con la información cargada según los campos 
+        /// de entrada de formulario.
+        /// </summary>
+        /// <returns>Producto rellenado</returns>
+        private Product ReturnCompleteProduct()
+        {
+            Product myProd = new Product
+            {
+                ID = int.Parse(Request.QueryString["id"]),
+                Code = txbxCode.Text.Trim().ToUpper(),
+                Name = txbxName.Text.Trim(),
+                Description = txbxDescription.Text.Trim(),
+                Price = decimal.Parse(txbxPrice.Text.Trim()),
+                Brand = new Brand(int.Parse(ddlBrand.SelectedValue), ddlBrand.SelectedItem.Text),
+                Category = new Category(int.Parse(ddlCategory.SelectedValue), ddlCategory.SelectedItem.Text)
+            };
+            FillProductImage(myProd);
+            return myProd;
+        }
+
+        /// <summary>
+        /// Rellenar el campo <see cref="Product.Image"/> del producto según ciertas
+        /// condiciones (imagen local, URL o placeholder).
+        /// </summary>
+        /// <param name="myProd">Referencia del producto a rellenar</param>
+        private void FillProductImage(Product myProd)
+        {
+            // Si se cargó una imagen por sistema de archivos local
+            if (fuImage.HasFile)
+            {
+                ProcessLocalImageUpload(myProd);
+            }
+            // Si se cargó una imagen por URL
+            else if (!string.IsNullOrEmpty(txbxImage.Text))
+            {
+                ProcessUrlImageUpload(myProd);
+            }
+            // • Si no se cargó una imagen al crear un producto, se guarda el placeholder.
+            // • Si se modifica un producto, y no se cargó nada, se sobreentiende que
+            // no se está modificando la imagen preexistente; exceptuando el caso de que
+            // la imagen precargada sea el placeholder.
+            else if (IsCreatePageMode() ||
+                    (Request.QueryString["id"] != null && imgProduct.ImageUrl == Constants.PlaceholderImagePath))
+            {
+                myProd.Image = Constants.PlaceholderImagePath;
+            }
+        }
+        
+        /// <summary>
+        /// Manejar la carga de una imagen local desde el sistema de archivos, incluyendo 
+        /// la eliminación de cualquier imagen local existente del producto si 
+        /// fuese necesario.
+        /// </summary>
+        /// <param name="myProd">Referencia del producto a rellenar</param>
+        private void ProcessLocalImageUpload(Product myProd)
+        {
+            try
+            {
+                string fileName = $"{DateTime.Now.Ticks}-{fuImage.PostedFile.FileName}";
+                string path = Path.Combine(Server.MapPath($"~{Constants.LocalImagePath}"), fileName);
+
+                // Si se está modificando y se carga una imagen local, y existe una imagen
+                // local previa guardada en sesión (se verifica al principio), se borra la
+                // imagen anterior y su referencia para posteriormente guardar la nueva (FILE).
+                DeleteExistingLocalImageIfNeeded();
+
+                fuImage.SaveAs(path);
+                myProd.Image = $"{Constants.LocalImagePath}{fileName}";
+            }
+            catch (Exception ex)
+            {
+                HandleException(ex);
+            }
+        }
+
+        /// <summary>
+        /// Manejar la carga de una imagen desde una URL, también incluyendo la eliminación
+        /// de cualquier imagen local existente si fuese necesario.
+        /// </summary>
+        /// <param name="myProd">Referencia del producto a rellenar</param>
+        private void ProcessUrlImageUpload(Product myProd)
+        {
+            // Si se está modificando y se carga una imagen por URL, y existe una
+            // imagen local en sesión (se verifica al principio), se borra la
+            // imagen anterior y su referencia para posteriormente guardar la nueva
+            // referencia (URL).
+            DeleteExistingLocalImageIfNeeded();
+
+            myProd.Image = txbxImage.Text;
+        }
+
+        /// <summary>
+        /// Eliminar una posible imagen local existente en caso de que el usuario esté 
+        /// actualizando un producto cargando una nueva.
+        /// </summary>
+        private void DeleteExistingLocalImageIfNeeded()
+        {
+            try
+            {
+                if (Request.QueryString["id"] != null && Session["PRODUCTIMAGE"] != null)
+                {
+                    string localImagePath = Server.MapPath(Session["PRODUCTIMAGE"].ToString());
+                    if (File.Exists(localImagePath))
+                    {
+                        File.Delete(localImagePath);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                HandleException(ex);
             }
         }
     }

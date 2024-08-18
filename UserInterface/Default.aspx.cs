@@ -21,25 +21,32 @@ namespace UserInterface
                 {
                     if (((List<Product>)Session["PRODUCTS"]).Count > 0)
                     {
-                        ProductIndex = 0;
+                        ProductIndex = 0; // Índice para el carousel de productos
                         ProductCards.DataSource = (List<Product>)Session["PRODUCTS"];
                         ProductCards.DataBind();
                     }
                 }
                 catch (Exception ex)
                 {
-                    // Manejo de errores
-                    throw ex;
+                    Session["ERROR"] = ex;
+                    Response.Redirect(Constants.ErrorPagePath);
                 }
             }
-
         }
 
         protected void Page_Init(object sender, EventArgs e)
         {
-            if (!(Session["PRODUCTS"] != null))
+            try
             {
-                Session["PRODUCTS"] = ProductBBL.GetProducts();
+                if (!(Session["PRODUCTS"] != null))
+                {
+                    Session["PRODUCTS"] = ProductBBL.GetProducts();
+                }
+            }
+            catch (Exception ex)
+            {
+                Session["ERROR"] = ex;
+                Response.Redirect(Constants.ErrorPagePath);
             }
         }
     }

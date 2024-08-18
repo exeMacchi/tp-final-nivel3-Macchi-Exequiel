@@ -76,8 +76,7 @@ namespace BusinessLogic
             }
             catch (Exception ex)
             {
-                // TODO: Manejar Error
-                throw ex;
+                throw ex; // El error se propaga hacia arriba
             }
             finally
             {
@@ -145,8 +144,7 @@ namespace BusinessLogic
             }
             catch (Exception ex)
             {
-                // TODO: Manejar Error
-                throw ex;
+                throw ex; // El error se propaga hacia arriba
             }
             finally
             {
@@ -178,8 +176,7 @@ namespace BusinessLogic
             }
             catch (Exception ex)
             {
-                // TODO: Manejar Error
-                throw ex;
+                throw ex; // El error se propaga hacia arriba
             }
             finally
             {
@@ -218,8 +215,7 @@ namespace BusinessLogic
             }
             catch (Exception ex)
             {
-                // TODO: Manejar Error
-                throw ex;
+                throw ex; // El error se propaga hacia arriba
             }
             finally
             {
@@ -243,8 +239,7 @@ namespace BusinessLogic
             }
             catch (Exception ex)
             {
-                // TODO: Manejar Error
-                throw ex;
+                throw ex; // El error se propaga hacia arriba
             }
             finally 
             { 
@@ -278,8 +273,7 @@ namespace BusinessLogic
             }
             catch (Exception ex)
             {
-                // TODO: Manejar error
-                throw ex;
+                throw ex; // El error se propaga hacia arriba
             }
             finally
             {
@@ -351,8 +345,7 @@ namespace BusinessLogic
             }
             catch (Exception ex)
             {
-                // TODO: manejar error
-                throw ex;
+                throw ex; // El error se propaga hacia arriba
             }
             finally
             {
@@ -386,8 +379,7 @@ namespace BusinessLogic
             }
             catch (Exception ex)
             {
-                // TODO: manejar error
-                throw ex;
+                throw ex; // El error se propaga hacia arriba
             }
             finally
             {
@@ -462,8 +454,7 @@ namespace BusinessLogic
             }
             catch (Exception ex)
             {
-                // TODO: manejar error
-                throw ex;
+                throw ex; // El error se propaga hacia arriba
             }
             finally
             {
@@ -540,8 +531,7 @@ namespace BusinessLogic
             }
             catch (Exception ex)
             {
-                // TODO: manejar error
-                throw ex;
+                throw ex; // El error se propaga hacia arriba
             }
             finally
             {
@@ -568,8 +558,7 @@ namespace BusinessLogic
             }
             catch (Exception ex)
             {
-                // TODO: manejar error
-                throw ex;
+                throw ex; // El error se propaga hacia arriba
             }
             finally
             {
@@ -596,8 +585,7 @@ namespace BusinessLogic
             }
             catch (Exception ex)
             {
-                // TODO: manejar error
-                throw ex;
+                throw ex; // El error se propaga hacia arriba
             }
             finally
             {
@@ -634,8 +622,7 @@ namespace BusinessLogic
             }
             catch (Exception ex)
             {
-                // TODO: manejar error
-                throw ex;
+                throw ex; // El error se propaga hacia arriba
             }
             finally
             {

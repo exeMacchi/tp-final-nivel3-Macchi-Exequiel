@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Domain;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -11,6 +12,20 @@ namespace UserInterface
     {
         protected void Application_Start(object sender, EventArgs e)
         {
+        }
+
+        /// <summary>
+        /// Manejador de excepciones genérico
+        /// </summary>
+        protected void Application_Error(object sender, EventArgs e)
+        {
+            Exception ex = Server.GetLastError();
+
+            if (ex is HttpUnhandledException)
+            {
+                Session["ERROR"] = ex;
+                Server.Transfer(Constants.ErrorPagePath);
+            }
         }
     }
 }

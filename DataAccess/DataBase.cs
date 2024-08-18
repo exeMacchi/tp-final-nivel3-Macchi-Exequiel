@@ -59,11 +59,25 @@ namespace DataAccess
             {
                 connection.Open();
                 reader = command.ExecuteReader();
-                
+            }
+            catch (SqlException ex)
+            {
+                throw new Exception("Se produjo un error al intentar recuperar los datos " +
+                                    "desde la base de datos. Por favor, contacte al soporte " +
+                                    "técnico si el problema persiste.", ex);
+            }
+            catch (InvalidOperationException ex)
+            {
+                throw new Exception("Hubo un problema con la operación en la base de datos.", ex);
+            }
+            catch (TimeoutException ex)
+            {
+                throw new Exception("La operación ha excedido el tiempo de espera. " +
+                                    "Por favor, intente nuevamente más tarde.", ex);
             }
             catch (Exception ex)
             {
-                throw ex;
+                throw new Exception("Ha ocurrido un error inesperado.", ex);
             }
         }
 
@@ -78,9 +92,26 @@ namespace DataAccess
                 connection.Open();
                 command.ExecuteNonQuery();
             }
+            catch (SqlException ex)
+            {
+                throw new Exception("Se produjo un error al intentar actualizar los datos " +
+                                    "de la base de datos. Por favor, revise los datos " +
+                                    "ingresados o contacte al soporte técnico si el problema " +
+                                    "persiste.", ex);
+            }
+            catch (InvalidOperationException ex)
+            {
+                throw new Exception("La operación no se pudo completar debido a un problema " +
+                                    "con el estado de la conexión o el comando.", ex);
+            }
+            catch (TimeoutException ex)
+            {
+                throw new Exception("La operación ha excedido el tiempo de espera. " +
+                                    "Por favor, intente nuevamente más tarde.", ex);
+            }
             catch (Exception ex)
             {
-                throw ex;
+                throw new Exception("Ha ocurrido un error inesperado.", ex);
             }
         }
 
@@ -90,8 +121,31 @@ namespace DataAccess
         /// <returns>Resultado booleano de la operación</returns>
         public bool ExecuteScalar()
         {
-            connection.Open();
-            return (bool)command.ExecuteScalar();
+            try
+            {
+                connection.Open();
+                return (bool)command.ExecuteScalar();
+            }
+            catch (SqlException ex)
+            {
+                throw new Exception("Se produjo un error al intentar obtener el resultado " +
+                                    "de la consulta. Por favor, contacte al soporte " +
+                                    "técnico si el problema persiste.", ex);
+            }
+            catch (InvalidOperationException ex)
+            {
+                throw new Exception("La operación no se pudo completar debido a un problema " +
+                                    "con el estado de la conexión o el comando.", ex);
+            }
+            catch (TimeoutException ex)
+            {
+                throw new Exception("La operación ha excedido el tiempo de espera. " +
+                                    "Por favor, intente nuevamente más tarde.", ex);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Ha ocurrido un error inesperado.", ex);
+            }
         }
 
 
@@ -100,11 +154,29 @@ namespace DataAccess
         /// </summary>
         public void CloseConnection()
         {
-            if (reader != null)
+            try
             {
-                reader.Close();
+                if (reader != null)
+                {
+                    reader.Close();
+                }
+                connection.Close();
             }
-            connection.Close();
+            catch (SqlException ex)
+            {
+                throw new Exception("Hubo un problema al cerrar la conexión con la base de " +
+                                    "datos. Verifique el estado de la conexión o contacte " +
+                                    "al soporte técnico.", ex);
+            }
+            catch (InvalidOperationException ex)
+            {
+                throw new Exception("Se produjo un error al intentar cerrar la conexión. " +
+                                    "La conexión podría ya estar cerrada.", ex);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Ha ocurrido un error inesperado.", ex);
+            }
         }
     }
 }

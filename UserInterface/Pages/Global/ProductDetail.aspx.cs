@@ -19,7 +19,7 @@ namespace UserInterface.Pages.Global
                 {
                     try
                     {
-                        // Alerta
+                        // Alerta sobre producto favorito
                         pnlFavoriteAlert.Visible = false;
 
                         // Detalle
@@ -56,8 +56,8 @@ namespace UserInterface.Pages.Global
                     }
                     catch (Exception ex)
                     {
-                        // TODO: manejar error
-                        throw ex;
+                        Session["ERROR"] = ex;
+                        Response.Redirect(Constants.ErrorPagePath, false);
                     }
                 }
                 else
@@ -100,8 +100,8 @@ namespace UserInterface.Pages.Global
             }
             catch (Exception ex)
             {
-                // TODO: manejar error
-                throw ex;
+                Session["ERROR"] = ex;
+                Response.Redirect(Constants.ErrorPagePath);
             }
         }
     }

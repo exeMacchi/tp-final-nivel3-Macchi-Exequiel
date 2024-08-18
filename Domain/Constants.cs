@@ -23,6 +23,7 @@ namespace Domain
         public const string ProductsPagePath = "/Pages/Global/Products.aspx";
         public const string ProductDetailPagePath = "/Pages/Global/ProductDetail.aspx";
         public const string ContactPagePath = "/Pages/Global/Contact.aspx";
+        public const string ErrorPagePath = "/Pages/Global/ErrorPage.aspx";
 
         // Admin
         public const string AdminPagePath = "/Pages/Admin/Admin.aspx";

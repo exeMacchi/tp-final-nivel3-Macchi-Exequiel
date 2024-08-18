@@ -16,10 +16,18 @@ namespace UserInterface.Pages.Admin
         {
             if (!IsPostBack)
             {
-                // En la página de administrador, siempre que se cargue por primera vez,
-                // se recargan los productos por el caso de que esta página provenga
-                // de una operación de creación, modificación o eliminación.
-                Session["PRODUCTS"] = ProductBBL.GetProducts();
+                try
+                {
+                    // En la página de administrador, siempre que se cargue por primera vez,
+                    // se recargan los productos por el caso de que esta página provenga
+                    // de una operación de creación, modificación o eliminación.
+                    Session["PRODUCTS"] = ProductBBL.GetProducts();
+                }
+                catch (Exception ex)
+                {
+                    Session["ERROR"] = ex;
+                    Response.Redirect(Constants.ErrorPagePath);
+                }
             }
         }
 
@@ -48,9 +56,8 @@ namespace UserInterface.Pages.Admin
                 }
                 catch (Exception ex)
                 {
-                    // TODO: Manejar errores
-                    Session.Add("ERROR", ex);
-                    throw ex;
+                    Session["Error"] = ex;
+                    Response.Redirect(Constants.ErrorPagePath);
                 }
             }
         }
@@ -62,9 +69,17 @@ namespace UserInterface.Pages.Admin
         /// <param name="e"></param>
         protected void gvProducts_PageIndexChanging(object sender, GridViewPageEventArgs e)
         {
-            gvProducts.PageIndex = e.NewPageIndex;
-            gvProducts.DataSource = (List<Product>)Session["PRODUCTS"];
-            gvProducts.DataBind();
+            try
+            {
+                gvProducts.PageIndex = e.NewPageIndex;
+                gvProducts.DataSource = (List<Product>)Session["PRODUCTS"];
+                gvProducts.DataBind();
+            }
+            catch (Exception ex)
+            {
+                Session["Error"] = ex;
+                Response.Redirect(Constants.ErrorPagePath);
+            }
         }
 
         /// <summary>
@@ -123,8 +138,8 @@ namespace UserInterface.Pages.Admin
             }
             catch (Exception ex)
             {
-                // TODO: manejar error
-                throw ex;
+                Session["ERROR"] = ex;
+                Response.Redirect(Constants.ErrorPagePath);
             }
         }
 
@@ -138,32 +153,40 @@ namespace UserInterface.Pages.Admin
             string filterText = txbxFilter.Text;
             List<Product> filteredProducts = new List<Product>();
 
-            // Filtro avanzado
-            if (advancedPanel.Visible)
+            try
             {
-                string firstCriteria = ddlFirstCriteria.SelectedValue;
-                string secondCriteria = ddlSecondCriteria.SelectedValue;
-                string condition = Auxiliary.CreateCondition(firstCriteria, secondCriteria, filterText);
+                // Filtro avanzado
+                if (advancedPanel.Visible)
+                {
+                    string firstCriteria = ddlFirstCriteria.SelectedValue;
+                    string secondCriteria = ddlSecondCriteria.SelectedValue;
+                    string condition = Auxiliary.CreateCondition(firstCriteria, secondCriteria, filterText);
 
-                filteredProducts = ProductBBL.SearchProducts(condition);
-                gvProducts.DataSource = filteredProducts;
-                gvProducts.DataBind();
-                alertProductNotFound.Visible = false;
-            }
-            // Filtro básico
-            else
-            {
-                filteredProducts = ((List<Product>)Session["PRODUCTS"]).FindAll(p => p.Name.ToUpper().Contains(filterText.ToUpper()));
-                gvProducts.DataSource = filteredProducts;
-                gvProducts.DataBind();
-                alertProductNotFound.Visible = false;
-            }
+                    filteredProducts = ProductBBL.SearchProducts(condition);
+                    gvProducts.DataSource = filteredProducts;
+                    gvProducts.DataBind();
+                    alertProductNotFound.Visible = false;
+                }
+                // Filtro básico
+                else
+                {
+                    filteredProducts = ((List<Product>)Session["PRODUCTS"]).FindAll(p => p.Name.ToUpper().Contains(filterText.ToUpper()));
+                    gvProducts.DataSource = filteredProducts;
+                    gvProducts.DataBind();
+                    alertProductNotFound.Visible = false;
+                }
 
-            // Si no se encuentra resultados.
-            if (filteredProducts.Count == 0)
+                // Si no se encuentra resultados.
+                if (filteredProducts.Count == 0)
+                {
+                    alertProductNotFound.Visible = true;
+                    alertEmptyGV.Visible = false; // Por las dudas.
+                }
+            }
+            catch (Exception ex)
             {
-                alertProductNotFound.Visible = true;
-                alertEmptyGV.Visible = false; // Por las dudas.
+                Session["ERROR"] = ex;
+                Response.Redirect(Constants.ErrorPagePath);
             }
         }
 
@@ -197,11 +220,19 @@ namespace UserInterface.Pages.Admin
                 advancedPanel.Visible = true;
             }
 
-            // Reinicio
-            txbxFilter.Text = string.Empty;
-            gvProducts.DataSource = (List<Product>)Session["PRODUCTS"];
-            gvProducts.DataBind();
-            alertProductNotFound.Visible = false;
+            try
+            {
+                // Reinicio
+                txbxFilter.Text = string.Empty;
+                gvProducts.DataSource = (List<Product>)Session["PRODUCTS"];
+                gvProducts.DataBind();
+                alertProductNotFound.Visible = false;
+            }
+            catch (Exception ex)
+            {
+                Session["ERROR"] = ex;
+                Response.Redirect(Constants.ErrorPagePath);
+            }
         }
 
         /// <summary>

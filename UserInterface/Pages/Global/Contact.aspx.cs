@@ -23,6 +23,9 @@ namespace UserInterface.Pages.Global
             }
         }
 
+        /// <summary>
+        /// Verificar la información cargada en un campo de entrada de texto.
+        /// </summary>
         protected void txbxTextChanged(object sender, EventArgs e)
         {
             TextBox txbxControl = (TextBox)sender;
@@ -38,6 +41,10 @@ namespace UserInterface.Pages.Global
             VerifyInformation();
         }
 
+        /// <summary>
+        /// Verificar que los campos de entrada tengan información para activar el
+        /// botón de envío.
+        /// </summary>
         private void VerifyInformation()
         {
             if (string.IsNullOrEmpty(txbxEmail.Text) || 
@@ -52,6 +59,9 @@ namespace UserInterface.Pages.Global
             }
         }
 
+        /// <summary>
+        /// Enviar el formulario de contacto.
+        /// </summary>
         protected void btnSend_Click(object sender, EventArgs e)
         {
             try
@@ -73,8 +83,8 @@ namespace UserInterface.Pages.Global
             }
             catch (Exception ex)
             {
-                // TODO: manejar error
-                throw ex;
+                Session["ERROR"] = ex;
+                Response.Redirect(Constants.ErrorPagePath);
             }
         }
     }
