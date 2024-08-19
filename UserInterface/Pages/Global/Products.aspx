@@ -148,8 +148,7 @@
                                        style="max-height: 420px">
                                 <figure class="card-img-top bg-gradient text-white">
                                     <img src="<%# Eval("Image") %>"
-                                         alt="Imagen del producto <%# Eval("Name") %>"
-                                         style="max-height: 140px">
+                                         alt="Imagen del producto <%# Eval("Name") %>">
                                 </figure>
                                 <div class="card-body d-flex flex-column gap-1 justify-content-between">
                                     <asp:Panel ID="pnlFavoriteProduct" runat="server" Visible="false"

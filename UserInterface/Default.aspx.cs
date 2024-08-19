@@ -12,6 +12,20 @@ namespace UserInterface
     public partial class Default : System.Web.UI.Page
     {
         public int ProductIndex { get; set; }
+        protected void Page_Init(object sender, EventArgs e)
+        {
+            try
+            {
+                if (!(Session["PRODUCTS"] != null))
+                {
+                    Session["PRODUCTS"] = ProductBLL.GetProducts();
+                }
+            }
+            catch (Exception ex)
+            {
+                HandleException(ex);
+            }
+        }
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -28,26 +42,20 @@ namespace UserInterface
                 }
                 catch (Exception ex)
                 {
-                    Session["ERROR"] = ex;
-                    Response.Redirect(Constants.ErrorPagePath);
+                    HandleException(ex);
                 }
             }
         }
 
-        protected void Page_Init(object sender, EventArgs e)
+        /// <summary>
+        /// Manejar la excepción guardándola en sesión para después rederigirla a la
+        /// página de error.
+        /// </summary>
+        private void HandleException(Exception ex)
         {
-            try
-            {
-                if (!(Session["PRODUCTS"] != null))
-                {
-                    Session["PRODUCTS"] = ProductBBL.GetProducts();
-                }
-            }
-            catch (Exception ex)
-            {
-                Session["ERROR"] = ex;
-                Response.Redirect(Constants.ErrorPagePath);
-            }
+            Session["ERROR"] = ex;
+            Response.Redirect(Constants.ErrorPagePath, false);
+            Context.ApplicationInstance.CompleteRequest(); // Esto evita un posible ThreadAbortException
         }
     }
 }

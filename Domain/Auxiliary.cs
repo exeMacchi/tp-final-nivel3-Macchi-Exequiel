@@ -126,6 +126,13 @@ namespace Domain
             return body;
         }
 
+        /// <summary>
+        /// Crear el HTML Body del correo electrónico con las instrucciones para
+        /// la recuperación de una cuenta.
+        /// </summary>
+        /// <param name="id">ID de usuario en la base de datos</param>
+        /// <param name="hash">Hash de seguridad guardado en sesión</param>
+        /// <returns>HTML Body completo</returns>
         public static string CreateForgottenPassHTMLBody(int id, string hash)
         {
             string body = 
@@ -143,6 +150,13 @@ namespace Domain
             return body;
         }
 
+        /// <summary>
+        /// Crear el HTML Body del correo electrónico que se enviará al soporte técnico
+        /// luego que un usuario rellene y quiera enviar un formulario de contacto.
+        /// </summary>
+        /// <param name="email">Correo electrónico del usuario que consulta</param>
+        /// <param name="message">Mensaje del usuario</param>
+        /// <returns>HTML Body completo</returns>
         public static string CreateContactHTMLBody(string email, string message)
         {
             string body = 

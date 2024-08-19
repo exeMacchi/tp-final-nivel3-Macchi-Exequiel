@@ -15,49 +15,94 @@ namespace UserInterface.Pages.Auth
         {
             if (!IsPostBack)
             {
-                try
-                {
-                    txbxEmail.CssClass = Constants.FormControlNormal;
-                    txbxPassword.CssClass = Constants.FormControlNormal;
-                    // Se utiliza el atributo 'disabled' en lugar de la propiedad 'Enabled'
-                    // porque la habilitación del botón se gestiona desde el cliente.
-                    btnLogin.Attributes["disabled"] = "true";
-                }
-                catch (Exception ex)
-                {
-                    // TODO: manejar error
-                    throw ex;
-                }
+                InitializeLoginForm();
             }
         }
 
+        /// <summary>
+        /// Configurar la interfaz de usuario predeterminada del formulario de logueo.
+        /// </summary>
+        private void InitializeLoginForm()
+        {
+            txbxEmail.CssClass = Constants.FormControlNormal;
+            txbxPassword.CssClass = Constants.FormControlNormal;
+            // Se utiliza el atributo 'disabled' en lugar de la propiedad 'Enabled'
+            // porque la habilitación del botón se gestiona desde el cliente.
+            btnLogin.Attributes["disabled"] = "true";
+        }
+
+        /// <summary>
+        /// Manejar la excepción guardándola en sesión para después rederigirla a la
+        /// página de error.
+        /// </summary>
+        private void HandleException(Exception ex)
+        {
+            Session["ERROR"] = ex;
+            Response.Redirect(Constants.ErrorPagePath, false);
+            Context.ApplicationInstance.CompleteRequest(); // Esto evita un posible ThreadAbortException
+        }
+
+        /// <summary>
+        /// Loguear una sesión de usuario.
+        /// </summary>
         protected void btnLogin_Click(object sender, EventArgs e)
         {
             string email = txbxEmail.Text.Trim();
             string pass = txbxPassword.Text.Trim();
 
+            if (IsValidEmailFormat(email) && IsValidPassFormat(pass))
+            {
+                LogIn(email, pass);
+            }
+        }
+
+        /// <summary>
+        /// Verificar que el correo electrónico ingresado respete el formato esperado.
+        /// </summary>
+        /// <param name="email">Correo electrónico ingresado en <see cref="txbxEmail"/></param>
+        private bool IsValidEmailFormat(string email)
+        {
             if (email.Length > 100 || string.IsNullOrEmpty(email))
             {
                 txbxEmail.Text = string.Empty;
                 txbxEmail.CssClass = Constants.FormControlInvalid;
                 txbxEmail.Focus();
-                return;
+                return false;
             }
+            return true;
+        }
 
+        /// <summary>
+        /// Verificar que la contraseña ingresada respete el formato esperado.
+        /// </summary>
+        /// <param name="pass">Contraseña ingresada en <see cref="txbxPassword"/></param>
+        private bool IsValidPassFormat(string pass)
+        {
             if (pass.Length > 20 || string.IsNullOrEmpty(pass))
             {
                 txbxPassword.Text = string.Empty;
                 txbxPassword.CssClass = Constants.FormControlInvalid;
                 txbxPassword.Focus();
-                return;
+                return false;
             }
+            return true;
+        }
 
+        /// <summary>
+        /// Buscar las credenciales de usuario y crear una nueva sesión.
+        /// </summary>
+        /// <param name="email">Correo electrónico del usuario</param>
+        /// <param name="pass">Contraseña de la cuenta del usuario</param>
+        private void LogIn(string email, string pass)
+        {
             try
             {
-                Domain.User user = UserBBL.GetUser(email, pass);
+                Domain.User user = UserBLL.GetUser(email, pass);
                 if (user.ID != 0)
                 {
                     Session["USER"] = user;
+
+                    // Dependiendo del rol de usuario, se redirige a una página.
                     if (user.IsAdmin)
                         Response.Redirect(Constants.AdminPagePath, false);
                     else
@@ -71,8 +116,7 @@ namespace UserInterface.Pages.Auth
             }
             catch (Exception ex)
             {
-                // TODO: Manejar error
-                throw ex;
+                HandleException(ex);
             }
         }
     }

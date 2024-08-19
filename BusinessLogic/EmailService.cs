@@ -50,8 +50,7 @@ namespace BusinessLogic
             }
             catch (Exception ex)
             {
-                // TODO: manejar error
-                throw ex;
+                throw ex; // El error se propaga hacia arriba
             }
         }
     }

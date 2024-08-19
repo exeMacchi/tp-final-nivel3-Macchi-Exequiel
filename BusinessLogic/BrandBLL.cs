@@ -8,19 +8,19 @@ using System.Threading.Tasks;
 
 namespace BusinessLogic
 {
-    public class CategoryBBL
+    public class BrandBLL
     {
         /// <summary>
-        /// Obtener todas las <see cref="Category"/> desde la base de datos.
+        /// Obtener todas las <see cref="Brand"/> desde la base de datos.
         /// </summary>
-        /// <returns>Lista de <see cref="Category"/></returns>
-        public static List<Category> GetCategories()
+        /// <returns>Lista de <see cref="Brand"/></returns>
+        public static List<Brand> GetBrands()
         {
             DataBase db = new DataBase();
-            List<Category> categories = new List<Category>();
-            string query = "SELECT Id AS CategoryID, " +
-                           "       Descripcion AS CategoryDescription " +
-                           "FROM CATEGORIAS;";
+            List<Brand> brands = new List<Brand>();
+            string query = "SELECT Id AS BrandID, " +
+                           "       Descripcion AS BrandDescription " +
+                           "FROM MARCAS;";
 
             try
             {
@@ -29,10 +29,10 @@ namespace BusinessLogic
 
                 while (db.Reader.Read())
                 {
-                    Category category = new Category((int)db.Reader["CategoryID"], db.Reader["CategoryDescription"].ToString());
-                    categories.Add(category);
+                    Brand brand = new Brand((int)db.Reader["BrandID"], db.Reader["BrandDescription"].ToString());
+                    brands.Add(brand);
                 }
-                return categories;
+                return brands;
             }
             catch (Exception ex)
             {

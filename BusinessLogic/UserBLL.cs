@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace BusinessLogic
 {
-    public class UserBBL
+    public class UserBLL
     {
         /// <summary>
         /// Obtener la información de un <see cref="User"/> a partir de un correo electrónico
@@ -56,8 +56,7 @@ namespace BusinessLogic
             }
             catch (Exception ex)
             {
-                // TODO: manejar error
-                throw ex;
+                throw ex; // El error se propaga hacia arriba
             }
             finally
             {
@@ -94,8 +93,7 @@ namespace BusinessLogic
             }
             catch (Exception ex)
             {
-                // TODO: manejar error
-                throw ex;
+                throw ex; // El error se propaga hacia arriba
             }
             finally
             {
@@ -122,8 +120,7 @@ namespace BusinessLogic
             }
             catch (Exception ex)
             {
-                // TODO: manejar error
-                throw ex;
+                throw ex; // El error se propaga hacia arriba
             }
             finally
             {
@@ -131,6 +128,10 @@ namespace BusinessLogic
             }
         }
 
+        /// <summary>
+        /// Actualizar la información de un usuario en la base de datos.
+        /// </summary>
+        /// <param name="user"></param>
         public static void UpdateUser(User user)
         {
             DataBase db = new DataBase();
@@ -152,8 +153,7 @@ namespace BusinessLogic
             }
             catch(Exception ex)
             {
-                // TODO: manejar error
-                throw ex;
+                throw ex; // El error se propaga hacia arriba
             }
             finally
             {
@@ -180,8 +180,7 @@ namespace BusinessLogic
             }
             catch (Exception ex)
             {
-                // TODO: manejar error
-                throw ex;
+                throw ex; // El error se propaga hacia arriba
             }
             finally
             {
@@ -214,8 +213,7 @@ namespace BusinessLogic
             }
             catch (Exception ex)
             {
-                // TODO: manejar error
-                throw ex;
+                throw ex; // El error se propaga hacia arriba
             }
             finally
             {

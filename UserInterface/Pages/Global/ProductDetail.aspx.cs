@@ -22,49 +22,94 @@ namespace UserInterface.Pages.Global
                         // Alerta sobre producto favorito
                         pnlFavoriteAlert.Visible = false;
 
-                        // Detalle
-                        Product product = ProductBBL.GetProduct(int.Parse(Request.QueryString["id"]));
-                        if (product != null)
-                        {
-                            productImage.ImageUrl = product.Image;
-                            productImage.AlternateText = $"Imagen del producto {product.Name}";
-                            lbCode.Text = product.Code;
-                            lbTitle.Text = product.Name;
-                            lbPrice.Text = $"$ {product.Price.ToString("N2")}";
-                            lbDescription.Text = product.Description;
-                            lbBrand.Text = product.Brand.Description;
-                            lbCategory.Text = product.Category.Description;
-                        }
+                        Product product = ProductBLL.GetProduct(int.Parse(Request.QueryString["id"]));
+
+                        // Cargar los detalles del producto
+                        LoadProductDetails(product);
 
                         // Si hay sesión de usuario, verificar si el producto actual es uno
                         // de sus favoritos.
-                        if (Session["USER"] != null)
-                        {
-                            if (ProductBBL.IsFavoriteProduct(((Domain.User)Session["USER"]).ID, product.ID))
-                            {
-                                btnFavorite.CssClass = Constants.FavoriteProductButton;
-                                pnlFavoriteIcon.CssClass = Constants.FavoriteProductIcon;
-                                pnlProductDetail.CssClass = Constants.FavoriteProductDetail;
-                            }
-                            else
-                            {
-                                btnFavorite.CssClass = Constants.UnfavoriteProductButton;
-                                pnlFavoriteIcon.CssClass = Constants.UnfavoriteProductIcon;
-                                pnlProductDetail.CssClass = Constants.UnfavoriteProductDetail;
-                            }
-                        }
+                        CheckProductFavoriteStatus(product);
                     }
                     catch (Exception ex)
                     {
-                        Session["ERROR"] = ex;
-                        Response.Redirect(Constants.ErrorPagePath, false);
+                        HandleException(ex);
                     }
                 }
                 else
                 {
-                    Response.Redirect(Constants.ProductsPagePath);
+                    Response.Redirect(Constants.ProductsPagePath, false);
+                    Context.ApplicationInstance.CompleteRequest();
                 }
             }
+        }
+
+        /// <summary>
+        /// Cargar visualmente la información del producto en la interfaz de usuario.
+        /// </summary>
+        /// <param name="product">Producto seleccionado para su visualización</param>
+        private void LoadProductDetails(Product product)
+        {
+            try
+            {
+                if (product != null)
+                {
+                    productImage.ImageUrl = product.Image;
+                    productImage.AlternateText = $"Imagen del producto {product.Name}";
+                    lbCode.Text = product.Code;
+                    lbTitle.Text = product.Name;
+                    lbPrice.Text = $"$ {product.Price.ToString("N2")}";
+                    lbDescription.Text = product.Description;
+                    lbBrand.Text = product.Brand.Description;
+                    lbCategory.Text = product.Category.Description;
+                }
+            }
+            catch (Exception ex)
+            {
+                HandleException(ex);
+            }
+        }
+
+        /// <summary>
+        /// Verificar si el producto actual es uno de los favoritos del usuario (sesión
+        /// activa).
+        /// </summary>
+        /// <param name="product">Producto seleccionado para su visualización</param>
+        private void CheckProductFavoriteStatus(Product product)
+        {
+            try
+            {
+                if (Session["USER"] != null)
+                {
+                    if (ProductBLL.IsFavoriteProduct(((Domain.User)Session["USER"]).ID, product.ID))
+                    {
+                        btnFavorite.CssClass = Constants.FavoriteProductButton;
+                        pnlFavoriteIcon.CssClass = Constants.FavoriteProductIcon;
+                        pnlProductDetail.CssClass = Constants.FavoriteProductDetail;
+                    }
+                    else
+                    {
+                        btnFavorite.CssClass = Constants.UnfavoriteProductButton;
+                        pnlFavoriteIcon.CssClass = Constants.UnfavoriteProductIcon;
+                        pnlProductDetail.CssClass = Constants.UnfavoriteProductDetail;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                HandleException(ex);
+            }
+        }
+
+        /// <summary>
+        /// Manejar la excepción guardándola en sesión para después rederigirla a la
+        /// página de error.
+        /// </summary>
+        private void HandleException(Exception ex)
+        {
+            Session["ERROR"] = ex;
+            Response.Redirect(Constants.ErrorPagePath, false);
+            Context.ApplicationInstance.CompleteRequest(); // Esto evita un posible ThreadAbortException
         }
 
         /// <summary>
@@ -77,31 +122,74 @@ namespace UserInterface.Pages.Global
                 int userID = ((Domain.User)Session["USER"]).ID;
                 int productID = int.Parse(Request.QueryString["id"]);
 
-                // Si el producto no es favorito, se agrega en la base de datos
-                if (!btnFavorite.CssClass.Contains("btn-fav"))
-                {
-                    ProductBBL.AddFavoriteProduct(userID, productID);
-                    btnFavorite.CssClass = Constants.FavoriteProductButton;
-                    pnlFavoriteIcon.CssClass = Constants.FavoriteProductIcon;
-                    pnlProductDetail.CssClass = Constants.FavoriteProductDetail;
-                    lbFavoriteAlertText.Text = "Producto añadido como favorito";
-                    pnlFavoriteAlert.Visible = true;
-                }
                 // Si el producto es favorito, se elimina su referencia en la base de datos
+                if (IsFavoriteProduct())
+                {
+                    RemoveFavoriteProduct(userID, productID);
+                }
+                // Si el producto no es favorito, se agrega en la base de datos
                 else
                 {
-                    ProductBBL.RemoveFavorite(userID, productID);
-                    btnFavorite.CssClass = Constants.UnfavoriteProductButton;
-                    pnlFavoriteIcon.CssClass = Constants.UnfavoriteProductIcon;
-                    pnlProductDetail.CssClass = Constants.UnfavoriteProductDetail;
-                    lbFavoriteAlertText.Text = "Producto removido como favorito";
-                    pnlFavoriteAlert.Visible = true;
+                    AddFavoriteProduct(userID, productID);
                 }
             }
             catch (Exception ex)
             {
-                Session["ERROR"] = ex;
-                Response.Redirect(Constants.ErrorPagePath);
+                HandleException(ex);
+            }
+        }
+
+        /// <summary>
+        /// Verificar si el producto es favorito según la clase que tenga el botón
+        /// de favorito.
+        /// </summary>
+        /// <returns></returns>
+        private bool IsFavoriteProduct()
+        {
+            return btnFavorite.CssClass.Contains("btn-fav");
+        }
+
+        /// <summary>
+        /// Agregar el producto a los favoritos del usuario en la base de datos.
+        /// </summary>
+        /// <param name="userID">ID del usuario</param>
+        /// <param name="productID">ID del producto</param>
+        private void AddFavoriteProduct(int userID, int productID)
+        {
+            try
+            {
+                ProductBLL.AddFavoriteProduct(userID, productID);
+                btnFavorite.CssClass = Constants.FavoriteProductButton;
+                pnlFavoriteIcon.CssClass = Constants.FavoriteProductIcon;
+                pnlProductDetail.CssClass = Constants.FavoriteProductDetail;
+                lbFavoriteAlertText.Text = "Producto añadido como favorito";
+                pnlFavoriteAlert.Visible = true;
+            }
+            catch (Exception ex)
+            {
+                HandleException(ex);
+            }
+        }
+
+        /// <summary>
+        /// Remover el producto a los favoritos del usuario en la base de datos.
+        /// </summary>
+        /// <param name="userID">ID del usuario</param>
+        /// <param name="productID">ID del producto</param>
+        private void RemoveFavoriteProduct(int userID, int productID)
+        {
+            try
+            {
+                ProductBLL.RemoveFavoriteProduct(userID, productID);
+                btnFavorite.CssClass = Constants.UnfavoriteProductButton;
+                pnlFavoriteIcon.CssClass = Constants.UnfavoriteProductIcon;
+                pnlProductDetail.CssClass = Constants.UnfavoriteProductDetail;
+                lbFavoriteAlertText.Text = "Producto removido como favorito";
+                pnlFavoriteAlert.Visible = true;
+            }
+            catch (Exception ex)
+            {
+                HandleException(ex);
             }
         }
     }

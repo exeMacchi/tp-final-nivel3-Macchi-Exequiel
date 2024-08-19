@@ -33,6 +33,24 @@ namespace UserInterface.Pages.User
         protected global::System.Web.UI.UpdatePanel upFavoriteFilter;
 
         /// <summary>
+        /// ddlFirstCriteria control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList ddlFirstCriteria;
+
+        /// <summary>
+        /// ddlSecondCriteria control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList ddlSecondCriteria;
+
+        /// <summary>
         /// txbxFilter control.
         /// </summary>
         /// <remarks>
@@ -67,24 +85,6 @@ namespace UserInterface.Pages.User
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.LinkButton btnResetFilter;
-
-        /// <summary>
-        /// ddlFirstCriteria control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList ddlFirstCriteria;
-
-        /// <summary>
-        /// ddlSecondCriteria control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList ddlSecondCriteria;
 
         /// <summary>
         /// alertEmptyFavoriteList control.

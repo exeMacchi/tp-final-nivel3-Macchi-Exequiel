@@ -16,11 +16,19 @@ namespace UserInterface.Pages.Global
         {
             if (!IsPostBack)
             {
-                txbxEmail.CssClass = Constants.FormControlNormal;
-                txbxSubject.CssClass = Constants.FormControlNormal;
-                txbxMessage.CssClass = Constants.FormControlNormal;
-                btnSend.Enabled = false;
+                InitializeContactForm();
             }
+        }
+
+        /// <summary>
+        /// Configurar la interfaz de usuario inicial para el formulario de contacto.
+        /// </summary>
+        private void InitializeContactForm()
+        {
+            txbxEmail.CssClass = Constants.FormControlNormal;
+            txbxSubject.CssClass = Constants.FormControlNormal;
+            txbxMessage.CssClass = Constants.FormControlNormal;
+            btnSend.Enabled = false;
         }
 
         /// <summary>
@@ -84,7 +92,8 @@ namespace UserInterface.Pages.Global
             catch (Exception ex)
             {
                 Session["ERROR"] = ex;
-                Response.Redirect(Constants.ErrorPagePath);
+                Response.Redirect(Constants.ErrorPagePath, false);
+                Context.ApplicationInstance.CompleteRequest(); // Esto evita un posible ThreadAbortException
             }
         }
     }

@@ -51,12 +51,12 @@ namespace UserInterface.Pages.Admin
         {
             try
             {
-                ddlBrand.DataSource = BrandBBL.GetBrands();
+                ddlBrand.DataSource = BrandBLL.GetBrands();
                 ddlBrand.DataTextField = "Description";
                 ddlBrand.DataValueField = "ID";
                 ddlBrand.DataBind();
 
-                ddlCategory.DataSource = CategoryBBL.GetCategories();
+                ddlCategory.DataSource = CategoryBLL.GetCategories();
                 ddlCategory.DataTextField = "Description";
                 ddlCategory.DataValueField = "ID";
                 ddlCategory.DataBind();
@@ -77,7 +77,8 @@ namespace UserInterface.Pages.Admin
         {
             try
             {
-                Product productMOD = ProductBBL.GetProduct(int.Parse(Request.QueryString["id"]));
+                Product productMOD = ProductBLL.GetProduct(int.Parse(Request.QueryString["id"]));
+
                 txbxCode.Text = productMOD.Code;
                 // Objeto en sesión que sirve para la verificación de cambio de código (deben ser únicos).
                 Session["PRODUCTCODE"] = productMOD.Code; 
@@ -106,8 +107,7 @@ namespace UserInterface.Pages.Admin
             }
             catch (Exception ex)
             {
-                Session["ERROR"] = ex;
-                Response.Redirect(Constants.ErrorPagePath);
+                HandleException(ex);
             }
         }
 
@@ -168,11 +168,11 @@ namespace UserInterface.Pages.Admin
         /// Manejar la excepción guardándola en sesión para después rederigirla a la
         /// página de error.
         /// </summary>
-        /// <param name="ex"></param>
         private void HandleException(Exception ex)
         {
             Session["ERROR"] = ex;
-            Response.Redirect(Constants.ErrorPagePath);
+            Response.Redirect(Constants.ErrorPagePath, false);
+            Context.ApplicationInstance.CompleteRequest(); // Esto evita un posible ThreadAbortException
         }
 
 
@@ -212,7 +212,7 @@ namespace UserInterface.Pages.Admin
         {
             try
             {
-                if (ProductBBL.CodeExistsInDB(txbxCode.Text.Trim()))
+                if (ProductBLL.CodeExistsInDB(txbxCode.Text.Trim()))
                 {
                     InvalidProductCodeAlreadyExists();
                 }
@@ -237,7 +237,7 @@ namespace UserInterface.Pages.Admin
             try
             {
                 if (txbxCode.Text.Trim() != Session["PRODUCTCODE"].ToString() &&
-                    ProductBBL.CodeExistsInDB(txbxCode.Text.Trim()))
+                    ProductBLL.CodeExistsInDB(txbxCode.Text.Trim()))
                 {
                     InvalidProductCodeAlreadyExists();
                 }
@@ -427,16 +427,17 @@ namespace UserInterface.Pages.Admin
 
                 if (IsCreatePageMode())
                 {
-                    ProductBBL.CreateProduct(myProd);
+                    ProductBLL.CreateProduct(myProd);
                     Session["ALERTMESSAGE"] = "Nuevo producto agregado en la base de datos de forma exitosa.";
                 }
                 else
                 {
-                    ProductBBL.UpdateProduct(myProd);
+                    ProductBLL.UpdateProduct(myProd);
                     Session["ALERTMESSAGE"] = "El producto fue modificado en la base de datos de forma exitosa.";
                 }
 
                 Response.Redirect($"{Constants.AdminPagePath}?alert=success", false);
+                Context.ApplicationInstance.CompleteRequest();
             }
             catch (Exception ex)
             {

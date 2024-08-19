@@ -27,7 +27,8 @@ namespace UserInterface.Pages.Global
                 }
                 else
                 {
-                    Response.Redirect(Constants.DefaultPagePath);
+                    Response.Redirect(Constants.DefaultPagePath, false);
+                    Context.ApplicationInstance.CompleteRequest();
                 }
             }
         }

@@ -28,7 +28,7 @@ namespace UserInterface.Pages.Global
                 {
                     if (Session["PRODUCTS"] == null)
                     {
-                        Session["PRODUCTS"] = ProductBBL.GetProducts();
+                        Session["PRODUCTS"] = ProductBLL.GetProducts();
                     }
 
                     if (Session["USER"] != null)
@@ -36,23 +36,22 @@ namespace UserInterface.Pages.Global
                         // Se actualiza siempre la lista de productos favoritos cuando se recarga
                         // la página porque el usuario puede que haya agregado o eliminado algún
                         // producto de su lista de favoritos.
-                        Session["FAVORITEPRODUCTS"] = ProductBBL.GetFavoriteProducts(((Domain.User)Session["USER"]).ID);
+                        Session["FAVORITEPRODUCTS"] = ProductBLL.GetFavoriteProducts(((Domain.User)Session["USER"]).ID);
                     }
 
                     if (Session["CATEGORIES"] == null)
                     {
-                        Session["CATEGORIES"] = CategoryBBL.GetCategories();
+                        Session["CATEGORIES"] = CategoryBLL.GetCategories();
                     }
 
                     if (Session["BRANDS"] == null)
                     {
-                        Session["BRANDS"] = BrandBBL.GetBrands();
+                        Session["BRANDS"] = BrandBLL.GetBrands();
                     }
                 }
                 catch (Exception ex)
                 {
-                    Session["ERROR"] = ex;
-                    Response.Redirect(Constants.ErrorPagePath);
+                    HandleException(ex);
                 }
             }
         }
@@ -65,36 +64,72 @@ namespace UserInterface.Pages.Global
                 {
                     if (((List<Product>)Session["PRODUCTS"]).Count > 0)
                     {
-                        Session["PAGEITEMS"] = (List<Product>)Session["PRODUCTS"];
-                        CurrentPage = 1;
-                        BindRepeater();
+                        SetProductPagination((List<Product>)Session["PRODUCTS"]);
 
-                        fillCategoryFilter();
-                        fillBrandFilter();
-                        fillPriceFilter();
+                        FillCategoryFilter();
+                        FillBrandFilter();
+                        FillPriceFilter();
 
-                        txbxFilter.Enabled = true;
-                        btnFind.Enabled = true;
-                        alertEmptyDB.Visible = false;
-                        alertProductNotFound.Visible = false;
+                        ProductsAvailable();
                     }
                     else
                     {
-                        alertEmptyDB.Visible = true;
-                        alertProductNotFound.Visible = false;
-                        // Se bloquea la búsqueda de productos.
-                        txbxFilter.Enabled = false;
-                        btnFind.Enabled = false;
-                        btnPrev.Enabled = false;
-                        btnNext.Enabled = false;
+                        NoProductsAvailable();
                     }
                 }
                 catch (Exception ex)
                 {
-                    Session["ERROR"] = ex;
-                    Response.Redirect(Constants.ErrorPagePath);
+                    HandleException(ex);
                 }
             }
+        }
+
+        /// <summary>
+        /// Configurar la interfaz de usuario cuando hay productos disponibles.
+        /// </summary>
+        private void ProductsAvailable()
+        {
+            txbxFilter.Enabled = true;
+            btnFind.Enabled = true;
+            alertEmptyDB.Visible = false;
+            alertProductNotFound.Visible = false;
+        }
+
+        /// <summary>
+        /// Configurar la interfaz de usuario cuando no hay productos disponibles.
+        /// </summary>
+        private void NoProductsAvailable()
+        {
+            alertEmptyDB.Visible = true;
+            alertProductNotFound.Visible = false;
+
+            // Se bloquea la búsqueda de productos.
+            txbxFilter.Enabled = false;
+            btnFind.Enabled = false;
+            btnPrev.Enabled = false;
+            btnNext.Enabled = false;
+        }
+
+        /// <summary>
+        /// Configurar la paginación según una lista de productos pasada como argumento.
+        /// </summary>
+        /// <param name="filteredProducts">Lista de productos filtradas</param>
+        private void SetProductPagination(List<Product> filteredProducts)
+        {
+            Session["PAGEITEMS"] = filteredProducts;
+            CurrentPage = 1;
+            BindRepeater();
+        }
+
+        /// <summary>
+        /// Manejar la excepción guardándola en sesión para después rederigirla a la
+        /// página de error.
+        /// </summary>
+        private void HandleException(Exception ex)
+        {
+            Session["ERROR"] = ex;
+            Response.Redirect(Constants.ErrorPagePath, false);
+            Context.ApplicationInstance.CompleteRequest(); // Esto evita un posible ThreadAbortException
         }
 
         /// <summary>
@@ -105,15 +140,12 @@ namespace UserInterface.Pages.Global
             try
             {
                 string filterText = txbxFilter.Text;
-                Session["PAGEITEMS"] = ((List<Product>)Session["PRODUCTS"]).FindAll(p => p.Name.ToUpper().Contains(filterText.ToUpper()));
-                CurrentPage = 1;
-                BindRepeater();
+                SetProductPagination(((List<Product>)Session["PRODUCTS"]).FindAll(p => p.Name.ToUpper().Contains(filterText.ToUpper())));
                 ResetFilterStyles();
             }
             catch (Exception ex)
             {
-                Session["ERROR"] = ex;
-                Response.Redirect(Constants.ErrorPagePath);
+                HandleException(ex);
             }
         }
 
@@ -125,9 +157,7 @@ namespace UserInterface.Pages.Global
             try
             {
                 string category = ((LinkButton) sender).CommandArgument;
-                Session["PAGEITEMS"] = ((List<Product>)Session["PRODUCTS"]).FindAll(p => p.Category.Description == category);
-                CurrentPage = 1;
-                BindRepeater();
+                SetProductPagination(((List<Product>)Session["PRODUCTS"]).FindAll(p => p.Category.Description == category));
 
                 // Estilos para el filtro
                 ResetFilterStyles();
@@ -136,8 +166,7 @@ namespace UserInterface.Pages.Global
             }
             catch (Exception ex)
             {
-                Session["ERROR"] = ex;
-                Response.Redirect(Constants.ErrorPagePath);
+                HandleException(ex);
             }
         }
 
@@ -149,9 +178,7 @@ namespace UserInterface.Pages.Global
             try
             {
                 string brand = ((LinkButton) sender).CommandArgument;
-                Session["PAGEITEMS"] = ((List<Product>)Session["PRODUCTS"]).FindAll(p => p.Brand.Description == brand);
-                CurrentPage = 1;
-                BindRepeater();
+                SetProductPagination(((List<Product>)Session["PRODUCTS"]).FindAll(p => p.Brand.Description == brand));
 
                 // Estilos para el filtro
                 ResetFilterStyles();
@@ -160,8 +187,7 @@ namespace UserInterface.Pages.Global
             }
             catch (Exception ex)
             {
-                Session["ERROR"] = ex;
-                Response.Redirect(Constants.ErrorPagePath);
+                HandleException(ex);
             }
         }
 
@@ -174,24 +200,24 @@ namespace UserInterface.Pages.Global
             {
                 string price = ((LinkButton) sender).CommandArgument;
 
+                List<Product> filteredProducts;
                 if (price == "LOW")
                 {
-                    Session["PAGEITEMS"] = ((List<Product>)Session["PRODUCTS"]).FindAll(p => p.Price < 50_000);
+                    filteredProducts = ((List<Product>)Session["PRODUCTS"]).FindAll(p => p.Price < 50_000);
                 }
                 else if (price == "MEDIUM")
                 {
-                    Session["PAGEITEMS"] = ((List<Product>)Session["PRODUCTS"]).FindAll(p => p.Price >= 50_000 && p.Price < 100_000);
+                    filteredProducts = ((List<Product>)Session["PRODUCTS"]).FindAll(p => p.Price >= 50_000 && p.Price < 100_000);
                 }
                 else if (price == "HIGH")
                 {
-                    Session["PAGEITEMS"] = ((List<Product>)Session["PRODUCTS"]).FindAll(p => p.Price >= 100_000 && p.Price < 500_000);
+                    filteredProducts = ((List<Product>)Session["PRODUCTS"]).FindAll(p => p.Price >= 100_000 && p.Price < 500_000);
                 }
                 else
                 {
-                    Session["PAGEITEMS"] = ((List<Product>)Session["PRODUCTS"]).FindAll(p => p.Price >= 500_000);
+                    filteredProducts = ((List<Product>)Session["PRODUCTS"]).FindAll(p => p.Price >= 500_000);
                 }
-                CurrentPage = 1;
-                BindRepeater();
+                SetProductPagination(filteredProducts);
 
                 // Estilos para el filtro
                 ResetFilterStyles();
@@ -200,8 +226,7 @@ namespace UserInterface.Pages.Global
             }
             catch (Exception ex)
             {
-                Session["ERROR"] = ex;
-                Response.Redirect(Constants.ErrorPagePath);
+                HandleException(ex);
             }
         }
 
@@ -209,7 +234,7 @@ namespace UserInterface.Pages.Global
         /// Rellenar el filtro de categorías con todas las categorías de la base de datos
         /// como también el conteo de cuántos productos coinciden con cada una.
         /// </summary>
-        private void fillCategoryFilter()
+        private void FillCategoryFilter()
         {
             Dictionary<string, int> categoryCount = new Dictionary<string, int>();
 
@@ -233,8 +258,7 @@ namespace UserInterface.Pages.Global
             }
             catch (Exception ex)
             {
-                Session["ERROR"] = ex;
-                Response.Redirect(Constants.ErrorPagePath);
+                HandleException(ex);
             }
         }
 
@@ -242,7 +266,7 @@ namespace UserInterface.Pages.Global
         /// Rellenar el filtro de marcas con todas las marcas de la base de datos
         /// como también el conteo de cuántos productos coinciden con cada una.
         /// </summary>
-        private void fillBrandFilter()
+        private void FillBrandFilter()
         {
             Dictionary<string, int> brandCount = new Dictionary<string, int>();
 
@@ -266,8 +290,7 @@ namespace UserInterface.Pages.Global
             }
             catch (Exception ex)
             {
-                Session["ERROR"] = ex;
-                Response.Redirect(Constants.ErrorPagePath);
+                HandleException(ex);
             }
         }
 
@@ -275,7 +298,7 @@ namespace UserInterface.Pages.Global
         /// Rellenar el filtro de precios con un rango manualmente determinado, así mismo
         /// también se realiza un conteo de cuántos productos coinciden con cada rango.
         /// </summary>
-        private void fillPriceFilter()
+        private void FillPriceFilter()
         {
             Dictionary<string, int> priceCount = new Dictionary<string, int>
             {
@@ -312,8 +335,7 @@ namespace UserInterface.Pages.Global
             }
             catch (Exception ex)
             {
-                Session["ERROR"] = ex;
-                Response.Redirect(Constants.ErrorPagePath);
+                HandleException(ex);
             }
         }
 
@@ -416,8 +438,7 @@ namespace UserInterface.Pages.Global
             }
             catch (Exception ex)
             {
-                Session["ERROR"] = ex;
-                Response.Redirect(Constants.ErrorPagePath);
+                HandleException(ex);
             }
         }
 
@@ -454,14 +475,11 @@ namespace UserInterface.Pages.Global
             try
             {
                 ResetFilterStyles();
-                Session["PAGEITEMS"] = (List<Product>)Session["PRODUCTS"];
-                CurrentPage = 1;
-                BindRepeater();
+                SetProductPagination((List<Product>)Session["PRODUCTS"]);
             }
             catch (Exception ex)
             {
-                Session["ERROR"] = ex;
-                Response.Redirect(Constants.ErrorPagePath);
+                HandleException(ex);
             }
         }
 
@@ -528,8 +546,7 @@ namespace UserInterface.Pages.Global
             }
             catch (Exception ex)
             {
-                Session["ERROR"] = ex;
-                Response.Redirect(Constants.ErrorPagePath);
+                HandleException(ex);
             }
         }
 

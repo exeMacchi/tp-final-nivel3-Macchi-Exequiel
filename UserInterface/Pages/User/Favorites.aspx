@@ -17,6 +17,15 @@
         <ContentTemplate>
             </div>
             <div class="row border-bottom pb-4">
+                <!-- Filtros -->
+                <div class="col-6 d-flex justify-content-between gap-3">
+                    <asp:DropDownList ID="ddlFirstCriteria" runat="server" 
+                                      CssClass="form-select bg-dark" AutoPostBack="true"
+                                      OnSelectedIndexChanged="ddlFirstCriteria_SelectedIndexChanged"></asp:DropDownList>
+                    <asp:DropDownList ID="ddlSecondCriteria" runat="server" 
+                                      CssClass="form-select bg-dark"></asp:DropDownList>
+                </div>
+
                 <!-- Buscador -->
                 <div class="col input-group">
                     <asp:TextBox ID="txbxFilter" runat="server"
@@ -35,15 +44,6 @@
                                     OnClick="btnResetFilter_Click">
                         <i class="bi bi-arrow-counterclockwise fs-5"></i>
                     </asp:LinkButton>
-                </div>
-
-                <!-- Filtros -->
-                <div class="col-6 d-flex justify-content-between gap-3">
-                    <asp:DropDownList ID="ddlFirstCriteria" runat="server" 
-                                      CssClass="form-select bg-dark" AutoPostBack="true"
-                                      OnSelectedIndexChanged="ddlFirstCriteria_SelectedIndexChanged"></asp:DropDownList>
-                    <asp:DropDownList ID="ddlSecondCriteria" runat="server" 
-                                      CssClass="form-select bg-dark"></asp:DropDownList>
                 </div>
             </div>
         </ContentTemplate>
@@ -98,8 +98,7 @@
                                      style="max-height: 420px">
                                 <figure class="card-img-top bg-gradient text-white">
                                     <img src="<%# Eval("Image") %>"
-                                         alt="Imagen del producto <%# Eval("Name") %>"
-                                         style="max-height: 140px">
+                                         alt="Imagen del producto <%# Eval("Name") %>">
                                 </figure>
                                 <div class="card-body d-flex flex-column gap-1 justify-content-between">
                                     <div class="d-flex justify-content-center">

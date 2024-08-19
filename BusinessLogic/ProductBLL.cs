@@ -12,7 +12,7 @@ using Domain;
 
 namespace BusinessLogic
 {
-    public class ProductBBL
+    public class ProductBLL
     {
         /// <summary>
         /// Obtener todos los productos desde la base de datos.
@@ -571,7 +571,7 @@ namespace BusinessLogic
         /// </summary>
         /// <param name="userID"></param>
         /// <param name="productID"></param>
-        public static void RemoveFavorite(int userID, int productID)
+        public static void RemoveFavoriteProduct(int userID, int productID)
         {
             DataBase db = new DataBase();
             string query = "DELETE FROM FAVORITOS WHERE IdUser = @UserID AND IdArticulo = @ProductID;";

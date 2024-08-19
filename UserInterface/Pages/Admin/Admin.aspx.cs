@@ -12,6 +12,9 @@ namespace UserInterface.Pages.Admin
 {
     public partial class Admin : System.Web.UI.Page
     {
+        /* ---------------------------------------------------------------------------- */
+        /*                                      GENERAL                                 */
+        /* ---------------------------------------------------------------------------- */
         protected void Page_Init(object sender, EventArgs e)
         {
             if (!IsPostBack)
@@ -21,12 +24,11 @@ namespace UserInterface.Pages.Admin
                     // En la página de administrador, siempre que se cargue por primera vez,
                     // se recargan los productos por el caso de que esta página provenga
                     // de una operación de creación, modificación o eliminación.
-                    Session["PRODUCTS"] = ProductBBL.GetProducts();
+                    Session["PRODUCTS"] = ProductBLL.GetProducts();
                 }
                 catch (Exception ex)
                 {
-                    Session["ERROR"] = ex;
-                    Response.Redirect(Constants.ErrorPagePath);
+                    HandleException(ex);
                 }
             }
         }
@@ -39,27 +41,62 @@ namespace UserInterface.Pages.Admin
                 {
                     if (((List<Product>)Session["PRODUCTS"]).Count > 0)
                     {
-                        alertEmptyGV.Visible = false;
-                        alertProductNotFound.Visible = false;
-                        gvProducts.DataSource = (List<Product>)Session["PRODUCTS"];
-                        gvProducts.DataBind();
+                        BindProductsToGridView((List<Product>)Session["PRODUCTS"]);
                     }
                     else
                     {
-                        alertProductNotFound.Visible = false; // Por las dudas.
-                        alertEmptyGV.Visible = true;
+                        ShowNoProductsDBAlert();
                     }
 
-                    // Estilos Filtros avanzados.
-                    ddlFirstCriteria.CssClass = Constants.FormSelectOptionSelected;
-                    ddlSecondCriteria.CssClass = Constants.FormSelectOptionSelected;
+                    InitializeAdminStyles();
                 }
                 catch (Exception ex)
                 {
-                    Session["Error"] = ex;
-                    Response.Redirect(Constants.ErrorPagePath);
+                    HandleException(ex);
                 }
             }
+        }
+
+        /// <summary>
+        /// Configurar la interfaz de usuario predeterminada para la página de administrador.
+        /// </summary>
+        private void InitializeAdminStyles()
+        {
+            // Estilos Filtros avanzados.
+            ddlFirstCriteria.CssClass = Constants.FormSelectOptionSelected;
+            ddlSecondCriteria.CssClass = Constants.FormSelectOptionSelected;
+        }
+
+        /// <summary>
+        /// Vincular los productos con el <see cref="gvProducts"/>
+        /// </summary>
+        /// <param name="products">Lista de productos</param>
+        private void BindProductsToGridView(List<Product> products)
+        {
+            gvProducts.DataSource = products;
+            gvProducts.DataBind();
+            alertProductNotFound.Visible = false;
+            alertEmptyGV.Visible = false;
+        }
+
+        /// <summary>
+        /// Mostrar alerta de que no hay actualmente productos en la base de datos.
+        /// </summary>
+        private void ShowNoProductsDBAlert()
+        {
+            alertEmptyGV.Visible = true;
+            alertProductNotFound.Visible = false; // Por las dudas.
+        }
+
+        /// <summary>
+        /// Manejar la excepción guardándola en sesión para después rederigirla a la
+        /// página de error.
+        /// </summary>
+        private void HandleException(Exception ex)
+        {
+            Session["ERROR"] = ex;
+            Response.Redirect(Constants.ErrorPagePath, false);
+            Context.ApplicationInstance.CompleteRequest(); // Esto evita un posible ThreadAbortException
         }
 
         /// <summary>
@@ -77,20 +114,28 @@ namespace UserInterface.Pages.Admin
             }
             catch (Exception ex)
             {
-                Session["Error"] = ex;
-                Response.Redirect(Constants.ErrorPagePath);
+                HandleException(ex);
             }
         }
 
+
+        /* ---------------------------------------------------------------------------- */
+        /*                                    MODIFICAR                                 */
+        /* ---------------------------------------------------------------------------- */
         /// <summary>
         /// Evento que se lanza cuando se quiere modificar un producto.
         /// </summary>
         protected void gvProducts_SelectedIndexChanged(object sender, EventArgs e)
         {
             string id = gvProducts.SelectedDataKey.Value.ToString();
-            Response.Redirect($"{Constants.CreateEditPagePath}?id={id}");
+            Response.Redirect($"{Constants.CreateEditPagePath}?id={id}", false);
+            Context.ApplicationInstance.CompleteRequest();
         }
 
+
+        /* ---------------------------------------------------------------------------- */
+        /*                                     ELIMINAR                                 */
+        /* ---------------------------------------------------------------------------- */
         /// <summary>
         /// Lanzar el modal de advertencia sobre la eliminación física del registro seleccionado.
         /// </summary>
@@ -119,10 +164,28 @@ namespace UserInterface.Pages.Admin
 
             try
             {
-                // Verificar si el producto que se quiere eliminar tiene alguna referencia
-                // de una imagen local. Si tiene una imagen local, se elimina antes de que
-                // se elimine el producto.
-                string productImage = ProductBBL.GetProductImage(id);
+                DeleteExistingLocalImageIfNeeded(id);
+
+                ProductBLL.DeleteProduct(id);
+                Session["ALERTMESSAGE"] = "El producto fue eliminado de la base de datos de forma exitosa.";
+                Response.Redirect($"{Constants.AdminPagePath}?alert=success", false);
+                Context.ApplicationInstance.CompleteRequest();
+            }
+            catch (Exception ex)
+            {
+                HandleException(ex);
+            }
+        }
+
+        /// <summary>
+        /// Eliminar una posible imagen local vinculada al producto que el usuario
+        /// quiere eliminar.
+        /// </summary>
+        private void DeleteExistingLocalImageIfNeeded(int id)
+        {
+            try
+            {
+                string productImage = ProductBLL.GetProductImage(id);
                 if (productImage.StartsWith(Constants.LocalImagePath))
                 {
                     string localImagePath = Server.MapPath(productImage);
@@ -131,18 +194,17 @@ namespace UserInterface.Pages.Admin
                         File.Delete(localImagePath);
                     }
                 }
-
-                ProductBBL.DeleteProduct(id);
-                Session["ALERTMESSAGE"] = "El producto fue eliminado de la base de datos de forma exitosa.";
-                Response.Redirect($"{Constants.AdminPagePath}?alert=success", false);
             }
             catch (Exception ex)
             {
-                Session["ERROR"] = ex;
-                Response.Redirect(Constants.ErrorPagePath);
+                HandleException(ex);
             }
         }
 
+
+        /* ---------------------------------------------------------------------------- */
+        /*                                     FILTROS                                  */
+        /* ---------------------------------------------------------------------------- */
         /// <summary>
         /// Filtrar la lista de productos en sesión según un criterio (dependiendo
         /// qué tipo de filtro esté activado) y actualizar el <see cref="gvProducts"/> 
@@ -150,44 +212,73 @@ namespace UserInterface.Pages.Admin
         /// </summary>
         protected void btnFind_Click(object sender, EventArgs e)
         {
-            string filterText = txbxFilter.Text;
-            List<Product> filteredProducts = new List<Product>();
-
             try
             {
-                // Filtro avanzado
-                if (advancedPanel.Visible)
-                {
-                    string firstCriteria = ddlFirstCriteria.SelectedValue;
-                    string secondCriteria = ddlSecondCriteria.SelectedValue;
-                    string condition = Auxiliary.CreateCondition(firstCriteria, secondCriteria, filterText);
-
-                    filteredProducts = ProductBBL.SearchProducts(condition);
-                    gvProducts.DataSource = filteredProducts;
-                    gvProducts.DataBind();
-                    alertProductNotFound.Visible = false;
-                }
-                // Filtro básico
-                else
-                {
-                    filteredProducts = ((List<Product>)Session["PRODUCTS"]).FindAll(p => p.Name.ToUpper().Contains(filterText.ToUpper()));
-                    gvProducts.DataSource = filteredProducts;
-                    gvProducts.DataBind();
-                    alertProductNotFound.Visible = false;
-                }
+                List<Product> filteredProducts = GetFilteredProducts();
+                BindProductsToGridView(filteredProducts);
 
                 // Si no se encuentra resultados.
                 if (filteredProducts.Count == 0)
                 {
-                    alertProductNotFound.Visible = true;
-                    alertEmptyGV.Visible = false; // Por las dudas.
+                    ShowProductNotFoundAlert();
                 }
             }
             catch (Exception ex)
             {
-                Session["ERROR"] = ex;
-                Response.Redirect(Constants.ErrorPagePath);
+                HandleException(ex);
             }
+        }
+
+        /// <summary>
+        /// Devolver una lista de productos filtradas según el filtro activado
+        /// (filtro avanzado = base de datos || filtro básico = lista en sesión)
+        /// </summary>
+        /// <returns>Lista de productos filtrados</returns>
+        private List<Product> GetFilteredProducts()
+        {
+            try
+            {
+                string filterText = txbxFilter.Text;
+
+                // Filtro avanzado (base de datos)
+                if (advancedPanel.Visible)
+                {
+                    string condition = GetAdvancedSearchCondition(filterText);
+                    return ProductBLL.SearchProducts(condition);
+                }
+                // Filtro básico (lista)
+                else
+                {
+                    return ((List<Product>)Session["PRODUCTS"]).FindAll(p => p.Name.ToUpper().Contains(filterText.ToUpper()));
+                }
+            }
+            catch (Exception ex)
+            {
+                HandleException(ex);
+                return null; // Esto es solo por el compilador
+            }
+        }
+
+        /// <summary>
+        /// Devolver la condición de filtrado requerida en la consulta a la base de datos
+        /// del filtro avanzado
+        /// </summary>
+        /// <param name="filterText">Texto introducido en <see cref="txbxFilter"/></param>
+        /// <returns>Condición de filtrado completo</returns>
+        private string GetAdvancedSearchCondition(string filterText)
+        {
+            string firstCriteria = ddlFirstCriteria.SelectedValue;
+            string secondCriteria = ddlSecondCriteria.SelectedValue;
+            return Auxiliary.CreateCondition(firstCriteria, secondCriteria, filterText);
+        }
+
+        /// <summary>
+        /// Mostrar alerta de que no se encontraron productos según el filtro utilizado.
+        /// </summary>
+        private void ShowProductNotFoundAlert()
+        {
+            alertProductNotFound.Visible = true;
+            alertEmptyGV.Visible = false; // Por las dudas.
         }
 
         /// <summary>
@@ -197,41 +288,62 @@ namespace UserInterface.Pages.Admin
         {
             if (advancedPanel.Visible)
             {
-                txbxFilter.Attributes["placeholder"] = "Buscar producto por nombre...";
-                advancedPanel.Visible = false;
+                ConfigureBasicFilter();
             }
             else
             {
-                // Primer criterio de búsqueda.
-                ddlFirstCriteria.Items.Clear();
-                ddlFirstCriteria.Items.Add(new ListItem("Nombre", "Name"));
-                ddlFirstCriteria.Items.Add(new ListItem("Código", "Code"));
-                ddlFirstCriteria.Items.Add(new ListItem("Marca", "Brand"));
-                ddlFirstCriteria.Items.Add(new ListItem("Categoría", "Category"));
-                ddlFirstCriteria.Items.Add(new ListItem("Precio", "Price"));
-
-                // Segundo criterio de búsqueda por defecto ("Nombre").
-                ddlSecondCriteria.Items.Clear();
-                ddlSecondCriteria.Items.Add(new ListItem("Comienza con...", "Starts"));
-                ddlSecondCriteria.Items.Add(new ListItem("Contiene...", "Contains"));
-                ddlSecondCriteria.Items.Add(new ListItem("Termina con...", "Ends"));
-
-                txbxFilter.Attributes["placeholder"] = "Buscar producto por nombre...";
-                advancedPanel.Visible = true;
+                ConfigureAdvancedFilter();
             }
 
+            ResetFilter();
+        }
+
+        /// <summary>
+        /// Configurar el filtro al sistema básico.
+        /// </summary>
+        private void ConfigureBasicFilter()
+        {
+            txbxFilter.Attributes["placeholder"] = "Buscar producto por nombre...";
+            advancedPanel.Visible = false;
+        }
+
+        /// <summary>
+        /// Configurar el filtro al sistema avanzado.
+        /// </summary>
+        private void ConfigureAdvancedFilter()
+        {
+            // Primer criterio de búsqueda.
+            ddlFirstCriteria.Items.Clear();
+            ddlFirstCriteria.Items.Add(new ListItem("Nombre", "Name"));
+            ddlFirstCriteria.Items.Add(new ListItem("Código", "Code"));
+            ddlFirstCriteria.Items.Add(new ListItem("Marca", "Brand"));
+            ddlFirstCriteria.Items.Add(new ListItem("Categoría", "Category"));
+            ddlFirstCriteria.Items.Add(new ListItem("Precio", "Price"));
+
+            // Segundo criterio de búsqueda por defecto ("Nombre").
+            ddlSecondCriteria.Items.Clear();
+            ddlSecondCriteria.Items.Add(new ListItem("Comienza con...", "Starts"));
+            ddlSecondCriteria.Items.Add(new ListItem("Contiene...", "Contains"));
+            ddlSecondCriteria.Items.Add(new ListItem("Termina con...", "Ends"));
+
+            txbxFilter.Attributes["placeholder"] = "Buscar producto por nombre...";
+            advancedPanel.Visible = true;
+        }
+
+        /// <summary>
+        /// Reiniciar los productos filtrados.
+        /// </summary>
+        private void ResetFilter()
+        {
             try
             {
                 // Reinicio
                 txbxFilter.Text = string.Empty;
-                gvProducts.DataSource = (List<Product>)Session["PRODUCTS"];
-                gvProducts.DataBind();
-                alertProductNotFound.Visible = false;
+                BindProductsToGridView((List<Product>)Session["PRODUCTS"]);
             }
             catch (Exception ex)
             {
-                Session["ERROR"] = ex;
-                Response.Redirect(Constants.ErrorPagePath);
+                HandleException(ex);
             }
         }
 

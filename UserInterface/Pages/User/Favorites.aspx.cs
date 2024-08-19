@@ -11,6 +11,9 @@ namespace UserInterface.Pages.User
 {
     public partial class Favorites : System.Web.UI.Page
     {
+        /* ---------------------------------------------------------------------------- */
+        /*                                      GENERAL                                 */
+        /* ---------------------------------------------------------------------------- */
         // Número de elementos por página
         private const int PageSize = 8;
 
@@ -24,10 +27,17 @@ namespace UserInterface.Pages.User
         {
             if (!IsPostBack)
             {
-                // Se actualiza siempre la lista de productos favoritos cuando se recarga
-                // la página porque el usuario puede que haya agregado o eliminado algún
-                // producto de su lista de favoritos.
-                Session["FAVORITEPRODUCTS"] = ProductBBL.GetFavoriteProducts(((Domain.User)Session["USER"]).ID);
+                try
+                {
+                    // Se actualiza siempre la lista de productos favoritos cuando se recarga
+                    // la página porque el usuario puede que haya agregado o eliminado algún
+                    // producto de su lista de favoritos.
+                    Session["FAVORITEPRODUCTS"] = ProductBLL.GetFavoriteProducts(((Domain.User)Session["USER"]).ID);
+                }
+                catch (Exception ex)
+                {
+                    HandleException(ex);
+                }
             }
         }
 
@@ -39,40 +49,87 @@ namespace UserInterface.Pages.User
                 {
                     if (((List<Product>)Session["FAVORITEPRODUCTS"]).Count > 0)
                     {
-                        Session["PAGEITEMS"] = (List<Product>)Session["FAVORITEPRODUCTS"];
-                        CurrentPage = 1;
-                        BindRepeater();
+                        SetFavoriteProductPagination((List<Product>)Session["FAVORITEPRODUCTS"]);
                         FillCriterias();
-
-                        txbxFilter.Enabled = true;
-                        btnFind.Enabled = true;
-                        alertEmptyFavoriteList.Visible = false;
-                        alertFavoriteNotFound.Visible = false;
+                        FavoritesAvailable();
                     }
                     else
                     {
-                        // Alerta de lista de favoritos vacía
-                        alertEmptyFavoriteList.Visible = true;
-                        alertFavoriteNotFound.Visible = false;
-
-                        // Filtro de búsqueda y paginación bloqueados
-                        txbxFilter.Enabled = false;
-                        ddlFirstCriteria.Enabled = false;
-                        ddlSecondCriteria.Enabled = false;
-                        btnFind.Enabled = false;
-                        btnPrev.Enabled = false;
-                        btnNext.Enabled = false;
+                        NoFavoritesAvailable();
                     }
                 }
                 catch (Exception ex)
                 {
-                    // TODO: manejar error
-                    throw ex;
+                    HandleException(ex);
                 }
             }
         }
 
-        /* --- Filtros --- */
+        /// <summary>
+        /// Configurar la interfaz de usuario cuando hay productos favoritos
+        /// disponibles.
+        /// </summary>
+        private void FavoritesAvailable()
+        {
+            txbxFilter.Enabled = true;
+            btnFind.Enabled = true;
+            alertEmptyFavoriteList.Visible = false;
+            alertFavoriteNotFound.Visible = false;
+        }
+
+        /// <summary>
+        /// Configurar la interfaz de usuario cuando no hay productos favoritos
+        /// disponibles.
+        /// </summary>
+        private void NoFavoritesAvailable()
+        {
+            // Alerta de lista de favoritos vacía
+            alertEmptyFavoriteList.Visible = true;
+            alertFavoriteNotFound.Visible = false;
+
+            // Filtro de búsqueda y paginación bloqueados
+            txbxFilter.Enabled = false;
+            ddlFirstCriteria.Enabled = false;
+            ddlSecondCriteria.Enabled = false;
+            btnFind.Enabled = false;
+            btnPrev.Enabled = false;
+            btnNext.Enabled = false;
+        }
+
+        /// <summary>
+        /// Configurar la paginación según una lista de productos favoritos
+        /// pasada como argumento.
+        /// </summary>
+        /// <param name="filteredFavorites">Lista de productos favoritos filtrados</param>
+        private void SetFavoriteProductPagination(List<Product> filteredFavorites)
+        {
+            try
+            {
+                Session["PAGEITEMS"] = filteredFavorites;
+                CurrentPage = 1;
+                BindRepeater();
+            }
+            catch (Exception ex)
+            {
+                HandleException(ex);
+            }
+        }
+
+        /// <summary>
+        /// Manejar la excepción guardándola en sesión para después rederigirla a la
+        /// página de error.
+        /// </summary>
+        private void HandleException(Exception ex)
+        {
+            Session["ERROR"] = ex;
+            Response.Redirect(Constants.ErrorPagePath, false);
+            Context.ApplicationInstance.CompleteRequest(); // Esto evita un posible ThreadAbortException
+        }
+
+
+        /* ---------------------------------------------------------------------------- */
+        /*                                      FILTROS                                 */
+        /* ---------------------------------------------------------------------------- */
 
         /// <summary>
         /// Filtrar la lista de productos favoritos desde la base de datos
@@ -89,16 +146,12 @@ namespace UserInterface.Pages.User
 
             try
             {
-                Session["PAGEITEMS"] = ProductBBL.SearchFavoriteProducts(((Domain.User)Session["USER"]).ID, condition);
-                CurrentPage = 1;
-                BindRepeater();
-
+                SetFavoriteProductPagination(ProductBLL.SearchFavoriteProducts(((Domain.User)Session["USER"]).ID, condition));
                 btnResetFilter.CssClass = Constants.ResetFilterButtonEnabled;
             }
             catch (Exception ex)
             {
-                // TODO: manejar error
-                throw ex;
+                HandleException(ex);
             }
         }
 
@@ -164,33 +217,41 @@ namespace UserInterface.Pages.User
         protected void btnResetFilter_Click(object sender, EventArgs e)
         {
             FillCriterias();
-            Session["PAGEITEMS"] = (List<Product>)Session["FAVORITEPRODUCTS"];
-            CurrentPage = 1;
-            BindRepeater();
+            SetFavoriteProductPagination((List<Product>)Session["FAVORITEPRODUCTS"]);
             btnResetFilter.CssClass = Constants.ResetFilterButtonDisabled;
         }
 
-        /* --- Paginación --- */
+
+        /* ---------------------------------------------------------------------------- */
+        /*                                   PAGINACIÓN                                 */
+        /* ---------------------------------------------------------------------------- */
 
         /// <summary>
         /// Vincular los productos favoritos al repetidor según la paginación actual.
         /// </summary>
         private void BindRepeater()
         {
-            int skip = (CurrentPage - 1) * PageSize;
-            List<Product> pagedItems = ((List<Product>)Session["PAGEITEMS"]).Skip(skip).Take(PageSize).ToList();
-            FavoriteProductCards.DataSource = pagedItems;
-            FavoriteProductCards.DataBind();
+            try
+            {
+                int skip = (CurrentPage - 1) * PageSize;
+                List<Product> pagedItems = ((List<Product>)Session["PAGEITEMS"]).Skip(skip).Take(PageSize).ToList();
+                FavoriteProductCards.DataSource = pagedItems;
+                FavoriteProductCards.DataBind();
 
-            // Verificación de la existencia de favoritos
-            if (pagedItems.Count == 0)
-                alertFavoriteNotFound.Visible = true;
-            else
-                alertFavoriteNotFound.Visible = false;
+                // Verificación de la existencia de favoritos
+                if (pagedItems.Count == 0)
+                    alertFavoriteNotFound.Visible = true;
+                else
+                    alertFavoriteNotFound.Visible = false;
 
-            // Habilitar/Deshabilitar botones de paginación.
-            btnPrev.Enabled = CurrentPage > 1;
-            btnNext.Enabled = (skip + PageSize) < ((List<Product>)Session["PAGEITEMS"]).Count;
+                // Habilitar/Deshabilitar botones de paginación.
+                btnPrev.Enabled = CurrentPage > 1;
+                btnNext.Enabled = (skip + PageSize) < ((List<Product>)Session["PAGEITEMS"]).Count;
+            }
+            catch (Exception ex)
+            {
+                HandleException(ex);
+            }
         }
 
         /// <summary>
