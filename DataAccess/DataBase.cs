@@ -156,10 +156,7 @@ namespace DataAccess
         {
             try
             {
-                if (reader != null)
-                {
-                    reader.Close();
-                }
+                reader?.Close();
                 connection.Close();
             }
             catch (SqlException ex)

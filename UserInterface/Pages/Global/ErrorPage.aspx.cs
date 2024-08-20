@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -27,8 +28,11 @@ namespace UserInterface.Pages.Global
                 }
                 else
                 {
-                    Response.Redirect(Constants.DefaultPagePath, false);
-                    Context.ApplicationInstance.CompleteRequest();
+                    try
+                    {
+                        Response.Redirect(Constants.DefaultPagePath);
+                    }
+                    catch (ThreadAbortException) { }
                 }
             }
         }

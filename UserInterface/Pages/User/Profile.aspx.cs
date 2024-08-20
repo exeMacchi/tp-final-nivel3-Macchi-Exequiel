@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -57,9 +58,12 @@ namespace UserInterface.Pages.User
         /// </summary>
         private void HandleException(Exception ex)
         {
-            Session["ERROR"] = ex;
-            Response.Redirect(Constants.ErrorPagePath, false);
-            Context.ApplicationInstance.CompleteRequest(); // Esto evita un posible ThreadAbortException
+            try
+            {
+                Session["ERROR"] = ex;
+                Response.Redirect(Constants.ErrorPagePath);
+            }
+            catch (ThreadAbortException) { }
         }
 
 
@@ -125,9 +129,9 @@ namespace UserInterface.Pages.User
                 txbxName.ReadOnly = true;
 
                 Session["ALERTMESSAGE"] = "Nombre de usuario actualizado correctamente.";
-                Response.Redirect($"{Constants.ProfilePagePath}?alert=success", false);
-                Context.ApplicationInstance.CompleteRequest();
+                Response.Redirect($"{Constants.ProfilePagePath}?alert=success");
             }
+            catch (ThreadAbortException) { }
             catch (Exception ex)
             {
                 HandleException(ex);
@@ -196,9 +200,9 @@ namespace UserInterface.Pages.User
                 txbxSurname.ReadOnly = true;
 
                 Session["ALERTMESSAGE"] = "Apellido de usuario actualizado correctamente.";
-                Response.Redirect($"{Constants.ProfilePagePath}?alert=success", false);
-                Context.ApplicationInstance.CompleteRequest();
+                Response.Redirect($"{Constants.ProfilePagePath}?alert=success");
             }
+            catch (ThreadAbortException) { }
             catch (Exception ex)
             {
                 HandleException(ex);
@@ -271,9 +275,9 @@ namespace UserInterface.Pages.User
                 UserBLL.UpdateUser((Domain.User)Session["USER"]);
 
                 Session["ALERTMESSAGE"] = "Avatar de usuario actualizado correctamente.";
-                Response.Redirect($"{Constants.ProfilePagePath}?alert=success", false);
-                Context.ApplicationInstance.CompleteRequest();
+                Response.Redirect($"{Constants.ProfilePagePath}?alert=success");
             }
+            catch (ThreadAbortException) { }
             catch (Exception ex)
             {
                 HandleException(ex);

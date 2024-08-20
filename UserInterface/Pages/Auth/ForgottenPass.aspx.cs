@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Mail;
+using System.Threading;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -61,11 +62,10 @@ namespace UserInterface.Pages.Auth
                 {
                     Session["ALERTMESSAGE"] = "No tiene las credenciales necesarias " +
                                               "para acceder a la página solicitada.";
-                    Response.Redirect($"{Constants.LoginPagePath}?alert=error", false);
-                    Context.ApplicationInstance.CompleteRequest();
-                    return;
+                    Response.Redirect($"{Constants.LoginPagePath}?alert=error");
                 }
             }
+            catch (ThreadAbortException) { }
             catch (Exception ex)
             {
                 HandleException(ex);
@@ -84,9 +84,12 @@ namespace UserInterface.Pages.Auth
         /// </summary>
         private void HandleException(Exception ex)
         {
-            Session["ERROR"] = ex;
-            Response.Redirect(Constants.ErrorPagePath, false);
-            Context.ApplicationInstance.CompleteRequest(); // Esto evita un posible ThreadAbortException
+            try
+            {
+                Session["ERROR"] = ex;
+                Response.Redirect(Constants.ErrorPagePath);
+            }
+            catch (ThreadAbortException) { }
         }
 
         
@@ -275,9 +278,9 @@ namespace UserInterface.Pages.Auth
             {
                 UserBLL.UpdateUserPassword(id, firstPass);
                 Session["ALERTMESSAGE"] = "¡La contraseña se ha actualizado de forma exitosa!";
-                Response.Redirect($"{Constants.LoginPagePath}?alert=success", false);
-                Context.ApplicationInstance.CompleteRequest();
+                Response.Redirect($"{Constants.LoginPagePath}?alert=success");
             }
+            catch (ThreadAbortException) { }
             catch (Exception ex)
             {
                 HandleException(ex);

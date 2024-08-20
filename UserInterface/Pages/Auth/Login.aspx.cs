@@ -3,6 +3,7 @@ using Domain;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -37,9 +38,12 @@ namespace UserInterface.Pages.Auth
         /// </summary>
         private void HandleException(Exception ex)
         {
-            Session["ERROR"] = ex;
-            Response.Redirect(Constants.ErrorPagePath, false);
-            Context.ApplicationInstance.CompleteRequest(); // Esto evita un posible ThreadAbortException
+            try
+            {
+                Session["ERROR"] = ex;
+                Response.Redirect(Constants.ErrorPagePath);
+            }
+            catch (ThreadAbortException) { }
         }
 
         /// <summary>
@@ -104,9 +108,9 @@ namespace UserInterface.Pages.Auth
 
                     // Dependiendo del rol de usuario, se redirige a una página.
                     if (user.IsAdmin)
-                        Response.Redirect(Constants.AdminPagePath, false);
+                        Response.Redirect(Constants.AdminPagePath);
                     else
-                        Response.Redirect(Constants.ProductsPagePath, false);
+                        Response.Redirect(Constants.ProductsPagePath);
                 }
                 else
                 {
@@ -114,6 +118,7 @@ namespace UserInterface.Pages.Auth
                     txbxEmail.Focus();
                 }
             }
+            catch (ThreadAbortException) { }
             catch (Exception ex)
             {
                 HandleException(ex);

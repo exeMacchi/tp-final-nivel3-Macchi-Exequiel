@@ -53,8 +53,8 @@
                 adicionales.
             </p>
             <a href="<%: Domain.Constants.ProductsPagePath %>" 
-               class="btn btn-outline-light mt-auto py-2 fs-4">
-                Ver catálogo de productos
+               class="btn btn-outline-light mt-auto py-2 fs-5">
+                Ver catálogo de productos →
             </a>
         </div>
 

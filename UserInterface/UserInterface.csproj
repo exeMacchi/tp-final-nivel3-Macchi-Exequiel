@@ -68,6 +68,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Assets\Images\AvatarPlaceholder.jpg" />
+    <Content Include="Assets\Images\favicon.ico" />
     <Content Include="Assets\Images\Placeholder.jpg" />
     <Content Include="Assets\Scripts\AvatarProfile.js" />
     <Content Include="Assets\Scripts\CheckInputsLogin.js" />

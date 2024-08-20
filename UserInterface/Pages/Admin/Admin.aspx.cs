@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -94,9 +95,12 @@ namespace UserInterface.Pages.Admin
         /// </summary>
         private void HandleException(Exception ex)
         {
-            Session["ERROR"] = ex;
-            Response.Redirect(Constants.ErrorPagePath, false);
-            Context.ApplicationInstance.CompleteRequest(); // Esto evita un posible ThreadAbortException
+            try
+            {
+                Session["ERROR"] = ex;
+                Response.Redirect(Constants.ErrorPagePath);
+            }
+            catch (ThreadAbortException) { }
         }
 
         /// <summary>
@@ -127,9 +131,12 @@ namespace UserInterface.Pages.Admin
         /// </summary>
         protected void gvProducts_SelectedIndexChanged(object sender, EventArgs e)
         {
-            string id = gvProducts.SelectedDataKey.Value.ToString();
-            Response.Redirect($"{Constants.CreateEditPagePath}?id={id}", false);
-            Context.ApplicationInstance.CompleteRequest();
+            try
+            {
+                string id = gvProducts.SelectedDataKey.Value.ToString();
+                Response.Redirect($"{Constants.CreateEditPagePath}?id={id}");
+            }
+            catch (ThreadAbortException) { }
         }
 
 
@@ -168,9 +175,9 @@ namespace UserInterface.Pages.Admin
 
                 ProductBLL.DeleteProduct(id);
                 Session["ALERTMESSAGE"] = "El producto fue eliminado de la base de datos de forma exitosa.";
-                Response.Redirect($"{Constants.AdminPagePath}?alert=success", false);
-                Context.ApplicationInstance.CompleteRequest();
+                Response.Redirect($"{Constants.AdminPagePath}?alert=success");
             }
+            catch (ThreadAbortException) { }
             catch (Exception ex)
             {
                 HandleException(ex);

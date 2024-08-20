@@ -6,6 +6,7 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using Domain;
 using BusinessLogic;
+using System.Threading;
 
 namespace UserInterface.Pages.Global
 {
@@ -127,9 +128,12 @@ namespace UserInterface.Pages.Global
         /// </summary>
         private void HandleException(Exception ex)
         {
-            Session["ERROR"] = ex;
-            Response.Redirect(Constants.ErrorPagePath, false);
-            Context.ApplicationInstance.CompleteRequest(); // Esto evita un posible ThreadAbortException
+            try
+            {
+                Session["ERROR"] = ex;
+                Response.Redirect(Constants.ErrorPagePath);
+            }
+            catch (ThreadAbortException) { }
         }
 
         /// <summary>

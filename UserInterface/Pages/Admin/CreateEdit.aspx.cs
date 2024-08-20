@@ -6,6 +6,7 @@ using System.Diagnostics.Eventing.Reader;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -170,9 +171,12 @@ namespace UserInterface.Pages.Admin
         /// </summary>
         private void HandleException(Exception ex)
         {
-            Session["ERROR"] = ex;
-            Response.Redirect(Constants.ErrorPagePath, false);
-            Context.ApplicationInstance.CompleteRequest(); // Esto evita un posible ThreadAbortException
+            try
+            {
+                Session["ERROR"] = ex;
+                Response.Redirect(Constants.ErrorPagePath);
+            }
+            catch (ThreadAbortException) { }
         }
 
 
@@ -436,9 +440,9 @@ namespace UserInterface.Pages.Admin
                     Session["ALERTMESSAGE"] = "El producto fue modificado en la base de datos de forma exitosa.";
                 }
 
-                Response.Redirect($"{Constants.AdminPagePath}?alert=success", false);
-                Context.ApplicationInstance.CompleteRequest();
+                Response.Redirect($"{Constants.AdminPagePath}?alert=success");
             }
+            catch (ThreadAbortException) { }
             catch (Exception ex)
             {
                 HandleException(ex);
@@ -507,9 +511,6 @@ namespace UserInterface.Pages.Admin
                 string fileName = $"{DateTime.Now.Ticks}-{fuImage.PostedFile.FileName}";
                 string path = Path.Combine(Server.MapPath($"~{Constants.LocalImagePath}"), fileName);
 
-                // Si se está modificando y se carga una imagen local, y existe una imagen
-                // local previa guardada en sesión (se verifica al principio), se borra la
-                // imagen anterior y su referencia para posteriormente guardar la nueva (FILE).
                 DeleteExistingLocalImageIfNeeded();
 
                 fuImage.SaveAs(path);
@@ -528,10 +529,6 @@ namespace UserInterface.Pages.Admin
         /// <param name="myProd">Referencia del producto a rellenar</param>
         private void ProcessUrlImageUpload(Product myProd)
         {
-            // Si se está modificando y se carga una imagen por URL, y existe una
-            // imagen local en sesión (se verifica al principio), se borra la
-            // imagen anterior y su referencia para posteriormente guardar la nueva
-            // referencia (URL).
             DeleteExistingLocalImageIfNeeded();
 
             myProd.Image = txbxImage.Text;
@@ -539,12 +536,15 @@ namespace UserInterface.Pages.Admin
 
         /// <summary>
         /// Eliminar una posible imagen local existente en caso de que el usuario esté 
-        /// actualizando un producto cargando una nueva.
+        /// actualizando un producto cargando una nueva (ya sea por URL o por Sistema
+        /// de archivos).
         /// </summary>
         private void DeleteExistingLocalImageIfNeeded()
         {
             try
             {
+                // Session["PRODUCTIMAGE"] se carga al principio cuando el producto presenta
+                // una imagen local existente.
                 if (Request.QueryString["id"] != null && Session["PRODUCTIMAGE"] != null)
                 {
                     string localImagePath = Server.MapPath(Session["PRODUCTIMAGE"].ToString());

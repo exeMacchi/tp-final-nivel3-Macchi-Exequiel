@@ -40,6 +40,5 @@
         </div>
     </div>
 
-
     <script src="/Assets/Scripts/ErrorDetail.js"></script>
 </asp:Content>

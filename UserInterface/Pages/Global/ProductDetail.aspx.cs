@@ -3,6 +3,7 @@ using Domain;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -38,8 +39,11 @@ namespace UserInterface.Pages.Global
                 }
                 else
                 {
-                    Response.Redirect(Constants.ProductsPagePath, false);
-                    Context.ApplicationInstance.CompleteRequest();
+                    try
+                    {
+                        Response.Redirect(Constants.ProductsPagePath);
+                    }
+                    catch (ThreadAbortException) { }
                 }
             }
         }
@@ -107,9 +111,12 @@ namespace UserInterface.Pages.Global
         /// </summary>
         private void HandleException(Exception ex)
         {
-            Session["ERROR"] = ex;
-            Response.Redirect(Constants.ErrorPagePath, false);
-            Context.ApplicationInstance.CompleteRequest(); // Esto evita un posible ThreadAbortException
+            try
+            {
+                Session["ERROR"] = ex;
+                Response.Redirect(Constants.ErrorPagePath);
+            }
+            catch (ThreadAbortException) { }
         }
 
         /// <summary>

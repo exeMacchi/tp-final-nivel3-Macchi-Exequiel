@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Mail;
+using System.Threading;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -44,9 +45,12 @@ namespace UserInterface.Pages.Auth
         /// </summary>
         private void HandleException(Exception ex)
         {
-            Session["ERROR"] = ex;
-            Response.Redirect(Constants.ErrorPagePath, false);
-            Context.ApplicationInstance.CompleteRequest(); // Esto evita un posible ThreadAbortException
+            try
+            {
+                Session["ERROR"] = ex;
+                Response.Redirect(Constants.ErrorPagePath);
+            }
+            catch (ThreadAbortException) { }
         }
 
         /* ---------------------------------------------------------------------------- */
@@ -153,8 +157,9 @@ namespace UserInterface.Pages.Auth
                     SendWelcomeEmail(email);
 
                     Session["ALERTMESSAGE"] = "¡Usuario registrado de forma exitosa!";
-                    Response.Redirect($"{Constants.LoginPagePath}?alert=success", false);
+                    Response.Redirect($"{Constants.LoginPagePath}?alert=success");
                 }
+                catch (ThreadAbortException) { }
                 catch (Exception ex)
                 {
                     HandleException(ex);
@@ -221,10 +226,13 @@ namespace UserInterface.Pages.Auth
             }
             catch (SmtpException)
             {
-                Session["ALERTMESSAGE"] = "Usuario registrado, pero ocurrió un error al " + 
-                                          "enviar el correo de bienvenida.";
-                Response.Redirect($"{Constants.LoginPagePath}?alert=success", false);
-                Context.ApplicationInstance.CompleteRequest();
+                try
+                {
+                    Session["ALERTMESSAGE"] = "Usuario registrado, pero ocurrió un error " +
+                                              "al enviar el correo de bienvenida.";
+                    Response.Redirect($"{Constants.LoginPagePath}?alert=success");
+                }
+                catch (ThreadAbortException) { }
             }
             catch (Exception ex)
             {

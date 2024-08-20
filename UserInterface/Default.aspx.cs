@@ -3,6 +3,7 @@ using Domain;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -16,7 +17,7 @@ namespace UserInterface
         {
             try
             {
-                if (!(Session["PRODUCTS"] != null))
+                if (Session["PRODUCTS"] == null)
                 {
                     Session["PRODUCTS"] = ProductBLL.GetProducts();
                 }
@@ -48,14 +49,17 @@ namespace UserInterface
         }
 
         /// <summary>
-        /// Manejar la excepción guardándola en sesión para después rederigirla a la
+        /// Manejar la excepción guardándola en sesión para después redirigirla a la
         /// página de error.
         /// </summary>
         private void HandleException(Exception ex)
         {
-            Session["ERROR"] = ex;
-            Response.Redirect(Constants.ErrorPagePath, false);
-            Context.ApplicationInstance.CompleteRequest(); // Esto evita un posible ThreadAbortException
+            try
+            {
+                Session["ERROR"] = ex;
+                Response.Redirect(Constants.ErrorPagePath);
+            }
+            catch (ThreadAbortException) { }
         }
     }
 }
