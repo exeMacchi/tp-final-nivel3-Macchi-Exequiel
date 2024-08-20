@@ -456,18 +456,26 @@ namespace UserInterface.Pages.Admin
         /// <returns>Producto rellenado</returns>
         private Product ReturnCompleteProduct()
         {
-            Product myProd = new Product
+            try
             {
-                ID = int.Parse(Request.QueryString["id"]),
-                Code = txbxCode.Text.Trim().ToUpper(),
-                Name = txbxName.Text.Trim(),
-                Description = txbxDescription.Text.Trim(),
-                Price = decimal.Parse(txbxPrice.Text.Trim()),
-                Brand = new Brand(int.Parse(ddlBrand.SelectedValue), ddlBrand.SelectedItem.Text),
-                Category = new Category(int.Parse(ddlCategory.SelectedValue), ddlCategory.SelectedItem.Text)
-            };
-            FillProductImage(myProd);
-            return myProd;
+                Product myProd = new Product
+                {
+                    ID = Request.QueryString["id"] != null ? int.Parse(Request.QueryString["id"]) : 0,
+                    Code = txbxCode.Text.Trim().ToUpper(),
+                    Name = txbxName.Text.Trim(),
+                    Description = txbxDescription.Text.Trim(),
+                    Price = decimal.Parse(txbxPrice.Text.Trim()),
+                    Brand = new Brand(int.Parse(ddlBrand.SelectedValue), ddlBrand.SelectedItem.Text),
+                    Category = new Category(int.Parse(ddlCategory.SelectedValue), ddlCategory.SelectedItem.Text)
+                };
+                FillProductImage(myProd);
+                return myProd;
+            }
+            catch (FormatException ex)
+            {
+                HandleException(ex);
+                return null; // Esto es solo por el compilador
+            }
         }
 
         /// <summary>

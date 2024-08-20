@@ -14,6 +14,7 @@ namespace DataAccess
         private SqlConnection connection;
         private SqlCommand command;
         private SqlDataReader reader;
+        private SqlTransaction transaction;
         
         // Propiedades
         public SqlDataReader Reader { get { return reader; } }
@@ -51,6 +52,115 @@ namespace DataAccess
         }
 
         /// <summary>
+        /// Limpiar todos los parámetros de comando.
+        /// </summary>
+        public void ClearParams()
+        {
+            command.Parameters.Clear();
+        }
+
+        /// <summary>
+        /// Iniciar una transacción con la base de datos.
+        /// </summary>
+        public void BeginTransaction()
+        {
+            try
+            {
+                if (connection.State != ConnectionState.Open)
+                {
+                    connection.Open();
+                }
+                transaction = connection.BeginTransaction();
+                command.Transaction = transaction;
+            }
+            catch (SqlException ex)
+            {
+                throw new Exception("Se produjo un error al intentar actualizar los datos " +
+                                    "de la base de datos. Por favor, revise los datos " +
+                                    "ingresados o contacte al soporte técnico si el problema " +
+                                    "persiste.", ex);
+            }
+            catch (InvalidOperationException ex)
+            {
+                throw new Exception("La operación no se pudo completar debido a un problema " +
+                                    "con el estado de la conexión o el comando.", ex);
+            }
+            catch (TimeoutException ex)
+            {
+                throw new Exception("La operación ha excedido el tiempo de espera. " +
+                                    "Por favor, intente nuevamente más tarde.", ex);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Ha ocurrido un error inesperado.", ex);
+            }
+        }
+
+        /// <summary>
+        /// Confirmar la transacción en la base de datos.
+        /// </summary>
+        public void CommitTransaction()
+        {
+            try
+            {
+                transaction?.Commit();
+            }
+            catch (SqlException ex)
+            {
+                throw new Exception("Se produjo un error al intentar actualizar los datos " +
+                                    "de la base de datos. Por favor, revise los datos " +
+                                    "ingresados o contacte al soporte técnico si el problema " +
+                                    "persiste.", ex);
+            }
+            catch (InvalidOperationException ex)
+            {
+                throw new Exception("La operación no se pudo completar debido a un problema " +
+                                    "con el estado de la conexión o el comando.", ex);
+            }
+            catch (TimeoutException ex)
+            {
+                throw new Exception("La operación ha excedido el tiempo de espera. " +
+                                    "Por favor, intente nuevamente más tarde.", ex);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Ha ocurrido un error inesperado.", ex);
+            }
+        }
+
+        /// <summary>
+        /// Revertir la transacción tras un problema.
+        /// </summary>
+        public void RollbackTransaction()
+        {
+            try
+            {
+                transaction?.Rollback();
+            }
+            catch (SqlException ex)
+            {
+                throw new Exception("Se produjo un error al intentar actualizar los datos " +
+                                    "de la base de datos. Por favor, revise los datos " +
+                                    "ingresados o contacte al soporte técnico si el problema " +
+                                    "persiste.", ex);
+            }
+            catch (InvalidOperationException ex)
+            {
+                throw new Exception("La operación no se pudo completar debido a un problema " +
+                                    "con el estado de la conexión o el comando.", ex);
+            }
+            catch (TimeoutException ex)
+            {
+                throw new Exception("La operación ha excedido el tiempo de espera. " +
+                                    "Por favor, intente nuevamente más tarde.", ex);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Ha ocurrido un error inesperado.", ex);
+            }
+        }
+
+        /// <summary>
         /// Ejecutar la consulta SQL para una operación SELECT.
         /// </summary>
         public void ExecuteRead()
@@ -81,7 +191,6 @@ namespace DataAccess
             }
         }
 
-
         /// <summary>
         /// Ejecutar la consulta SQL para una operación INSERT, UPDATE o DELETE. 
         /// </summary>
@@ -89,7 +198,11 @@ namespace DataAccess
         {
             try
             {
-                connection.Open();
+                // Esto verifica si ya hay una conexión abierta por una transacción.
+                if (connection.State != ConnectionState.Open)
+                {
+                    connection.Open();
+                }
                 command.ExecuteNonQuery();
             }
             catch (SqlException ex)
@@ -147,7 +260,6 @@ namespace DataAccess
                 throw new Exception("Ha ocurrido un error inesperado.", ex);
             }
         }
-
 
         /// <summary>
         /// Cerrar la conexión a la base de datos y posible DataReader.

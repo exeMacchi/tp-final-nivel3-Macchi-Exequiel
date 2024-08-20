@@ -87,9 +87,9 @@ namespace BusinessLogic
         /// <summary>
         /// Obtener un <see cref="Product"/> desde la base de datos según un ID.
         /// </summary>
-        /// <param name="id">ID del producto que se desea obtener en la base de datos.</param>
+        /// <param name="productID">ID del producto que se desea obtener en la base de datos.</param>
         /// <returns>Producto seleccionado.</returns>
-        public static Product GetProduct(int id)
+        public static Product GetProduct(int productID)
         {
             DataBase db = new DataBase();
             string query = "SELECT A.Id AS ProductID, " +
@@ -110,7 +110,7 @@ namespace BusinessLogic
             try
             {
                 db.SetQuery(query);
-                db.SetParam("@ProductID", id);
+                db.SetParam("@ProductID", productID);
                 db.ExecuteRead();
                 Product product = new Product();
                 if (db.Reader.Read())
@@ -225,26 +225,61 @@ namespace BusinessLogic
 
         /// <summary>
         /// Eliminar de forma física de la base de datos un producto seleccionado.
+        /// Además, se eliminan las posibles referencias huérfanas en la tabla
+        /// de favoritos.
         /// </summary>
-        /// <param name="id">ID del producto que se desea eliminar.</param>
-        public static void DeleteProduct(int id)
+        /// <param name="productID">ID del producto que se desea eliminar.</param>
+        public static void DeleteProduct(int productID)
         {
             DataBase db = new DataBase();
             string query = "DELETE FROM ARTICULOS WHERE Id = @ProductID;";
             try
             {
+                // Se inicia una transacción porque, además de eliminar el producto
+                // en la base de datos, también se tiene que eliminar las posibles
+                // referencias huérfanas en la tabla de favoritos.
+                db.BeginTransaction();
+
                 db.SetQuery(query);
-                db.SetParam("@ProductID", id);
+                db.SetParam("@ProductID", productID);
                 db.ExecuteNonQuery();
+
+                db.ClearParams();
+                DeleteFavoritesReferences(db, productID);
+
+                db.CommitTransaction();
             }
             catch (Exception ex)
             {
+                db.RollbackTransaction();
                 throw ex; // El error se propaga hacia arriba
             }
             finally 
             { 
                 db.CloseConnection(); 
             }
+        }
+
+        /// <summary>
+        /// Eliminar las posibles referencias huérfanas en la tabla de favoritos
+        /// luego de que se elimine físicamente el producto referenciado.
+        /// </summary>
+        /// <param name="db">Instancia de la conexión abierta con la DB</param>
+        /// <param name="productID">ID del producto que se eliminó</param>
+        private static void DeleteFavoritesReferences(DataBase db, int productID)
+        {
+            string query = "DELETE FROM FAVORITOS WHERE IdArticulo = @ProductID;";
+            try
+            {
+                db.SetQuery(query);
+                db.SetParam("@ProductID", productID);
+                db.ExecuteNonQuery();
+            }
+            catch(Exception ex)
+            {
+                throw ex; // El error se propaga hacia arriba
+            }
+            // No se cierra la conexión porque es parte de la transacción.
         }
 
         /// <summary>
