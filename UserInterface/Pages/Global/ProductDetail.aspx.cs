@@ -67,6 +67,14 @@ namespace UserInterface.Pages.Global
                     lbBrand.Text = product.Brand.Description;
                     lbCategory.Text = product.Category.Description;
                 }
+                else
+                {
+                    try
+                    {
+                        Response.Redirect(Constants.ProductsPagePath);
+                    }
+                    catch (ThreadAbortException) { }
+                }
             }
             catch (Exception ex)
             {
@@ -106,7 +114,7 @@ namespace UserInterface.Pages.Global
         }
 
         /// <summary>
-        /// Manejar la excepción guardándola en sesión para después rederigirla a la
+        /// Manejar la excepción guardándola en sesión para después redirigirla a la
         /// página de error.
         /// </summary>
         private void HandleException(Exception ex)
@@ -150,7 +158,6 @@ namespace UserInterface.Pages.Global
         /// Verificar si el producto es favorito según la clase que tenga el botón
         /// de favorito.
         /// </summary>
-        /// <returns></returns>
         private bool IsFavoriteProduct()
         {
             return btnFavorite.CssClass.Contains("btn-fav");

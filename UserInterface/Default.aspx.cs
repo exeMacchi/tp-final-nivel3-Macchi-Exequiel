@@ -12,7 +12,9 @@ namespace UserInterface
 {
     public partial class Default : System.Web.UI.Page
     {
+        // Índice de producto para el carousel de cards.
         public int ProductIndex { get; set; }
+
         protected void Page_Init(object sender, EventArgs e)
         {
             try

@@ -53,7 +53,7 @@ namespace UserInterface.Pages.User
         }
 
         /// <summary>
-        /// Manejar la excepción guardándola en sesión para después rederigirla a la
+        /// Manejar la excepción guardándola en sesión para después redirigirla a la
         /// página de error.
         /// </summary>
         private void HandleException(Exception ex)
@@ -264,8 +264,8 @@ namespace UserInterface.Pages.User
         /// Guardar el nuevo avatar del usuario en la base de datos y actualizar
         /// el usuario en sesión.
         /// </summary>
-        /// <param name="path"></param>
-        /// <param name="fileName"></param>
+        /// <param name="path">Ruta completa del servidor donde se guardará la imagen</param>
+        /// <param name="fileName">Nombre completo del archivo de imagen</param>
         private void SaveNewAvatar(string path, string fileName)
         {
             try

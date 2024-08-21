@@ -18,8 +18,11 @@ namespace UserInterface.Pages.Global
                 if (Session["ERROR"] != null)
                 {
                     Exception exception = (Exception)Session["ERROR"];
+
+                    // Mensaje de error principal
                     lbErrorText.Text = exception.Message;
 
+                    // Detalle del error
                     if (exception.InnerException != null)
                     {
                         lbDetailErrorText.Text = exception.InnerException.Message;

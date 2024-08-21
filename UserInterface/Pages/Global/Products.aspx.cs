@@ -15,6 +15,7 @@ namespace UserInterface.Pages.Global
         // Número de elementos por página
         private const int PageSize = 6;
 
+        // Página actual de la paginación
         private int CurrentPage
         {
             get { return int.Parse(hfCurrentPage.Value); }
@@ -67,9 +68,9 @@ namespace UserInterface.Pages.Global
                     {
                         SetProductPagination((List<Product>)Session["PRODUCTS"]);
 
-                        FillCategoryFilter();
-                        FillBrandFilter();
-                        FillPriceFilter();
+                        FillCategoryFilters();
+                        FillBrandFilters();
+                        FillPriceFilters();
 
                         ProductsAvailable();
                     }
@@ -123,7 +124,7 @@ namespace UserInterface.Pages.Global
         }
 
         /// <summary>
-        /// Manejar la excepción guardándola en sesión para después rederigirla a la
+        /// Manejar la excepción guardándola en sesión para después redirigirla a la
         /// página de error.
         /// </summary>
         private void HandleException(Exception ex)
@@ -165,7 +166,7 @@ namespace UserInterface.Pages.Global
 
                 // Estilos para el filtro
                 ResetFilterStyles();
-                ActiveResetButton(CategoriesFilter, "btnResetCategory", category);
+                ActiveResetFilterButton(CategoriesFilter, "btnResetCategory", category);
                 ((LinkButton)sender).CssClass = Constants.FilterLinkSelected;
             }
             catch (Exception ex)
@@ -186,7 +187,7 @@ namespace UserInterface.Pages.Global
 
                 // Estilos para el filtro
                 ResetFilterStyles();
-                ActiveResetButton(BrandsFilter, "btnResetBrand", brand);
+                ActiveResetFilterButton(BrandsFilter, "btnResetBrand", brand);
                 ((LinkButton)sender).CssClass = Constants.FilterLinkSelected;
             }
             catch (Exception ex)
@@ -225,7 +226,7 @@ namespace UserInterface.Pages.Global
 
                 // Estilos para el filtro
                 ResetFilterStyles();
-                ActiveResetButton(PriceFilter, "btnResetPrice", price);
+                ActiveResetFilterButton(PriceFilter, "btnResetPrice", price);
                 ((LinkButton)sender).CssClass = Constants.FilterLinkSelected;
             }
             catch (Exception ex)
@@ -234,11 +235,14 @@ namespace UserInterface.Pages.Global
             }
         }
 
+        // TODO: Agregar un filtro de precio personalizado.
+        // TODO: Agregar un botón de reinicio al lado del buscador que se active al utilizar cualquier filtro.
+
         /// <summary>
         /// Rellenar el filtro de categorías con todas las categorías de la base de datos
         /// como también el conteo de cuántos productos coinciden con cada una.
         /// </summary>
-        private void FillCategoryFilter()
+        private void FillCategoryFilters()
         {
             Dictionary<string, int> categoryCount = new Dictionary<string, int>();
 
@@ -270,7 +274,7 @@ namespace UserInterface.Pages.Global
         /// Rellenar el filtro de marcas con todas las marcas de la base de datos
         /// como también el conteo de cuántos productos coinciden con cada una.
         /// </summary>
-        private void FillBrandFilter()
+        private void FillBrandFilters()
         {
             Dictionary<string, int> brandCount = new Dictionary<string, int>();
 
@@ -302,7 +306,7 @@ namespace UserInterface.Pages.Global
         /// Rellenar el filtro de precios con un rango manualmente determinado, así mismo
         /// también se realiza un conteo de cuántos productos coinciden con cada rango.
         /// </summary>
-        private void FillPriceFilter()
+        private void FillPriceFilters()
         {
             Dictionary<string, int> priceCount = new Dictionary<string, int>
             {
@@ -452,7 +456,7 @@ namespace UserInterface.Pages.Global
         /// <param name="repeater">Filtro (categorías, marcas, precio)</param>
         /// <param name="btnResetID">ID del botón de reinicio</param>
         /// <param name="filter">Filtro seleccionado</param>
-        private void ActiveResetButton(Repeater repeater, string btnResetID, string filter)
+        private void ActiveResetFilterButton(Repeater repeater, string btnResetID, string filter)
         {
             foreach (RepeaterItem item in repeater.Items)
             {

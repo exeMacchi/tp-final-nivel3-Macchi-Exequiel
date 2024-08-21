@@ -13,7 +13,6 @@ namespace BusinessLogic
         /// <summary>
         /// Obtener todas las <see cref="Brand"/> desde la base de datos.
         /// </summary>
-        /// <returns>Lista de <see cref="Brand"/></returns>
         public static List<Brand> GetBrands()
         {
             DataBase db = new DataBase();

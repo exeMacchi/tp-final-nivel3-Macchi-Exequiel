@@ -18,6 +18,7 @@ namespace UserInterface.Pages.User
         // Número de elementos por página
         private const int PageSize = 8;
 
+        // Página actual de la paginación.
         private int CurrentPage
         {
             get { return int.Parse(hfCurrentPage.Value); }
@@ -117,7 +118,7 @@ namespace UserInterface.Pages.User
         }
 
         /// <summary>
-        /// Manejar la excepción guardándola en sesión para después rederigirla a la
+        /// Manejar la excepción guardándola en sesión para después redirigirla a la
         /// página de error.
         /// </summary>
         private void HandleException(Exception ex)
@@ -214,10 +215,8 @@ namespace UserInterface.Pages.User
         }
 
         /// <summary>
-        /// Reiniciar los filtros de búsqueda en su configuración inicial.
+        /// Reiniciar los filtros de búsqueda a su configuración inicial.
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         protected void btnResetFilter_Click(object sender, EventArgs e)
         {
             FillCriterias();

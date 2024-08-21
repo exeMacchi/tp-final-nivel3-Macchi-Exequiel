@@ -140,7 +140,7 @@ namespace UserInterface.Pages.Auth
         /*                                   REGISTER                                   */
         /* ---------------------------------------------------------------------------- */
         /// <summary>
-        /// Cuando el usuario quiere registrarse
+        /// Cuando el usuario quiere registrarse.
         /// </summary>
         protected void btnRegister_Click(object sender, EventArgs e)
         {
@@ -174,7 +174,6 @@ namespace UserInterface.Pages.Auth
         /// <param name="email">Correo electrónico introducido en <see cref="txbxEmail"/></param>
         /// <param name="firstPass">Contraseña ingresada en <see cref="txbxFirstPassword"/></param>
         /// <param name="secondPass">Contraseña ingresada en <see cref="txbxSecondPassword"/></param>
-        /// <returns></returns>
         private bool AreValidFields(string email, string firstPass, string secondPass)
         {
             // Si algún campo está vacío

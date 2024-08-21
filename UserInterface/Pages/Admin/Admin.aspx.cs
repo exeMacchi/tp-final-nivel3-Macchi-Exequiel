@@ -23,8 +23,8 @@ namespace UserInterface.Pages.Admin
                 try
                 {
                     // En la página de administrador, siempre que se cargue por primera vez,
-                    // se recargan los productos por el caso de que esta página provenga
-                    // de una operación de creación, modificación o eliminación.
+                    // se recargan los productos por si esta página proviene de una operación
+                    // de creación, modificación o eliminación.
                     Session["PRODUCTS"] = ProductBLL.GetProducts();
                 }
                 catch (Exception ex)

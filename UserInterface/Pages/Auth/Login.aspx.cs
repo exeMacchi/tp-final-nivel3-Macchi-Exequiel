@@ -66,7 +66,7 @@ namespace UserInterface.Pages.Auth
         /// <param name="email">Correo electrónico ingresado en <see cref="txbxEmail"/></param>
         private bool IsValidEmailFormat(string email)
         {
-            if (email.Length > 100 || string.IsNullOrEmpty(email))
+            if (string.IsNullOrEmpty(email) || email.Length > 100)
             {
                 txbxEmail.Text = string.Empty;
                 txbxEmail.CssClass = Constants.FormControlInvalid;
@@ -82,7 +82,7 @@ namespace UserInterface.Pages.Auth
         /// <param name="pass">Contraseña ingresada en <see cref="txbxPassword"/></param>
         private bool IsValidPassFormat(string pass)
         {
-            if (pass.Length > 20 || string.IsNullOrEmpty(pass))
+            if (string.IsNullOrEmpty(pass) || pass.Length > 20)
             {
                 txbxPassword.Text = string.Empty;
                 txbxPassword.CssClass = Constants.FormControlInvalid;

@@ -46,7 +46,7 @@ namespace UserInterface.Pages.Admin
         }
 
         /// <summary>
-        /// Cargar algunos controles por defecto
+        /// Cargar algunos controles por defecto.
         /// </summary>
         private void InitialPageLoad()
         {
@@ -78,6 +78,7 @@ namespace UserInterface.Pages.Admin
         {
             try
             {
+                // Cargar campos para la edición
                 Product productMOD = ProductBLL.GetProduct(int.Parse(Request.QueryString["id"]));
 
                 txbxCode.Text = productMOD.Code;
@@ -140,7 +141,7 @@ namespace UserInterface.Pages.Admin
 
         /// <summary>
         /// Verificar que los campos obligatorios estén rellenados para poder habilitar
-        /// el botón de envío.
+        /// el botón de confirmación de creación/edición.
         /// </summary>
         protected void VerifyInformation()
         {
@@ -159,7 +160,6 @@ namespace UserInterface.Pages.Admin
         /// <summary>
         /// Verificar que la página actual sea la creación de un nuevo producto.
         /// </summary>
-        /// <returns>Valor booleano que indica si se está creando un nuevo producto o no</returns>
         private bool IsCreatePageMode()
         {
             return Request.QueryString["id"] == null;
@@ -177,6 +177,16 @@ namespace UserInterface.Pages.Admin
                 Response.Redirect(Constants.ErrorPagePath);
             }
             catch (ThreadAbortException) { }
+        }
+
+        /// <summary>
+        /// Mostrar una alerta de error con un mensaje personalizable.
+        /// </summary>
+        /// <param name="errorMessage">Mensaje de error personalizado</param>
+        private void ShowErrorAlert(string errorMessage)
+        {
+            errorText.Text = errorMessage;
+            errorAlert.Visible = true;
         }
 
 
@@ -295,7 +305,7 @@ namespace UserInterface.Pages.Admin
         /*                                      NOMBRE                                  */
         /* ---------------------------------------------------------------------------- */
         /// <summary>
-        /// Cuando se ingresa un nombre de producto
+        /// Cuando se ingresa un nombre de producto.
         /// </summary>
         protected void txbxName_TextChanged(object sender, EventArgs e)
         {
@@ -429,18 +439,23 @@ namespace UserInterface.Pages.Admin
             {
                 Product myProd = ReturnCompleteProduct();
 
-                if (IsCreatePageMode())
+                if (myProd != null)
                 {
-                    ProductBLL.CreateProduct(myProd);
-                    Session["ALERTMESSAGE"] = "Nuevo producto agregado en la base de datos de forma exitosa.";
-                }
-                else
-                {
-                    ProductBLL.UpdateProduct(myProd);
-                    Session["ALERTMESSAGE"] = "El producto fue modificado en la base de datos de forma exitosa.";
-                }
+                    if (IsCreatePageMode())
+                    {
+                        ProductBLL.CreateProduct(myProd);
+                        Session["ALERTMESSAGE"] = "Nuevo producto agregado en la base de datos " +
+                                                  "de forma exitosa.";
+                    }
+                    else
+                    {
+                        ProductBLL.UpdateProduct(myProd);
+                        Session["ALERTMESSAGE"] = "El producto fue modificado en la base de " +
+                                                  "datos de forma exitosa.";
+                    }
 
-                Response.Redirect($"{Constants.AdminPagePath}?alert=success");
+                    Response.Redirect($"{Constants.AdminPagePath}?alert=success");
+                }
             }
             catch (ThreadAbortException) { }
             catch (Exception ex)
@@ -471,10 +486,35 @@ namespace UserInterface.Pages.Admin
                 FillProductImage(myProd);
                 return myProd;
             }
-            catch (FormatException ex)
+            catch (ArgumentNullException)
+            {
+                ShowErrorAlert("Uno o más campos requeridos están vacíos o contienen " +
+                               "datos incorrectos.");
+                return null;
+            }
+            catch (FormatException)
+            {
+                ShowErrorAlert("Uno o más campos contienen un formato no válido. " +
+                               "Verifica los valores ingresados.");
+                return null;
+            }
+            catch (NullReferenceException)
+            {
+                ShowErrorAlert("Ha ocurrido un error inesperado al procesar la información. " +
+                               "Verifica los datos ingresados.");
+                return null;
+            }
+            catch (InvalidOperationException)
+            {
+                ShowErrorAlert("Hay un problema con la selección de una opción en el " +
+                               "formulario. Por favor, verifica que todas las opciones " +
+                               "estén seleccionadas correctamente.");
+                return null;
+            }
+            catch (Exception ex)
             {
                 HandleException(ex);
-                return null; // Esto es solo por el compilador
+                return null;
             }
         }
 
@@ -485,12 +525,12 @@ namespace UserInterface.Pages.Admin
         /// <param name="myProd">Referencia del producto a rellenar</param>
         private void FillProductImage(Product myProd)
         {
-            // Si se cargó una imagen por sistema de archivos local
+            // Si se cargó una imagen por sistema de archivos local.
             if (fuImage.HasFile)
             {
                 ProcessLocalImageUpload(myProd);
             }
-            // Si se cargó una imagen por URL
+            // Si se cargó una imagen por URL.
             else if (!string.IsNullOrEmpty(txbxImage.Text))
             {
                 ProcessUrlImageUpload(myProd);

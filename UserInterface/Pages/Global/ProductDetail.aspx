@@ -7,7 +7,7 @@
 
 <asp:Content ID="Content2" ContentPlaceHolderID="mainContent" runat="server">
     <div class="my-5">
-        <!-- Alerta -->
+        <!-- Alerta favorito -->
         <asp:Panel ID="pnlFavoriteAlert" runat="server" CssClass="d-flex justify-content-end my-2">
             <div class="alert border-warning rounded-4 fade show d-inline-flex gap-2 align-items-center m-0"
                  role="alert">
@@ -19,7 +19,7 @@
             </div>
         </asp:Panel>
 
-        <!-- Detalle -->
+        <!-- Detalle de producto -->
         <asp:Panel ID="pnlProductDetail" runat="server" 
                    CssClass="row bg-dark rounded-5 border text-white py-4 px-3">
             <div class="col-6 d-flex justify-content-center align-items-center">

@@ -111,7 +111,7 @@
                         <i id="avatarIcon" class="bi bi-pencil-square text-warning fs-1"></i>
                     </asp:LinkButton>
                     <asp:FileUpload ID="fuAvatar" runat="server" CssClass="d-none"
-                                    ClientIDMode="Static" />
+                                    ClientIDMode="Static" accept=".jpg, .jpeg, .png"/>
                     <asp:Button ID="btnAvatarSubmit" runat="server" ClientIDMode="Static"
                                 CssClass="d-none" OnClick="btnAvatarSubmit_Click"/>
                 </figure>

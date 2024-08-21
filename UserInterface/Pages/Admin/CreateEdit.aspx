@@ -141,7 +141,8 @@
                                      OnTextChanged="txbxImage_TextChanged"></asp:TextBox>
                         <!-- File -->
                         <asp:FileUpload ID="fuImage" runat="server" ClientIDMode="Static" 
-                                        CssClass="form-control bg-dark input-file mt-2"/>
+                                        CssClass="form-control bg-dark input-file mt-2"
+                                        accept=".jpg, .jpeg, .png"/>
                     </div>
 
                     <div>
@@ -162,7 +163,8 @@
                         <asp:Button ID="btnSubmit" runat="server"
                                     CssClass="btn btn-outline-warning w-50"
                                     OnClick="btnSubmit_Click" />
-                        <a href="<%: Domain.Constants.AdminPagePath %>" class="btn btn-outline-danger w-50">
+                        <a href="<%: Domain.Constants.AdminPagePath %>"
+                           class="btn btn-outline-danger w-50">
                             CANCELAR
                         </a>
                     </div>
