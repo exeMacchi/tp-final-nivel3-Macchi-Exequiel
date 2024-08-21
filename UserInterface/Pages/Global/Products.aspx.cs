@@ -12,6 +12,9 @@ namespace UserInterface.Pages.Global
 {
     public partial class Products : System.Web.UI.Page
     {
+        /* ---------------------------------------------------------------------------- */
+        /*                                      GENERAL                                 */
+        /* ---------------------------------------------------------------------------- */
         // Número de elementos por página
         private const int PageSize = 6;
 
@@ -87,11 +90,42 @@ namespace UserInterface.Pages.Global
         }
 
         /// <summary>
+        /// Si hay una sesión de usuario, verificar si se deben activar estilos para las
+        /// cards de productos según sean favoritos o no.
+        /// </summary>
+        protected void ProductCards_ItemDataBound(object sender, RepeaterItemEventArgs e)
+        {
+            try
+            {
+                if (Session["USER"] != null)
+                {
+                    if (e.Item.ItemType == ListItemType.Item || e.Item.ItemType == ListItemType.AlternatingItem)
+                    {
+                        int productID = (int)DataBinder.Eval(e.Item.DataItem, "ID");
+                        bool isFavorite = ((List<Product>)Session["FAVORITEPRODUCTS"]).Any(favoriteP => favoriteP.ID == productID);
+
+                        if (isFavorite)
+                        {
+                            Panel pnlFavoriteProduct = (Panel)e.Item.FindControl("pnlFavoriteProduct");
+                            Panel pnlProductCard = (Panel)e.Item.FindControl("pnlProductCard");
+                            pnlFavoriteProduct.Visible = true;
+                            pnlProductCard.CssClass += " border-warning border-3";
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                HandleException(ex);
+            }
+        }
+
+        /// <summary>
         /// Configurar la interfaz de usuario cuando hay productos disponibles.
         /// </summary>
         private void ProductsAvailable()
         {
-            txbxFilter.Enabled = true;
+            txbxNameFilter.Enabled = true;
             btnFind.Enabled = true;
             alertEmptyDB.Visible = false;
             alertProductNotFound.Visible = false;
@@ -106,7 +140,7 @@ namespace UserInterface.Pages.Global
             alertProductNotFound.Visible = false;
 
             // Se bloquea la búsqueda de productos.
-            txbxFilter.Enabled = false;
+            txbxNameFilter.Enabled = false;
             btnFind.Enabled = false;
             btnPrev.Enabled = false;
             btnNext.Enabled = false;
@@ -115,10 +149,10 @@ namespace UserInterface.Pages.Global
         /// <summary>
         /// Configurar la paginación según una lista de productos pasada como argumento.
         /// </summary>
-        /// <param name="filteredProducts">Lista de productos filtradas</param>
-        private void SetProductPagination(List<Product> filteredProducts)
+        /// <param name="products">Lista de productos</param>
+        private void SetProductPagination(List<Product> products)
         {
-            Session["PAGEITEMS"] = filteredProducts;
+            Session["PAGEITEMS"] = products;
             CurrentPage = 1;
             BindRepeater();
         }
@@ -137,6 +171,12 @@ namespace UserInterface.Pages.Global
             catch (ThreadAbortException) { }
         }
 
+
+        /* ---------------------------------------------------------------------------- */
+        /*                                      FILTROS                                 */
+        /* ---------------------------------------------------------------------------- */
+
+        /* --- Nombre de producto --- */
         /// <summary>
         /// Buscar productos que coincidan con el nombre del producto introducido.
         /// </summary>
@@ -144,9 +184,10 @@ namespace UserInterface.Pages.Global
         {
             try
             {
-                string filterText = txbxFilter.Text;
+                string filterText = txbxNameFilter.Text;
                 SetProductPagination(((List<Product>)Session["PRODUCTS"]).FindAll(p => p.Name.ToUpper().Contains(filterText.ToUpper())));
                 ResetFilterStyles();
+                ActiveResetFilterButton();
             }
             catch (Exception ex)
             {
@@ -154,6 +195,8 @@ namespace UserInterface.Pages.Global
             }
         }
 
+
+        /* --- Categoría de producto --- */
         /// <summary>
         /// Buscar productos que coincidan con la categoría seleccionada por el usuario.
         /// </summary>
@@ -174,69 +217,6 @@ namespace UserInterface.Pages.Global
                 HandleException(ex);
             }
         }
-
-        /// <summary>
-        /// Buscar productos que coincidan con la marca seleccionada por el usuario.
-        /// </summary>
-        protected void btnFindByBrand_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                string brand = ((LinkButton) sender).CommandArgument;
-                SetProductPagination(((List<Product>)Session["PRODUCTS"]).FindAll(p => p.Brand.Description == brand));
-
-                // Estilos para el filtro
-                ResetFilterStyles();
-                ActiveResetFilterButton(BrandsFilter, "btnResetBrand", brand);
-                ((LinkButton)sender).CssClass = Constants.FilterLinkSelected;
-            }
-            catch (Exception ex)
-            {
-                HandleException(ex);
-            }
-        }
-
-        /// <summary>
-        /// Buscar productos que coincidan con el rango de precio seleccionado por el usuario.
-        /// </summary>
-        protected void btnFindByPrice_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                string price = ((LinkButton) sender).CommandArgument;
-
-                List<Product> filteredProducts;
-                if (price == "LOW")
-                {
-                    filteredProducts = ((List<Product>)Session["PRODUCTS"]).FindAll(p => p.Price < 50_000);
-                }
-                else if (price == "MEDIUM")
-                {
-                    filteredProducts = ((List<Product>)Session["PRODUCTS"]).FindAll(p => p.Price >= 50_000 && p.Price < 100_000);
-                }
-                else if (price == "HIGH")
-                {
-                    filteredProducts = ((List<Product>)Session["PRODUCTS"]).FindAll(p => p.Price >= 100_000 && p.Price < 500_000);
-                }
-                else
-                {
-                    filteredProducts = ((List<Product>)Session["PRODUCTS"]).FindAll(p => p.Price >= 500_000);
-                }
-                SetProductPagination(filteredProducts);
-
-                // Estilos para el filtro
-                ResetFilterStyles();
-                ActiveResetFilterButton(PriceFilter, "btnResetPrice", price);
-                ((LinkButton)sender).CssClass = Constants.FilterLinkSelected;
-            }
-            catch (Exception ex)
-            {
-                HandleException(ex);
-            }
-        }
-
-        // TODO: Agregar un filtro de precio personalizado.
-        // TODO: Agregar un botón de reinicio al lado del buscador que se active al utilizar cualquier filtro.
 
         /// <summary>
         /// Rellenar el filtro de categorías con todas las categorías de la base de datos
@@ -271,6 +251,48 @@ namespace UserInterface.Pages.Global
         }
 
         /// <summary>
+        /// Verificar si se debe desactivar un filtro de categoría si su conteo de productos
+        /// que coincidan equivale a 0.
+        /// </summary>
+        protected void CategoriesFilter_ItemDataBound(object sender, RepeaterItemEventArgs e)
+        {
+            if (e.Item.ItemType == ListItemType.Item || e.Item.ItemType == ListItemType.AlternatingItem)
+            {
+                KeyValuePair<string, int> filter = (KeyValuePair<string, int>)e.Item.DataItem;
+                LinkButton btnFilter = (LinkButton)e.Item.FindControl("btnFindCategory");
+
+                // Si el contador del filtro es 0, se deshabilita.
+                if (filter.Value == 0)
+                {
+                    btnFilter.Enabled = false;
+                }
+            }
+        }
+
+
+        /* --- Marca de producto --- */
+        /// <summary>
+        /// Buscar productos que coincidan con la marca seleccionada por el usuario.
+        /// </summary>
+        protected void btnFindByBrand_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                string brand = ((LinkButton) sender).CommandArgument;
+                SetProductPagination(((List<Product>)Session["PRODUCTS"]).FindAll(p => p.Brand.Description == brand));
+
+                // Estilos para el filtro
+                ResetFilterStyles();
+                ActiveResetFilterButton(BrandsFilter, "btnResetBrand", brand);
+                ((LinkButton)sender).CssClass = Constants.FilterLinkSelected;
+            }
+            catch (Exception ex)
+            {
+                HandleException(ex);
+            }
+        }
+
+        /// <summary>
         /// Rellenar el filtro de marcas con todas las marcas de la base de datos
         /// como también el conteo de cuántos productos coinciden con cada una.
         /// </summary>
@@ -295,6 +317,66 @@ namespace UserInterface.Pages.Global
 
                 BrandsFilter.DataSource = brandCount;
                 BrandsFilter.DataBind();
+            }
+            catch (Exception ex)
+            {
+                HandleException(ex);
+            }
+        }
+
+        /// <summary>
+        /// Verificar si se debe desactivar un filtro de marca si su conteo de productos
+        /// que coincidan equivale a 0.
+        /// </summary>
+        protected void BrandsFilter_ItemDataBound(object sender, RepeaterItemEventArgs e)
+        {
+            if (e.Item.ItemType == ListItemType.Item || e.Item.ItemType == ListItemType.AlternatingItem)
+            {
+                KeyValuePair<string, int> filter = (KeyValuePair<string, int>)e.Item.DataItem;
+                LinkButton btnFilter = (LinkButton)e.Item.FindControl("btnFindBrand");
+
+                if (filter.Value == 0)
+                {
+                    btnFilter.Enabled = false;
+                }
+            }
+        }
+
+
+        /* --- Precio de producto --- */
+        /// <summary>
+        /// Buscar productos que coincidan con un rango de precio seleccionado 
+        /// por el usuario entre las opciones disponibles.
+        /// </summary>
+        protected void btnFindByPrice_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                string price = ((LinkButton) sender).CommandArgument;
+
+                List<Product> filteredProducts;
+                if (price == "LOW")
+                {
+                    filteredProducts = ((List<Product>)Session["PRODUCTS"]).FindAll(p => p.Price < 50_000);
+                }
+                else if (price == "MEDIUM")
+                {
+                    filteredProducts = ((List<Product>)Session["PRODUCTS"]).FindAll(p => p.Price >= 50_000 && p.Price < 100_000);
+                }
+                else if (price == "HIGH")
+                {
+                    filteredProducts = ((List<Product>)Session["PRODUCTS"]).FindAll(p => p.Price >= 100_000 && p.Price < 500_000);
+                }
+                else
+                {
+                    filteredProducts = ((List<Product>)Session["PRODUCTS"]).FindAll(p => p.Price >= 500_000);
+                }
+                SetProductPagination(filteredProducts);
+
+                // Estilos para el filtro
+                ResetFilterStyles();
+                ActiveResetFilterButton(PriceFilter, "btnResetPrice", price);
+                ((LinkButton)sender).CssClass = Constants.FilterLinkSelected;
             }
             catch (Exception ex)
             {
@@ -348,43 +430,6 @@ namespace UserInterface.Pages.Global
         }
 
         /// <summary>
-        /// Verificar si se debe desactivar un filtro de categoría si su conteo de productos
-        /// que coincidan equivale a 0.
-        /// </summary>
-        protected void CategoriesFilter_ItemDataBound(object sender, RepeaterItemEventArgs e)
-        {
-            if (e.Item.ItemType == ListItemType.Item || e.Item.ItemType == ListItemType.AlternatingItem)
-            {
-                KeyValuePair<string, int> filter = (KeyValuePair<string, int>)e.Item.DataItem;
-                LinkButton btnFilter = (LinkButton)e.Item.FindControl("btnFindCategory");
-
-                // Si el contador del filtro es 0, se deshabilita.
-                if (filter.Value == 0)
-                {
-                    btnFilter.Enabled = false;
-                }
-            }
-        }
-
-        /// <summary>
-        /// Verificar si se debe desactivar un filtro de marca si su conteo de productos
-        /// que coincidan equivale a 0.
-        /// </summary>
-        protected void BrandsFilter_ItemDataBound(object sender, RepeaterItemEventArgs e)
-        {
-            if (e.Item.ItemType == ListItemType.Item || e.Item.ItemType == ListItemType.AlternatingItem)
-            {
-                KeyValuePair<string, int> filter = (KeyValuePair<string, int>)e.Item.DataItem;
-                LinkButton btnFilter = (LinkButton)e.Item.FindControl("btnFindBrand");
-
-                if (filter.Value == 0)
-                {
-                    btnFilter.Enabled = false;
-                }
-            }
-        }
-
-        /// <summary>
         /// Verificar si se debe desactivar un filtro de precio si su conteo de productos
         /// que coincidan equivale a 0.
         /// </summary>
@@ -420,29 +465,38 @@ namespace UserInterface.Pages.Global
         }
 
         /// <summary>
-        /// Si hay una sesión de usuario, verificar si se deben activar estilos para las
-        /// cards de productos según sean favoritos o no.
+        /// Buscar productos que coincidan con un rango de precio personalizado 
+        /// por el usuario.
         /// </summary>
-        protected void ProductCards_ItemDataBound(object sender, RepeaterItemEventArgs e)
+        protected void btnCustomPrice_Click(object sender, EventArgs e)
         {
             try
             {
-                if (Session["USER"] != null)
+                // Verificar precio mínimo
+                if (!decimal.TryParse(txbxMinPriceFilter.Text, out decimal minPrice) || minPrice < 0)
                 {
-                    if (e.Item.ItemType == ListItemType.Item || e.Item.ItemType == ListItemType.AlternatingItem)
-                    {
-                        int productID = (int)DataBinder.Eval(e.Item.DataItem, "ID");
-                        bool isFavorite = ((List<Product>)Session["FAVORITEPRODUCTS"]).Any(favoriteP => favoriteP.ID == productID);
-
-                        if (isFavorite)
-                        {
-                            Panel pnlFavoriteProduct = (Panel)e.Item.FindControl("pnlFavoriteProduct");
-                            Panel pnlProductCard = (Panel)e.Item.FindControl("pnlProductCard");
-                            pnlFavoriteProduct.Visible = true;
-                            pnlProductCard.CssClass += " border-warning border-3";
-                        }
-                    }
+                    InvalidMinPrice();
+                    return;
                 }
+
+                // Verificar precio máximo
+                if (!decimal.TryParse(txbxMaxPriceFilter.Text, out decimal maxPrice))
+                {
+                    InvalidMaxPrice();
+                    return;
+                }
+
+                // Verificar que precio máximo sea mayor a precio mínimo
+                if (maxPrice < minPrice)
+                {
+                    InvalidMinPrice();
+                    InvalidMaxPrice();
+                    return;
+                }
+
+                SetProductPagination(((List<Product>)Session["PRODUCTS"]).FindAll(p => p.Price >= minPrice && p.Price <= maxPrice));
+                ResetFilterStyles();
+                ActiveResetFilterButton();
             }
             catch (Exception ex)
             {
@@ -451,7 +505,38 @@ namespace UserInterface.Pages.Global
         }
 
         /// <summary>
-        /// Activar el botón de reset del filtro seleccionado.
+        /// Configurar interfaz de usuario cuando el precio mínimo ingresado no
+        /// cumple con los requisitos necesarios.
+        /// </summary>
+        private void InvalidMinPrice()
+        {
+            txbxMinPriceFilter.CssClass = Constants.FormControlInvalid;
+            pnlMinPrice.Visible = true;
+        }
+
+        /// <summary>
+        /// Configurar interfaz de usuario cuando el precio máximo ingresado no
+        /// cumple con los requisitos necesarios.
+        /// </summary>
+        private void InvalidMaxPrice()
+        {
+            txbxMaxPriceFilter.CssClass = Constants.FormControlInvalid;
+            pnlMaxPrice.Visible = true;
+        }
+
+
+        /* --- Reinicio de filtros --- */
+        /// <summary>
+        /// Activar el botón de reset del buscador (general).
+        /// </summary>
+        private void ActiveResetFilterButton()
+        {
+            btnResetFilters.CssClass = Constants.ResetFilterButtonEnabled;
+        }
+
+        /// <summary>
+        /// Activar el botón de reset del filtro seleccionado (particular) y 
+        /// también del buscador (general).
         /// </summary>
         /// <param name="repeater">Filtro (categorías, marcas, precio)</param>
         /// <param name="btnResetID">ID del botón de reinicio</param>
@@ -470,25 +555,8 @@ namespace UserInterface.Pages.Global
                     button.Visible = false;
                 }
             }
-        }
 
-        /// <summary>
-        /// Reiniciar todos los filtros de búsqueda (reinciar estilos, ocultar todos
-        /// los botones de reinicio y volver a bindear todos los productos).
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        protected void ResetAllFilters(object sender, EventArgs e)
-        {
-            try
-            {
-                ResetFilterStyles();
-                SetProductPagination((List<Product>)Session["PRODUCTS"]);
-            }
-            catch (Exception ex)
-            {
-                HandleException(ex);
-            }
+            btnResetFilters.CssClass = Constants.ResetFilterButtonEnabled;
         }
 
         /// <summary>
@@ -496,6 +564,7 @@ namespace UserInterface.Pages.Global
         /// </summary>
         private void ResetFilterStyles()
         {
+            // Categoría
             foreach (RepeaterItem item in CategoriesFilter.Items)
             {
                 LinkButton filter = (LinkButton)item.FindControl("btnFindCategory");
@@ -507,6 +576,7 @@ namespace UserInterface.Pages.Global
                 }
             }
 
+            // Marca
             foreach (RepeaterItem item in BrandsFilter.Items)
             {
                 LinkButton filter = (LinkButton)item.FindControl("btnFindBrand");
@@ -518,6 +588,7 @@ namespace UserInterface.Pages.Global
                 }
             }
 
+            // Precio
             foreach (RepeaterItem item in PriceFilter.Items)
             {
                 LinkButton filter = (LinkButton)item.FindControl("btnFindPrice");
@@ -528,8 +599,37 @@ namespace UserInterface.Pages.Global
                     resetButton.Visible = false;
                 }
             }
+            txbxMinPriceFilter.CssClass = Constants.FormControlNormal;
+            pnlMinPrice.Visible = false;
+            txbxMaxPriceFilter.CssClass = Constants.FormControlNormal;
+            pnlMaxPrice.Visible = false;
         }
 
+        /// <summary>
+        /// Reiniciar todos los filtros de búsqueda (reiniciar estilos, ocultar todos
+        /// los botones de reinicio y volver a bindear todos los productos).
+        /// </summary>
+        protected void btnResetFilter_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                ResetFilterStyles();
+                txbxNameFilter.Text = string.Empty;
+                txbxMinPriceFilter.Text = string.Empty;
+                txbxMaxPriceFilter.Text = string.Empty;
+                btnResetFilters.CssClass = Constants.ResetFilterButtonDisabled;
+                SetProductPagination((List<Product>)Session["PRODUCTS"]);
+            }
+            catch (Exception ex)
+            {
+                HandleException(ex);
+            }
+        }
+
+
+        /* ---------------------------------------------------------------------------- */
+        /*                                   PAGINACIÓN                                 */
+        /* ---------------------------------------------------------------------------- */
         /// <summary>
         /// Vincular los productos al repetidor según la paginación actual.
         /// </summary>

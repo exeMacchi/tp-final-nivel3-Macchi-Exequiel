@@ -15,13 +15,13 @@ namespace UserInterface.Pages.Global
     {
 
         /// <summary>
-        /// txbxFilter control.
+        /// txbxNameFilter control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txbxFilter;
+        protected global::System.Web.UI.WebControls.TextBox txbxNameFilter;
 
         /// <summary>
         /// btnFind control.
@@ -40,6 +40,15 @@ namespace UserInterface.Pages.Global
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lbFind;
+
+        /// <summary>
+        /// btnResetFilters control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.LinkButton btnResetFilters;
 
         /// <summary>
         /// CategoriesFilter control.
@@ -67,6 +76,60 @@ namespace UserInterface.Pages.Global
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Repeater PriceFilter;
+
+        /// <summary>
+        /// txbxMinPriceFilter control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txbxMinPriceFilter;
+
+        /// <summary>
+        /// txbxMaxPriceFilter control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txbxMaxPriceFilter;
+
+        /// <summary>
+        /// btnCustomPrice control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnCustomPrice;
+
+        /// <summary>
+        /// lbCustomPrice control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lbCustomPrice;
+
+        /// <summary>
+        /// pnlMinPrice control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Panel pnlMinPrice;
+
+        /// <summary>
+        /// pnlMaxPrice control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Panel pnlMaxPrice;
 
         /// <summary>
         /// alertEmptyDB control.

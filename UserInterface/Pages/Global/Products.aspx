@@ -10,17 +10,22 @@
             <h1 class="text-white text-center my-4">Catálogo</h1>
             <!-- Texto de filtro -->
             <div class="col input-group">
-                <asp:TextBox ID="txbxFilter" runat="server"
-                             Placeholder ="Buscar producto por nombre..."
+                <asp:TextBox ID="txbxNameFilter" runat="server"
+                             Placeholder ="Nombre del producto..."
                              CssClass="form-control bg-dark text-white"></asp:TextBox>
-                <div class="input-group-text bg-warning p-0">
+                <div class="input-group-text bg-warning p-0 mx-1">
                     <asp:Button ID="btnFind" runat="server" CssClass="d-none" 
                                 OnClick="btnFindByName_Click"/>
                     <asp:Label ID="lbFind" runat="server" AssociatedControlID="btnFind" 
                                CssClass="btn btn-warning">
-                        <i class="bi bi-search fs-5"></i>
+                        <i class="bi bi-search"></i>
                     </asp:Label>
                 </div>
+                <asp:LinkButton ID="btnResetFilters" runat="server" 
+                                CssClass="btn btn-warning border disabled"
+                                OnClick="btnResetFilter_Click">
+                    <i class="bi bi-arrow-counterclockwise"></i>
+                </asp:LinkButton>
             </div>
 
             <!-- Filtros -->
@@ -41,7 +46,7 @@
                                     <asp:LinkButton ID="btnResetCategory" runat="server"
                                                     CssClass="btn btn-outline-warning rounded-circle p-1 lh-1"
                                                     Visible="false" CommandArgument='<%# Eval("Key") %>'
-                                                    OnClick="ResetAllFilters">
+                                                    OnClick="btnResetFilter_Click">
                                         <i class="bi bi-x-lg fs-6"></i>
                                     </asp:LinkButton>
                                 </li>
@@ -66,7 +71,7 @@
                                     <asp:LinkButton ID="btnResetBrand" runat="server"
                                                     CssClass="btn btn-outline-warning rounded-circle p-1 lh-1"
                                                     Visible="false" CommandArgument='<%# Eval("Key") %>'
-                                                    OnClick="ResetAllFilters">
+                                                    OnClick="btnResetFilter_Click">
                                         <i class="bi bi-x-lg fs-6"></i>
                                     </asp:LinkButton>
                                 </li>
@@ -78,6 +83,8 @@
                 <!-- Filtros de precios -->
                 <li class="my-4">
                     <h3 class="text-white">Precios</h3>
+
+                    <!-- Grupo de precios -->
                     <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
                         <asp:Repeater ID="PriceFilter" runat="server" OnItemDataBound="PriceFilter_ItemDataBound">
                             <ItemTemplate>
@@ -90,13 +97,59 @@
                                     <asp:LinkButton ID="btnResetPrice" runat="server"
                                                     CssClass="btn btn-outline-warning rounded-circle p-1 lh-1"
                                                     Visible="false" CommandArgument='<%# Eval("Key") %>'
-                                                    OnClick="ResetAllFilters">
+                                                    OnClick="btnResetFilter_Click">
                                         <i class="bi bi-x-lg fs-6"></i>
                                     </asp:LinkButton>
                                 </li>
                             </ItemTemplate>
                         </asp:Repeater>
                     </ul>
+
+                    <!-- Precio personalizado -->
+                    <div class="d-flex gap-2 my-2">
+                        <!-- Min -->
+                        <div class="input-group">
+                            <span class="input-group-text text-white bg-black"
+                                  style="opacity: 1;">
+                                $
+                            </span>
+                            <asp:TextBox ID="txbxMinPriceFilter" runat="server" TextMode="Number" 
+                                         CssClass="form-control bg-dark text-white" 
+                                         style="opacity: 1;"
+                                         Placeholder="Min" min="0"></asp:TextBox>
+                        </div>
+                        <!-- Max -->
+                        <div class="input-group">
+                            <span class="input-group-text text-white bg-black"
+                                  style="opacity: 1;">
+                                $
+                            </span>
+                            <asp:TextBox ID="txbxMaxPriceFilter" runat="server" TextMode="Number"
+                                         CssClass="form-control bg-dark text-white"
+                                         style="opacity: 1;"
+                                         Placeholder="Max"></asp:TextBox>
+                        </div>
+                        <!-- Filtrar -->
+                        <div class="input-group-text bg-warning p-0">
+                            <asp:Button ID="btnCustomPrice" runat="server"
+                                        CssClass="d-none" 
+                                        OnClick="btnCustomPrice_Click"/>
+                            <asp:Label ID="lbCustomPrice" runat="server"
+                                       AssociatedControlID="btnCustomPrice" 
+                                       CssClass="btn btn-warning">
+                                <i class="bi bi-search"></i>
+                            </asp:Label>
+                        </div>
+                    </div>
+                    <asp:Panel ID="pnlMinPrice" runat="server" Visible="false"
+                               CssClass="text-danger lead fs-6">
+                        El precio mínimo debe ser un número válido superior o igual a 0.
+                    </asp:Panel>
+                    <asp:Panel ID="pnlMaxPrice" runat="server" Visible="false"
+                               CssClass="text-danger lead fs-6">
+                        El precio máximo debe ser un número válido superior o igual al 
+                        precio mínimo.
+                    </asp:Panel>
                 </li>
             </ul>
         </aside>
