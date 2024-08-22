@@ -19,7 +19,8 @@
             </p>
             <p class="lead mb-4">
                 Nuestro portal está enfocado en brindar la mejor experiencia de usuario, 
-                con filtros por nombre, marca y categoría para facilitar la navegación. 
+                con filtros por nombre, marca, categoría y precio para facilitar la 
+                navegación. 
                 Además, contamos con un sistema de registro que permite a los usuarios 
                 realizar un seguimiento de sus productos favoritos.
             </p>
@@ -36,7 +37,7 @@
 
     <!-- Products -->
     <section class="row bg-dark my-5 border rounded-5 p-4">
-        <div class="col-6 text-white d-flex flex-column gap-4">
+        <div class="col-6 text-white d-flex flex-column gap-2">
             <div class="border-bottom py-3">
                 <h2 class="fw-bold text-center">
                     ¿Cómo se presentan los productos?
@@ -49,8 +50,14 @@
             <p class="lead mb-4">
                 Cada tarjeta contiene una imagen del producto, el título con el nombre 
                 del producto, burbujas que indican la categoría y la marca, una pequeña 
-                descripción, el precio y un botón de "Ver más" para obtener detalles 
-                adicionales.
+                descripción, el precio y un botón de "Ver detalle" para visualizar
+                características adicionales.
+            </p>
+            <p class="lead mb-4">
+                Asimismo, iniciando sesión podrá marcar un producto como favorito,
+                el cual se destacará visualmente con un borde redondeado dorado junto 
+                a una estrella debajo de la imagen del artículo, facilitando su 
+                identificación y acceso rápido.
             </p>
             <a href="<%: Domain.Constants.ProductsPagePath %>" 
                class="btn btn-outline-light mt-auto py-2 fs-5">
@@ -61,56 +68,16 @@
         <div class="col-6">
             <div id="productCarousel" class="carousel slide h-100">
                 <div class="carousel-inner h-100">
-                    <% if (((List<Domain.Product>)Session["PRODUCTS"]).Count > 0) { %>
-                        <asp:Repeater ID="ProductCards" runat="server">
-                            <ItemTemplate>
-                                <% if (ProductIndex < 5) { // Mostrar 5 cartas de demostración %>
-                                    <div class="carousel-item h-100 <%= ProductIndex == 0 ? "active" : "" %>">
-                                        <article class="card w-50 h-100 mx-auto bg-dark overflow-hidden border rounded-5">
-                                            <figure class="card-img-top bg-gradient text-white">
-                                                <img src="<%# Eval("Image") %>"
-                                                     alt="Imagen del producto <%# Eval("Name") %>">
-                                            </figure>
-                                            <div class="card-body d-flex flex-column gap-1 justify-content-between">
-                                                <h5 class="card-title text-center text-white fw-bold">
-                                                    <%# Eval("Name") %>
-                                                </h5>
-                                                <div class="d-flex justify-content-center gap-2">
-                                                    <span class="badge rounded-pill text-white border bg-gradient"><%# Eval("Brand.Description") %></span>
-                                                    <span class="badge rounded-pill text-white border bg-gradient"><%# Eval("Category.Description") %></span>
-                                                </div>
-                                                <p class="card-text text-white lead text-center">
-                                                    <%# Eval("Description") %>
-                                                </p>
-                                                <p class="card-text text-warning text-center fs-2">
-                                                    $<%# ((decimal)Eval("Price")).ToString("N2") %>
-                                                </p>
-                                                <a href="<%: Domain.Constants.ProductDetailPagePath %>?id=<%# Eval("ID") %>"
-                                                   class="btn btn-outline-light">Ver detalle →</a>
-                                            </div>
-                                        </article>
-                                    </div>
-
-                                <% } %>
-                                <% ProductIndex++; // Esto es necesario para saber el índice del producto y aplicar la clase 'active' necesaria en el carousel. %>
-                            </ItemTemplate>
-                        </asp:Repeater>
-                        <button class="carousel-control-prev" type="button" data-bs-target="#productCarousel" data-bs-slide="prev">
-                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                            <span class="visually-hidden">Previous</span>
-                        </button>
-                        <button class="carousel-control-next" type="button" data-bs-target="#productCarousel" data-bs-slide="next">
-                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                            <span class="visually-hidden">Next</span>
-                        </button>
-                    <% } else { %>
-                        <div class="carousel-item h-100 active">
-                            <article class="card w-50 h-100 mx-auto bg-dark overflow-hidden border rounded-5">
-                                <figure class="card-img-top bg-gradient text-white">
+                    <!-- Producto normal -->
+                    <div class="carousel-item h-100 active">
+                        <div class="d-flex flex-column justify-content-center h-100">
+                            <article class="card w-50 mx-auto bg-dark overflow-hidden border rounded-5">
+                                <figure class="card-img-top bg-gradient text-white"
+                                        style="max-height: 180px">
                                     <img src=<%: Domain.Constants.PlaceholderImagePath %>
                                          alt="Marcador de posición par imágenes">
                                 </figure>
-                                <div class="card-body d-flex flex-column gap-1">
+                                <div class="card-body d-flex flex-column gap-1 justify-content-between">
                                     <h5 class="card-title text-center text-white fw-bold">
                                         Nombre del producto
                                     </h5>
@@ -118,7 +85,7 @@
                                         <span class="badge rounded-pill text-white border bg-gradient">Marca</span>
                                         <span class="badge rounded-pill text-white border bg-gradient">Categoría</span>
                                     </div>
-                                    <p class="card-text text-white lead text-center">
+                                    <p class="card-text text-white lead text-center m-0">
                                         Descripción del producto.
                                     </p>
                                     <p class="card-text text-warning text-center fs-2">
@@ -128,7 +95,47 @@
                                 </div>
                             </article>
                         </div>
-                    <% } %>
+                    </div>
+
+                    <!-- Producto favorito -->
+                    <div class="carousel-item h-100">
+                        <div class="d-flex flex-column justify-content-center h-100">
+                            <article class="card w-50 mx-auto bg-dark overflow-hidden border rounded-5 border-warning border-2">
+                                <figure class="card-img-top bg-gradient text-white"
+                                        style="max-height: 180px">
+                                    <img src=<%: Domain.Constants.PlaceholderImagePath %>
+                                         alt="Marcador de posición par imágenes">
+                                </figure>
+                                <div class="card-body d-flex flex-column gap-1 justify-content-between">
+                                    <div class="d-flex justify-content-center">
+                                        <i class="bi bi-star-fill text-warning"></i>
+                                    </div>
+                                    <h5 class="card-title text-center text-white fw-bold">
+                                        Producto favorito
+                                    </h5>
+                                    <div class="d-flex justify-content-center gap-2">
+                                        <span class="badge rounded-pill text-white border bg-gradient">Marca</span>
+                                        <span class="badge rounded-pill text-white border bg-gradient">Categoría</span>
+                                    </div>
+                                    <p class="card-text text-white lead text-center m-0">
+                                        Descripción del producto.
+                                    </p>
+                                    <p class="card-text text-warning text-center fs-2">
+                                        $0,00
+                                    </p>
+                                    <a href="#" class="btn btn-outline-light">Ver detalle →</a>
+                                </div>
+                            </article>
+                        </div>
+                    </div>
+                    <button class="carousel-control-prev" type="button" data-bs-target="#productCarousel" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#productCarousel" data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Next</span>
+                    </button>
                 </div>
             </div>
         </div>
