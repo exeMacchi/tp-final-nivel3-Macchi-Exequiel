@@ -30,7 +30,7 @@
     <!-- Filtros -->
     <div class="row">
         <!-- Filtro básico -->
-        <div class="col-6 d-flex gap-3">
+        <div class="col input-group gap-2">
             <asp:TextBox ID="txbxFilter" runat="server" CssClass="form-control bg-dark text-white"
                          PlaceHolder="Buscar producto por nombre..."></asp:TextBox>
 
@@ -40,6 +40,13 @@
                        CssClass="btn btn-warning">
                 <i class="bi bi-search fs-5"></i>
             </asp:Label>
+
+            <!-- Reiniciar filtros -->
+            <asp:LinkButton ID="btnResetFilters" runat="server" 
+                            CssClass="btn btn-warning border disabled"
+                            OnClick="btnResetFilters_Click">
+                <i class="bi bi-arrow-counterclockwise fs-5"></i>
+            </asp:LinkButton>
 
             <!-- Avanzado -->
             <asp:Button ID="btnAdvanced" runat="server"  CssClass="d-none" OnClick="btnAdvanced_Click"/>

@@ -198,7 +198,6 @@ namespace UserInterface.Pages.User
             ddlFirstCriteria.CssClass = Constants.FormSelectOptionSelected;
             ddlFirstCriteria.Items.Clear();
             ddlFirstCriteria.Items.Add(new ListItem("Nombre", "Name"));
-            ddlFirstCriteria.Items.Add(new ListItem("Código", "Code"));
             ddlFirstCriteria.Items.Add(new ListItem("Marca", "Brand"));
             ddlFirstCriteria.Items.Add(new ListItem("Categoría", "Category"));
             ddlFirstCriteria.Items.Add(new ListItem("Precio", "Price"));

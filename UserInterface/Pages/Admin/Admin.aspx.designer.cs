@@ -60,6 +60,15 @@ namespace UserInterface.Pages.Admin
         protected global::System.Web.UI.WebControls.Label lbFind;
 
         /// <summary>
+        /// btnResetFilters control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.LinkButton btnResetFilters;
+
+        /// <summary>
         /// btnAdvanced control.
         /// </summary>
         /// <remarks>

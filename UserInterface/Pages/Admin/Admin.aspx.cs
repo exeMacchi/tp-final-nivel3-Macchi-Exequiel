@@ -223,6 +223,7 @@ namespace UserInterface.Pages.Admin
             {
                 List<Product> filteredProducts = GetFilteredProducts();
                 BindProductsToGridView(filteredProducts);
+                btnResetFilters.CssClass = Constants.ResetFilterButtonEnabled;
 
                 // Si no se encuentra resultados.
                 if (filteredProducts.Count == 0)
@@ -302,7 +303,7 @@ namespace UserInterface.Pages.Admin
                 ConfigureAdvancedFilter();
             }
 
-            ResetFilter();
+            ResetAllFilters();
         }
 
         /// <summary>
@@ -338,23 +339,6 @@ namespace UserInterface.Pages.Admin
         }
 
         /// <summary>
-        /// Reiniciar los productos filtrados.
-        /// </summary>
-        private void ResetFilter()
-        {
-            try
-            {
-                // Reinicio
-                txbxFilter.Text = string.Empty;
-                BindProductsToGridView((List<Product>)Session["PRODUCTS"]);
-            }
-            catch (Exception ex)
-            {
-                HandleException(ex);
-            }
-        }
-
-        /// <summary>
         /// Cargar el <see cref="ddlSecondCriteria"/> según la selección del primer
         /// criterio en <see cref="ddlFirstCriteria"/>.
         /// </summary>
@@ -379,6 +363,31 @@ namespace UserInterface.Pages.Admin
                 ddlSecondCriteria.Items.Add(new ListItem("Termina con...", "Ends"));
                 txbxFilter.Attributes["placeholder"] = $"Buscar producto por {ddlFirstCriteria.SelectedItem.Text.ToLower()}...";
             }
+        }
+
+        /// <summary>
+        /// Reiniciar los productos filtrados.
+        /// </summary>
+        private void ResetAllFilters()
+        {
+            try
+            {
+                txbxFilter.Text = string.Empty;
+                BindProductsToGridView((List<Product>)Session["PRODUCTS"]);
+                btnResetFilters.CssClass = Constants.ResetFilterButtonDisabled;
+            }
+            catch (Exception ex)
+            {
+                HandleException(ex);
+            }
+        }
+
+        /// <summary>
+        /// Reiniciar todos los filtros a su configuración inicial.
+        /// </summary>
+        protected void btnResetFilters_Click(object sender, EventArgs e)
+        {
+            ResetAllFilters();
         }
     }
 }
