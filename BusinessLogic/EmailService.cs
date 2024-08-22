@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Net;
 using System.Net.Mail;
@@ -17,7 +18,8 @@ namespace BusinessLogic
         {
             server = new SmtpClient
             {
-                Credentials = new NetworkCredential("b47bd8dd07a4b9", "e3c96275040c88"),
+                Credentials = new NetworkCredential(ConfigurationManager.AppSettings["MAIL_USER"],
+                                                    ConfigurationManager.AppSettings["MAIL_PASS"]),
                 EnableSsl = true,
                 Port = 2525,
                 Host = "sandbox.smtp.mailtrap.io"

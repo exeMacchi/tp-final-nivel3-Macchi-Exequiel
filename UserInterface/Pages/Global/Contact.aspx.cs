@@ -84,6 +84,9 @@ namespace UserInterface.Pages.Global
                 es.SendMail();
 
                 contactSuccess.Visible = true;
+                txbxEmail.ReadOnly = true;
+                txbxSubject.ReadOnly = true;
+                txbxMessage.ReadOnly = true;
                 btnSend.Enabled = false;
             }
             catch (SmtpException)

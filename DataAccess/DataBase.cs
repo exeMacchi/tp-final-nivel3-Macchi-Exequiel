@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
@@ -22,11 +23,7 @@ namespace DataAccess
         // Constructor
         public DataBase()
         {
-            string server = "DESKTOP-FUV4AD1";
-            string database = "CATALOGO_WEB_DB";
-            connection = new SqlConnection($"server={server};" +
-                                           $"database={database};" + 
-                                           "integrated security=true;");
+            connection = new SqlConnection(ConfigurationManager.AppSettings["DB_CONNECTION_STRING"]);
             command = connection.CreateCommand();
         }
 
