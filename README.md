@@ -1,6 +1,6 @@
 # Trabajo Práctico Final C# Nivel 3
 ## Descripción
-Aplicación web diseñada para la visualización y gestión de un catálogo de productos, destacando un diseño moderno y minimalista.
+*El Almacenero* es una aplicación web diseñada para la visualización y gestión de un catálogo de productos, destacando un diseño moderno y minimalista.
 
 El proyecto integra múltiples funcionalidades avanzadas como manejo de usuarios, gestión de productos, y un sistema de favoritos, todo dentro de una arquitectura de software estructurada.
 
